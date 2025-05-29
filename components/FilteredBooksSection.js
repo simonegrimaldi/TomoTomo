@@ -1,4 +1,3 @@
-// components/FilteredBooksSection.js
 import React from "react";
 import {
   View,
@@ -7,8 +6,14 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
+  Dimensions,
 } from "react-native";
 import defaultGenreImage from "../assets/libri/default_genre_image.png";
+
+const screenWidth = Dimensions.get("window").width;
+const numColumns = 3;
+const spacing = 12;
+const itemSize = (screenWidth - spacing * (numColumns + 1)) / numColumns;
 
 export default function FilteredBooksSection({ filteredBooks, navigation }) {
   if (!filteredBooks || filteredBooks.length === 0) {
@@ -23,8 +28,7 @@ export default function FilteredBooksSection({ filteredBooks, navigation }) {
     <FlatList
       data={filteredBooks}
       keyExtractor={(item) => item.id.toString()}
-      numColumns={3}
-      columnWrapperStyle={styles.row}
+      numColumns={numColumns}
       contentContainerStyle={styles.listContent}
       renderItem={({ item }) => (
         <TouchableOpacity
@@ -58,22 +62,17 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     color: "#666",
   },
-  row: {
-    justifyContent: "space-between",
-    marginBottom: 16,
-  },
   listContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 16,
+    padding: spacing,
   },
   bookCard: {
-    flex: 1 / 3,
-    marginHorizontal: 4,
+    width: itemSize,
+    margin: spacing / 2,
     alignItems: "center",
   },
   bookImage: {
-    width: 100,
-    height: 150,
+    width: itemSize,
+    height: itemSize * 1.5,
     borderRadius: 8,
     marginBottom: 6,
   },

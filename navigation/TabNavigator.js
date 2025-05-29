@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import AddOrEditBook from '../screens/AddOrEditBook';
+import AddOrEditBook from '../screens/AddBook';
 
 // Importa la barra personalizzata
 import BottomTabBar from '../components/BottomTabBar';
