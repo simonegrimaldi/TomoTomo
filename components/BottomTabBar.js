@@ -61,20 +61,19 @@ export default function BottomTabBar({ navigation }) {
 
 const styles = StyleSheet.create({
   bottomNav: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: '#4a90e2',
-    paddingVertical: 12,
-  },
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  backgroundColor: '#4a90e2',
+  paddingVertical: 6,
+  height: 70, // se vuoi essere esplicito
+},
   navBtn: {
     alignItems: 'center',
   },
   icon: {
-    width: 28,
-    height: 28,
-    tintColor: 'white',
-    resizeMode: 'contain',
-    marginBottom: 2,
+    width: 24,
+    height: 24,
+    marginBottom: 0,
   },
   activeIcon: {
     tintColor: '#ffd700',

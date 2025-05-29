@@ -29,7 +29,11 @@ export default function BookDetailScreen({ route, navigation }) {
   const [isEditing, setIsEditing] = useState(false);
   const [showStartDate, setShowStartDate] = useState(false);
   const [showEndDate, setShowEndDate] = useState(false);
-
+  const toggleFavorite = () => {
+  const updated = { ...editedBook, favorite: !editedBook.favorite };
+  setEditedBook(updated);
+  updateBook(updated.id, updated);
+};
   useFocusEffect(
     useCallback(() => {
       setIsEditing(false);
@@ -44,8 +48,10 @@ export default function BookDetailScreen({ route, navigation }) {
         setEditedBook({ ...found });
       } else {
         Alert.alert("Errore", "Libro non trovato.");
-        navigation.goBack(); // Torna indietro se il libro non viene trovato
-      }
+navigation.reset({
+  index: 0,
+  routes: [{ name: "Home" }],
+})      }
     }
   }, [books, bookId]);
 
@@ -90,29 +96,43 @@ export default function BookDetailScreen({ route, navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.topBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backButtonText}>← Indietro</Text>
-        </TouchableOpacity>
-      </View>
+<View style={styles.topBar}>
+  <TouchableOpacity
+    onPress={() => {
+      if (navigation.canGoBack()) {
+        navigation.goBack();
+      } else {
+        navigation.navigate("Home");
+      }
+    }}
+  >
+    <Text style={styles.backButtonText}>← Indietro</Text>
+  </TouchableOpacity>
+</View>
 
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
-          <View style={styles.titleWrapper}>
-            <TextInput
-              style={[styles.title, isEditing && styles.editable]}
-              value={editedBook.title}
-              editable={isEditing}
-              onChangeText={(text) => setEditedBook({ ...editedBook, title: text })}
-            />
-          </View>
-          {!isEditing && (
-            <TouchableOpacity onPress={() => setIsEditing(true)} style={styles.editBtn}>
-              <Text style={styles.editText}>✏️</Text>
-            </TouchableOpacity>
-          )}
-        </View>
+  <View style={styles.titleWrapper}>
+    <TextInput
+      style={[styles.title, isEditing && styles.editable]}
+      value={editedBook.title}
+      editable={isEditing}
+      onChangeText={(text) => setEditedBook({ ...editedBook, title: text })}
+    />
+  </View>
 
+  <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButton}>
+    <Text style={styles.favoriteIcon}>
+      {editedBook.favorite ? "⭐" : "☆"}
+    </Text>
+  </TouchableOpacity>
+
+  {!isEditing && (
+    <TouchableOpacity onPress={() => setIsEditing(true)} style={styles.editBtn}>
+      <Text style={styles.editText}>✏️</Text>
+    </TouchableOpacity>
+  )}
+</View>
         <Image
           source={editedBook.cover_image_uri ? { uri: editedBook.cover_image_uri } : defaultImage}
           style={styles.image}

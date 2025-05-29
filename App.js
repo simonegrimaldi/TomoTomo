@@ -3,14 +3,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { BooksProvider } from "./context/BooksContext";
-import TabNavigator from "./navigation/TabNavigator";
+import MainStackNavigator from "./navigation/MainStackNavigator";
 
 export default function App() {
   return (
     <BooksProvider>
       <SafeAreaProvider>
-        <NavigationContainer>
-          <TabNavigator />
+        <NavigationContainer >
+          <MainStackNavigator />
         </NavigationContainer>
       </SafeAreaProvider>
     </BooksProvider>

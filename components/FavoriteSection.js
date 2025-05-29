@@ -2,11 +2,13 @@ import React from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import BookCard from "./BookCard";
 
-export default function RandomPicksSection({ books, navigation }) {
-  if (books.length === 0) {
+export default function FavoriteSection({ books, navigation }) {
+  const favoriteBooks = books.filter((b) => b.favorite);
+
+  if (favoriteBooks.length === 0) {
     return (
       <View style={styles.sectionContainer}>
-        <Text style={styles.noBooksText}>Nessun libro disponibile</Text>
+        <Text style={styles.noBooksText}>Nessun libro preferito</Text>
       </View>
     );
   }
@@ -14,15 +16,15 @@ export default function RandomPicksSection({ books, navigation }) {
   const renderBook = ({ item }) => (
     <BookCard
       book={item}
-onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
+      onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
     />
   );
 
   return (
     <View style={styles.sectionContainer}>
-      <Text style={styles.sectionTitle}>Scelte a Caso</Text>
+      <Text style={styles.sectionTitle}>Preferiti</Text>
       <FlatList
-        data={books}
+        data={favoriteBooks}
         renderItem={renderBook}
         keyExtractor={(item) => item.id.toString()}
         horizontal

@@ -9,10 +9,9 @@ import TopBar from "../components/TopBar";
 import FiltersMenu from "../components/FiltersMenu";
 import LastAddedSection from "../components/LastAddedSection";
 import PlaylistSection from "../components/PlaylistSection";
-import RandomPicksSection from "../components/RandomPicksSection";
+import FavoriteSection from "../components/FavoriteSection"; 
 import SearchResultsSection from "../components/SearchResultsSection";
 import FilteredBooksSection from "../components/FilteredBooksSection";
-
 
 const HomeScreen = ({ navigation }) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -34,9 +33,7 @@ const HomeScreen = ({ navigation }) => {
         [category]: {
           ...prev[category],
           ...(category === "status"
-            ? Object.fromEntries(
-                Object.keys(prev[category]).map((k) => [k, false])
-              )
+            ? Object.fromEntries(Object.keys(prev[category]).map((k) => [k, false]))
             : {}),
           [key]: !prev[category][key],
         },
@@ -64,12 +61,6 @@ const HomeScreen = ({ navigation }) => {
   );
 
   const lastThreeBooks = books.slice(0, 3);
-
-  const getRandomBooks = (arr, n) => {
-    const shuffled = [...arr].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, n);
-  };
-  const randomBooks = useMemo(() => getRandomBooks(books, 10), [books]);
 
   const filteredBooksBySearch = useMemo(() => {
     if (!searchText) return [];
@@ -100,11 +91,11 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-  <TopBar
-    toggleFilters={toggleFilters}
-    searchText={searchText}
-    onSearchChange={setSearchText}
-  />
+        <TopBar
+          toggleFilters={toggleFilters}
+          searchText={searchText}
+          onSearchChange={setSearchText}
+        />
 
         {!searchText && filtersOpen && (
           <FiltersMenu
@@ -125,7 +116,7 @@ const HomeScreen = ({ navigation }) => {
               filteredBooks={filteredBooksByFilters}
               navigation={navigation}
             />
-          )  : (
+          ) : (
             <ScrollView
               style={styles.centralSection}
               contentContainerStyle={styles.centralContentContainer}
@@ -135,11 +126,8 @@ const HomeScreen = ({ navigation }) => {
                 books={lastThreeBooks}
                 navigation={navigation}
               />
-              <PlaylistSection
-                books={books}
-                navigation={navigation}
-              />
-              <RandomPicksSection books={randomBooks} navigation={navigation} />
+              <PlaylistSection books={books} navigation={navigation} />
+              <FavoriteSection books={books} navigation={navigation} />
             </ScrollView>
           )}
         </View>

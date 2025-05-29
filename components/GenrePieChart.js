@@ -1,8 +1,7 @@
-import React, { useContext, useMemo } from 'react';
-import { View } from 'react-native';
+import React from 'react';
+import { View, Text } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-import { BooksContext } from '../context/BooksContext';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -15,27 +14,10 @@ const chartConfig = {
   labelColor: () => '#333',
 };
 
-export default function GenrePieChart() {
-  const { books } = useContext(BooksContext);
-
-  const data = useMemo(() => {
-    const readBooks = books.filter(b => b.status === 'letto' && b.genre);
-    const genreCounts = {};
-
-    readBooks.forEach(book => {
-      genreCounts[book.genre] = (genreCounts[book.genre] || 0) + 1;
-    });
-
-    const chartData = Object.keys(genreCounts).map((genre, index) => ({
-      name: genre,
-      population: genreCounts[genre],
-      color: getColor(index),
-      legendFontColor: '#555',
-      legendFontSize: 14,
-    }));
-
-    return chartData;
-  }, [books]);
+export default function GenrePieChart({ data }) {
+  if (!data || data.length === 0) {
+    return <Text style={{ textAlign: 'center', marginVertical: 20 }}>Nessun dato disponibile</Text>;
+  }
 
   return (
     <View>
@@ -44,16 +26,11 @@ export default function GenrePieChart() {
         width={screenWidth - 40}
         height={220}
         chartConfig={chartConfig}
-        accessor={'population'}
+        accessor={'population'}  // <-- assicurati che il nome combaci
         backgroundColor={'transparent'}
         paddingLeft={'15'}
         absolute
       />
     </View>
   );
-}
-
-function getColor(index) {
-  const colors = ['#4a90e2', '#50e3c2', '#f5a623', '#b8e986', '#bd10e0', '#f8e71c'];
-  return colors[index % colors.length];
 }
