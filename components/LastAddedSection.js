@@ -1,14 +1,23 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from "react-native";
 
 export default function LastAddedSection({ books, navigation }) {
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.bookCard}
-      onPress={() => navigation.navigate("BookDetail", { book: item })}
+      onPress={() => navigation.navigate("DetailBook", { bookId: item.id })} // Passa bookId
     >
       <Image source={{ uri: item.cover_image_uri }} style={styles.bookImage} />
-      <Text style={styles.bookTitle} numberOfLines={1}>{item.title}</Text>
+      <Text style={styles.bookTitle} numberOfLines={1}>
+        {item.title}
+      </Text>
     </TouchableOpacity>
   );
 
@@ -27,7 +36,8 @@ export default function LastAddedSection({ books, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: { width: "100%",
+  container: {
+    width: "100%",
     paddingHorizontal: 16,
     paddingVertical: 24,
     borderRadius: 12,
@@ -37,8 +47,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 4.65,
-    marginVertical: 16,},
-  title: { fontWeight: "700", fontSize: 18, marginBottom: 10, color: "#1a3f72" },
+    marginVertical: 16,
+  },
+  title: {
+    fontWeight: "700",
+    fontSize: 18,
+    marginBottom: 10,
+    color: "#1a3f72",
+  },
   bookCard: {
     width: 120,
     marginRight: 16,
