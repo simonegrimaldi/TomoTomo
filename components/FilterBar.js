@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginBottom: 12,
-    backgroundColor: "#e6ecf0",
+    backgroundColor: "#ccc",
     borderRadius: 8,
     padding: 4,
   },
@@ -41,13 +41,14 @@ const styles = StyleSheet.create({
     borderRadius: 6,
   },
   selected: {
-    backgroundColor: "#4a90e2",
+    backgroundColor: "#FFF600",
   },
   text: {
-    color: "#333",
+    color: "#00000",
     fontWeight: "500",
+    fontWeight:"700"
   },
   selectedText: {
-    color: "#fff",
+    color: "#00000",
   },
 });

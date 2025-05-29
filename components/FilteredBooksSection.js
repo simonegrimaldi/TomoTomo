@@ -33,7 +33,8 @@ export default function FilteredBooksSection({ filteredBooks, navigation }) {
       renderItem={({ item }) => (
         <TouchableOpacity
           style={styles.bookCard}
-          onPress={() => navigation.navigate("DetailBook", { book: item })}
+          onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
+          activeOpacity={0.8}
         >
           <Image
             source={
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
   },
   noResultsText: {
     fontStyle: "italic",
-    color: "#666",
+    color: "#aaa",
   },
   listContent: {
     padding: spacing,
@@ -70,22 +71,26 @@ const styles = StyleSheet.create({
   bookCard: {
     width: itemSize,
     margin: spacing / 2,
-    alignItems: "center",
+    alignItems: "left",
+    borderRadius: 8,
+    padding: 6,
   },
   bookImage: {
     width: itemSize,
     height: itemSize * 1.5,
     borderRadius: 8,
     marginBottom: 6,
+    resizeMode: "cover",
   },
   bookTitle: {
     fontWeight: "600",
     fontSize: 14,
-    textAlign: "center",
+    textAlign: "left",
+    color: "#eee",
   },
   bookAuthor: {
     fontSize: 12,
-    color: "#666",
-    textAlign: "center",
+    color: "#888",
+    textAlign: "left",
   },
 });

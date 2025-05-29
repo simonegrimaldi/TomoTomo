@@ -31,6 +31,6 @@ const styles = StyleSheet.create({
     height: 40,           // altezza fissa
     paddingHorizontal: 16,
     fontSize: 16,
-    textAlignVertical: "center",  // per iOS, mantiene testo centrato verticalmente
+    textAlignVertical: "center", 
   },
 });

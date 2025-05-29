@@ -1,4 +1,3 @@
-// components/BookCarousel.js
 import React from "react";
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from "react-native";
 
@@ -23,6 +22,16 @@ export default function BookCarousel({ title, books, onBookPress }) {
 
 const styles = StyleSheet.create({
   section: { marginBottom: 20 },
-  sectionTitle: { fontWeight: "bold", fontSize: 16, marginBottom: 8 },
-  cover: { width: 100, height: 150, borderRadius: 8, marginRight: 10 },
+  sectionTitle: {
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 8,
+    color: "white",
+  },
+  cover: {
+    width: 100,
+    height: 150,
+    borderRadius: 8,
+    marginRight: 10,
+  },
 });

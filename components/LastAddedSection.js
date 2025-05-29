@@ -12,7 +12,8 @@ export default function LastAddedSection({ books, navigation }) {
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.bookCard}
-onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
+      onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
+      activeOpacity={0.8}
     >
       <Image source={{ uri: item.cover_image_uri }} style={styles.bookImage} />
       <Text style={styles.bookTitle} numberOfLines={1}>
@@ -28,7 +29,7 @@ onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
         data={books}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
-        horizontal={true} // scorrimento orizzontale
+        horizontal={true}
         showsHorizontalScrollIndicator={false}
       />
     </View>
@@ -38,30 +39,28 @@ onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    paddingHorizontal: 16,
     paddingVertical: 24,
-    borderRadius: 12,
-    backgroundColor: "white",
+    backgroundColor: "#121212", // sfondo scuro
+    marginVertical: 16,
     elevation: 4,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
-    marginVertical: 16,
+    shadowOpacity: 0.7,
+    shadowRadius: 5,
   },
   title: {
-    fontWeight: "700",
+    fontWeight: "900",
+    paddingHorizontal: 20,
     fontSize: 18,
     marginBottom: 10,
-    color: "#1a3f72",
+    color: "#eee",
   },
   bookCard: {
     width: 120,
     marginRight: 16,
-    alignItems: "center",
-    backgroundColor: "white",
+    paddingHorizontal: 20,
+    alignItems: "left",
     borderRadius: 10,
-    elevation: 4,
     padding: 8,
   },
   bookImage: {
@@ -70,12 +69,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     resizeMode: "cover",
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#444",
     marginBottom: 8,
   },
   bookTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#1a3f72",
+    color: "#eee",
   },
 });

@@ -1,6 +1,5 @@
 import React from "react";
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TopBar({ toggleFilters, searchText, onSearchChange }) {
   return (
@@ -8,19 +7,21 @@ export default function TopBar({ toggleFilters, searchText, onSearchChange }) {
       <TextInput
         style={styles.searchInput}
         placeholder="Cerca libri per titolo o autore..."
+        placeholderTextColor="#888"
         value={searchText}
         onChangeText={onSearchChange}
         autoCorrect={false}
         autoCapitalize="none"
         clearButtonMode="while-editing"
+        selectionColor="#1e90ff"
       />
       <TouchableOpacity
-        onPress={toggleFilters}  // funzione passata da HomeScreen
+        onPress={toggleFilters}
         accessibilityRole="button"
         accessibilityLabel="Toggle filters"
-        style={styles.hamburgerBtn}
+        style={styles.filterBtn}
       >
-        <Text style={styles.hamburgerIcon}>☰</Text>
+        <Text style={styles.filterIcon}>☰</Text>
       </TouchableOpacity>
     </View>
   );
@@ -30,22 +31,29 @@ const styles = StyleSheet.create({
   topBar: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 12,
-    backgroundColor: "#4a90e2",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    backgroundColor: "#000", // sfondo nero
+    borderRadius: 24,
   },
   searchInput: {
     flex: 1,
-    backgroundColor: "white",
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    height: 40,
-    fontSize: 16,
+    backgroundColor: "#222",
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    height: 45,
+    fontSize: 14,
+    color: "#eee",           // testo chiaro
   },
-  hamburgerBtn: {
-    marginLeft: 12,
+  filterBtn: {
+    marginLeft: 8,
+    padding: 16,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  hamburgerIcon: {
-    fontSize: 24,
-    color: "white",
+  filterIcon: {
+    fontSize: 20,
+    color: "#FFF600",
+    fontWeight: "bold",
   },
 });

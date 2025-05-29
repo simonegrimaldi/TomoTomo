@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Button,
   Image,
   Alert,
   ScrollView,
@@ -19,11 +18,10 @@ import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as FileSystem from "expo-file-system";
 import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react";
+import logo from "../assets/icon.png";
 
-const sanitizeFilename = (name) => {
-  return name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
-};
+const sanitizeFilename = (name) =>
+  name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
 
 const StarRating = ({ rating, onChange }) => {
   const maxStars = 5;
@@ -37,13 +35,10 @@ const StarRating = ({ rating, onChange }) => {
             key={starNumber}
             onPress={() => onChange(starNumber)}
             activeOpacity={0.7}
-            style={{ paddingHorizontal: 6 }}
+            style={styles.starTouchable}
           >
             <Text
-              style={[
-                styles.star,
-                filled ? styles.filledStar : styles.emptyStar,
-              ]}
+              style={[styles.star, filled ? styles.filledStar : styles.emptyStar]}
             >
               {filled ? "★" : "☆"}
             </Text>
@@ -54,19 +49,9 @@ const StarRating = ({ rating, onChange }) => {
   );
 };
 
-const AddBook = ({ navigation, route }) => {
-  const { addBook, updateBook } = useContext(BooksContext);
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [synopsis, setSynopsis] = useState("");
-  const [coverImageUri, setCoverImageUri] = useState("");
-  const [status, setStatus] = useState("da leggere");
-  const [rating, setRating] = useState(0);
-  const [notes, setNotes] = useState("");
-  const [dateStart, setDateStart] = useState(null);
-  const [dateEnd, setDateEnd] = useState(null);
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+const AddBook = ({ navigation }) => {
+  const { addBook } = useContext(BooksContext);
+
   const genres = [
     "Narrativa",
     "Fantasy",
@@ -83,10 +68,22 @@ const AddBook = ({ navigation, route }) => {
     "Classico",
     "Altro",
   ];
+
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [synopsis, setSynopsis] = useState("");
+  const [coverImageUri, setCoverImageUri] = useState("");
+  const [status, setStatus] = useState("da leggere");
+  const [rating, setRating] = useState(0);
+  const [notes, setNotes] = useState("");
+  const [dateStart, setDateStart] = useState(null);
+  const [dateEnd, setDateEnd] = useState(null);
+  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
+  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [genre, setGenre] = useState(genres[0]);
+
   useFocusEffect(
     useCallback(() => {
-      // Reset all fields on screen focus
       setTitle("");
       setAuthor("");
       setSynopsis("");
@@ -101,29 +98,18 @@ const AddBook = ({ navigation, route }) => {
   );
 
   const pickImage = async () => {
-    const permissionResult =
-      await ImagePicker.requestMediaLibraryPermissionsAsync();
-
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.status !== "granted") {
-      Alert.alert(
-        "Permesso negato",
-        "Serve il permesso per accedere alla galleria"
-      );
+      Alert.alert("Permesso negato", "Serve il permesso per accedere alla galleria");
       return;
     }
 
     const pickerResult = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images, // Corrected to MediaTypeOptions
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
     });
-
-    if (pickerResult.canceled) {
-      console.log("Image picker was canceled");
-      return; // attention: now it's 'canceled' not 'cancelled'
-    }
-
-    const uri = pickerResult.assets[0].uri; // Get the uri from assets
-    console.log("Selected image URI:", uri); // Debugging line
+    if (pickerResult.canceled) return;
+    const uri = pickerResult.assets[0].uri;
 
     try {
       const dirUri = FileSystem.documentDirectory + "assets/libri/";
@@ -131,17 +117,15 @@ const AddBook = ({ navigation, route }) => {
       if (!dirInfo.exists) {
         await FileSystem.makeDirectoryAsync(dirUri, { intermediates: true });
       }
-
       const fileExt = uri.split(".").pop();
       const safeName = sanitizeFilename(title || "unnamed") + "." + fileExt;
       const destUri = dirUri + safeName;
-
       await FileSystem.copyAsync({ from: uri, to: destUri });
       setCoverImageUri(destUri);
       Alert.alert("Successo", "Immagine salvata correttamente!");
     } catch (error) {
       Alert.alert("Errore", "Impossibile salvare immagine: " + error.message);
-      console.error("Error saving image:", error); // Debugging line
+      console.error("Error saving image:", error);
     }
   };
 
@@ -149,9 +133,7 @@ const AddBook = ({ navigation, route }) => {
     setShowStartDatePicker(false);
     if (selectedDate) {
       setDateStart(selectedDate);
-      if (dateEnd && selectedDate > dateEnd) {
-        setDateEnd(selectedDate);
-      }
+      if (dateEnd && selectedDate > dateEnd) setDateEnd(selectedDate);
     }
   };
 
@@ -159,10 +141,7 @@ const AddBook = ({ navigation, route }) => {
     setShowEndDatePicker(false);
     if (selectedDate) {
       if (dateStart && selectedDate < dateStart) {
-        Alert.alert(
-          "Errore",
-          "La data di fine non può essere precedente alla data di inizio"
-        );
+        Alert.alert("Errore", "La data di fine non può essere precedente alla data di inizio");
       } else {
         setDateEnd(selectedDate);
       }
@@ -171,18 +150,11 @@ const AddBook = ({ navigation, route }) => {
 
   const handleSubmit = async () => {
     if (!title || !author || !synopsis || !genre || !coverImageUri) {
-      Alert.alert(
-        "Errore",
-        "Compila tutti i campi obbligatori incluso la copertina"
-      );
+      Alert.alert("Errore", "Compila tutti i campi obbligatori incluso la copertina");
       return;
     }
-
     if (dateStart && dateEnd && dateEnd < dateStart) {
-      Alert.alert(
-        "Errore",
-        "La data di fine lettura deve essere successiva o uguale alla data di inizio"
-      );
+      Alert.alert("Errore", "La data di fine lettura deve essere successiva o uguale alla data di inizio");
       return;
     }
 
@@ -193,22 +165,18 @@ const AddBook = ({ navigation, route }) => {
       genre,
       cover_image_uri: coverImageUri,
       status,
-      favorite: false, // ora fisso a false
+      favorite: false,
       rating: status === "letto" ? rating : null,
       notes: status === "letto" ? notes : null,
       date_start:
         (status === "in lettura" || status === "letto") && dateStart
           ? dateStart.toISOString().substring(0, 10)
           : null,
-      date_end:
-        status === "letto" && dateEnd
-          ? dateEnd.toISOString().substring(0, 10)
-          : null,
+      date_end: status === "letto" && dateEnd ? dateEnd.toISOString().substring(0, 10) : null,
     };
 
     try {
       await addBook(bookData);
-
       Alert.alert("Successo", "Libro salvato!", [
         { text: "OK", onPress: () => navigation.goBack() },
       ]);
@@ -219,207 +187,278 @@ const AddBook = ({ navigation, route }) => {
   };
 
   return (
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={80}
-      >
-        <View style={styles.flex}>
-          <ScrollView
-            contentContainerStyle={styles.scrollContent}
-            keyboardShouldPersistTaps="handled"
-          >
-            <TextInput
-              placeholder="Title"
-              value={title}
-              onChangeText={setTitle}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Author"
-              value={author}
-              onChangeText={setAuthor}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Synopsis"
-              value={synopsis}
-              onChangeText={setSynopsis}
-              style={[styles.input, styles.textArea]}
-              multiline
-            />
-            <Text style={styles.label}>Genere</Text>
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      keyboardVerticalOffset={80}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        {/* Barra fissa con logo */}
+        <View style={styles.logoBar}>
+          <Image source={logo} style={styles.logoImage} resizeMode="contain" />
+        </View>
+
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          <TextInput
+            placeholder="Titolo"
+            value={title}
+            onChangeText={setTitle}
+            style={styles.input}
+            placeholderTextColor="#888"
+          />
+          <TextInput
+            placeholder="Autore"
+            value={author}
+            onChangeText={setAuthor}
+            style={styles.input}
+            placeholderTextColor="#888"
+          />
+          <TextInput
+            placeholder="Sinossi"
+            value={synopsis}
+            onChangeText={setSynopsis}
+            style={[styles.input, styles.textArea]}
+            multiline
+            placeholderTextColor="#888"
+          />
+
+          <Text style={styles.label}>Genere</Text>
+          <View style={styles.pickerWrapper}>
             <Picker
               selectedValue={genre}
-              onValueChange={(itemValue) => setGenre(itemValue)}
+              onValueChange={setGenre}
               style={styles.picker}
+              dropdownIconColor="#555"
             >
               {genres.map((genreItem) => (
-                <Picker.Item
-                  key={genreItem}
-                  label={genreItem}
-                  value={genreItem}
-                />
+                <Picker.Item key={genreItem} label={genreItem} value={genreItem} />
               ))}
             </Picker>
+          </View>
 
-            <View style={styles.imagePickerContainer}>
-              <Button title="Pick Cover Image" onPress={pickImage} />
-              {coverImageUri ? (
-                <Image
-                  source={{ uri: coverImageUri }}
-                  style={styles.coverImage}
-                />
-              ) : null}
-            </View>
+          <View style={styles.imagePickerContainer}>
+            <TouchableOpacity style={styles.pickImageButton} onPress={pickImage}>
+              <Text style={styles.pickImageButtonText}>Seleziona copertina</Text>
+            </TouchableOpacity>
+            {coverImageUri ? (
+              <Image source={{ uri: coverImageUri }} style={styles.coverImage} />
+            ) : null}
+          </View>
 
-            <Text style={styles.label}>Status</Text>
+          <Text style={styles.label}>Stato</Text>
+          <View style={styles.pickerWrapper}>
             <Picker
               selectedValue={status}
-              onValueChange={(itemValue) => setStatus(itemValue)}
+              onValueChange={setStatus}
               style={styles.picker}
+              dropdownIconColor="#555"
             >
               <Picker.Item label="Da leggere" value="da leggere" />
               <Picker.Item label="In lettura" value="in lettura" />
               <Picker.Item label="Letto" value="letto" />
             </Picker>
+          </View>
 
-            {(status === "in lettura" ||
-              status === "letto" ||
-              status === "in lettura") && (
-              <>
-                <Button
-                  title={`Select Start Date: ${
-                    dateStart ? dateStart.toLocaleDateString() : "Nessuna data"
-                  }`}
-                  onPress={() => setShowStartDatePicker(true)}
+          {(status === "in lettura" || status === "letto") && (
+            <>
+              <TouchableOpacity
+                style={styles.datePickerButton}
+                onPress={() => setShowStartDatePicker(true)}
+              >
+                <Text style={styles.datePickerText}>
+                  Data inizio: {dateStart ? dateStart.toLocaleDateString() : "Nessuna data"}
+                </Text>
+              </TouchableOpacity>
+              {showStartDatePicker && (
+                <DateTimePicker
+                  value={dateStart || new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={onChangeStartDate}
+                  maximumDate={new Date()}
                 />
+              )}
+            </>
+          )}
 
-                {showStartDatePicker && (
-                  <DateTimePicker
-                    value={dateStart || new Date()}
-                    mode="date"
-                    display="default"
-                    onChange={onChangeStartDate}
-                    maximumDate={new Date()}
-                  />
-                )}
-              </>
-            )}
+          {status === "letto" && (
+            <>
+              <Text style={styles.label}>Valutazione</Text>
+              <StarRating rating={rating} onChange={setRating} />
 
-            {status === "letto" && (
-              <>
-                <Text style={styles.label}>Rating</Text>
-                <StarRating rating={rating} onChange={setRating} />
+              <TextInput
+                placeholder="Note"
+                value={notes}
+                onChangeText={setNotes}
+                style={[styles.input, styles.textArea]}
+                multiline
+                placeholderTextColor="#888"
+              />
 
-                <TextInput
-                  placeholder="Notes"
-                  value={notes}
-                  onChangeText={setNotes}
-                  style={[styles.input, styles.textArea]}
-                  multiline
+              <TouchableOpacity
+                style={styles.datePickerButton}
+                onPress={() => setShowEndDatePicker(true)}
+              >
+                <Text style={styles.datePickerText}>
+                  Data fine: {dateEnd ? dateEnd.toLocaleDateString() : "Nessuna data"}
+                </Text>
+              </TouchableOpacity>
+              {showEndDatePicker && (
+                <DateTimePicker
+                  value={dateEnd || new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={onChangeEndDate}
+                  maximumDate={new Date()}
+                  minimumDate={dateStart || undefined}
                 />
+              )}
+            </>
+          )}
 
-                <Button
-                  title={`Select End Date: ${
-                    dateEnd ? dateEnd.toLocaleDateString() : "Nessuna data"
-                  }`}
-                  onPress={() => setShowEndDatePicker(true)}
-                />
-
-                {showEndDatePicker && (
-                  <DateTimePicker
-                    value={dateEnd || new Date()}
-                    mode="date"
-                    display="default"
-                    onChange={onChangeEndDate}
-                    maximumDate={new Date()}
-                    minimumDate={dateStart || undefined}
-                  />
-                )}
-              </>
-            )}
-
-            <TouchableOpacity
-              onPress={handleSubmit}
-              style={styles.submitButton}
-            >
-              <Text style={styles.submitButtonText}>Save Book</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </KeyboardAvoidingView>
+          <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
+            <Text style={styles.submitButtonText}>Salva libro</Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 100,
-    backgroundColor: "#f5f7fa",
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#000",
   },
+  logoBar: {
+    height: 130,
+    paddingTop: 40,
+    backgroundColor: "#000",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#222",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 100,
+  },
+  logoImage: {
+    height: 80,
+    width: 140,
+  },
+  scrollContent: {
+    paddingTop: 140,
+    paddingBottom: 40,
+    backgroundColor: "#000",
+  },
+
   input: {
-    height: 44,
-    borderColor: "#bbb",
+    backgroundColor: "#222",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    fontSize: 15,
+    marginBottom: 18,
     borderWidth: 1,
-    marginBottom: 14,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    backgroundColor: "black",
-    fontSize: 16,
-    color: "white",
+    borderColor: "#444",
+    color: "#eee",
   },
   textArea: {
-    height: 100,
+    height: 120,
     textAlignVertical: "top",
   },
-  imagePickerContainer: {
-    marginBottom: 20,
-    alignItems: "center",
-  },
-  coverImage: {
-    width: 140,
-    height: 210,
-    marginTop: 12,
-    borderRadius: 10,
-    resizeMode: "cover",
-    borderWidth: 1,
-    borderColor: "#ccc",
-  },
   label: {
+    fontSize: 15,
+    fontWeight: "600",
+    marginBottom: 8,
+    color: "#aaa",
+  },
+  pickerWrapper: {
+  backgroundColor: "#222",
+  borderRadius: 12,
+  borderWidth: 1,
+  borderColor: "#444",
+  marginBottom: 20,
+  overflow: "hidden",
+  height: 60,              // aumento altezza per dare più spazio al picker
+  justifyContent: "center" // centra verticalmente il contenuto
+},
+picker: {
+  height: 60,              // stessa altezza del contenitore
+  color: "#eee",
+},
+
+  imagePickerContainer: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  pickImageButton: {
+    backgroundColor: "#FFF600",
+    paddingVertical: 12,
+    paddingHorizontal: 28,
+    borderRadius: 25,
+    marginBottom: 16,
+  },
+  pickImageButtonText: {
+    color: "#00000",
     fontSize: 16,
     fontWeight: "600",
-    marginBottom: 6,
-    color: "#333",
   },
-  picker: {
-    backgroundColor: "black",
-    marginBottom: 20,
+  coverImage: {
+    width: 150,
+    height: 220,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#444",
+    resizeMode: "cover",
   },
   starContainer: {
     flexDirection: "row",
-    marginVertical: 8,
+    marginVertical: 12,
+    justifyContent: "flex-start",
+  },
+  starTouchable: {
+    paddingHorizontal: 6,
   },
   star: {
     fontSize: 32,
-    color: "#ccc",
+    color: "#555",
   },
   filledStar: {
-    color: "#ffd700",
+    color: "#f1c40f",
+  },
+  emptyStar: {
+    color: "#555",
+  },
+  datePickerButton: {
+    backgroundColor: "#222",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  datePickerText: {
+    fontSize: 16,
+    color: "#eee",
   },
   submitButton: {
-    backgroundColor: "#4a90e2",
-    paddingVertical: 14,
-    borderRadius: 8,
+    backgroundColor: "#FFF600",
+    paddingVertical: 16,
+    borderRadius: 12,
     alignItems: "center",
-    marginTop: 20,
-    marginBottom: 10,
+    marginTop: 10,
+    marginBottom: 30,
   },
   submitButtonText: {
-    color: "white",
+    color: "#00000",
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: "700",
   },
 });
 

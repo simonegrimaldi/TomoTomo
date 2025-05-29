@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from "react
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import defaultImage from "../assets/libri/default_genre_image.png";
+import logo from "../assets/icon.png"; // importa il logo
 
 export default function GenreBooksScreen() {
   const navigation = useNavigation();
@@ -27,12 +28,19 @@ export default function GenreBooksScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Logo fisso in alto */}
+      <View style={styles.logoBar}>
+        <Image source={logo} style={styles.logoImage} resizeMode="contain" />
+      </View>
+
+      {/* Header sotto il logo */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={styles.backText}>← Indietro</Text>
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{genreName}</Text>
       </View>
+
       <FlatList
         data={genreBooks}
         keyExtractor={(item) => item.id.toString()}
@@ -45,23 +53,41 @@ export default function GenreBooksScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f5f7fa" },
+  container: { flex: 1, backgroundColor: "black" },
+
+  logoBar: {
+    height: 100,
+    backgroundColor: "black",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomWidth: 1,
+    borderBottomColor: "#222",
+  },
+
+  logoImage: {
+    height: 80,
+    width: 140,
+  },
+
   header: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 16,
-    backgroundColor: "#fff",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: "#121212",
     elevation: 2,
+    borderBottomWidth: 1,
+    borderBottomColor: "#222",
   },
   backText: {
     fontSize: 16,
-    color: "#007aff",
+    color: "white",
     marginRight: 12,
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "#1a3f72",
+    color: "white",
   },
   listContent: {
     padding: 12,
@@ -81,10 +107,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     textAlign: "center",
+    color: "white",
   },
   bookAuthor: {
     fontSize: 12,
-    color: "#555",
+    color: "#ccc",
     textAlign: "center",
   },
 });

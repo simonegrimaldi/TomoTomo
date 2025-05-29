@@ -1,10 +1,10 @@
 import React, { useMemo } from "react";
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { View, Text, FlatList, StyleSheet } from "react-native";
 import defaultGenreImage from "../assets/libri/default_genre_image.png";
 import GenreCard from "./GenreCard"; 
 
 export default function PlaylistSection({ books, navigation }) {
-    const booksByGenre = useMemo(() => {
+  const booksByGenre = useMemo(() => {
     const grouped = {};
     books.forEach((book) => {
       const genre = book.genre || "Altro";
@@ -24,18 +24,18 @@ export default function PlaylistSection({ books, navigation }) {
     };
   });
 
-const renderGenre = ({ item }) => (
-  <GenreCard
-    genreName={item.genreName}
-    genreImageUri={item.genreImageUri}
-    onPress={() =>
-      navigation.navigate("GenreBooks", {
-        genreName: item.genreName,
-        books,
-      })
-    }
-  />
-);
+  const renderGenre = ({ item }) => (
+    <GenreCard
+      genreName={item.genreName}
+      genreImageUri={item.genreImageUri}
+      onPress={() =>
+        navigation.navigate("GenreBooks", {
+          genreName: item.genreName,
+          books,
+        })
+      }
+    />
+  );
 
   if (genres.length === 0) {
     return (
@@ -63,56 +63,26 @@ const renderGenre = ({ item }) => (
 const styles = StyleSheet.create({
   sectionContainer: {
     width: "100%",
-    paddingHorizontal: 16,
     paddingVertical: 24,
-    borderRadius: 12,
-    backgroundColor: "white",
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
+    backgroundColor: "#121212",
     marginVertical: 16,
   },
   sectionTitle: {
-    fontWeight: "700",
-    fontSize: 20,
+    fontWeight: "900",
+    paddingHorizontal:20,
+    fontSize: 18,
     marginBottom: 12,
-    color: "#1a3f72",
+    color: "white"
   },
   noBooksText: {
     fontStyle: "italic",
-    color: "#666",
+    color: "#888",
     textAlign: "center",
     paddingVertical: 24,
   },
   listContent: {
     paddingHorizontal: 12,
     alignItems: "center",
-  },
-  genreCard: {
-    width: 140,
-    marginRight: 18,
-    borderRadius: 12,
-    backgroundColor: "#f0f0f0",
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-  genreImage: {
-    width: 120,
-    height: 170,
-    borderRadius: 12,
-  },
-  genreTitle: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#1a3f72",
-    marginTop: 10,
-    textAlign: "center",
+    paddingHorizontal:25,
   },
 });

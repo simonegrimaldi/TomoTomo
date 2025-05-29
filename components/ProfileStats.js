@@ -25,9 +25,29 @@ const Stat = ({ label, value }) => (
 
 const styles = StyleSheet.create({
   container: { marginBottom: 20 },
-  title: { fontSize: 18, fontWeight: "bold", marginBottom: 8 },
-  row: { flexDirection: "row", justifyContent: "space-around" },
-  statBox: { alignItems: "center" },
-  value: { fontSize: 20, fontWeight: "bold" },
-  label: { fontSize: 12, color: "#666" },
+  title: { 
+    fontSize: 18, 
+    fontWeight: "900", 
+    marginBottom: 8,
+    color: "#FFF600", // giallo brillante per il titolo
+    textAlign: "left",
+  },
+  row: { 
+    flexDirection: "row", 
+    justifyContent: "space-around" 
+  },
+  statBox: { 
+    alignItems: "left",
+    flex: 1,
+  },
+  value: { 
+    fontSize: 22, 
+    fontWeight: "medium",
+    color: "#FFF600", 
+  },
+  label: { 
+    fontSize: 12, 
+    color: "#ccc", // testo leggero per le etichette
+    marginTop: 4,
+  },
 });

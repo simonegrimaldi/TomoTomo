@@ -5,11 +5,11 @@ export default function EditActionButtons({ onCancel, onConfirm }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={[styles.button, styles.cancel]} onPress={onCancel}>
-        <Text style={styles.text}>❌ Annulla</Text>
+        <Text style={styles.text}>Annulla</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={[styles.button, styles.confirm]} onPress={onConfirm}>
-        <Text style={styles.text}>✔️ Conferma</Text>
+        <Text style={styles.text}>Conferma</Text>
       </TouchableOpacity>
     </View>
   );
@@ -31,10 +31,10 @@ const styles = StyleSheet.create({
     backgroundColor: "#ccc",
   },
   confirm: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#0C8E15",
   },
   text: {
-    color: "white",
+    color: "black",
     fontWeight: "bold",
     fontSize: 16,
   },

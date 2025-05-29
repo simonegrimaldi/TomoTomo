@@ -1,6 +1,5 @@
 import React, { useState, useContext, useMemo, useCallback } from "react";
-import { View, ScrollView, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View, ScrollView, StyleSheet, SafeAreaView, Image } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import { loadBooks } from "../services/Storage";
 import { BooksContext } from "../context/BooksContext";
@@ -12,6 +11,8 @@ import PlaylistSection from "../components/PlaylistSection";
 import FavoriteSection from "../components/FavoriteSection"; 
 import SearchResultsSection from "../components/SearchResultsSection";
 import FilteredBooksSection from "../components/FilteredBooksSection";
+
+import logo from "../assets/icon.png";  // import logo
 
 const HomeScreen = ({ navigation }) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -89,61 +90,97 @@ const HomeScreen = ({ navigation }) => {
     Object.values(filters.status).some((v) => v) || filters.rating > 0;
 
   return (
-      <View style={styles.container}>
-        <SafeAreaView>
+    <View style={styles.container}>
+      {/* Barra fissa logo */}
+      <SafeAreaView style={styles.logoBarSafeArea}>
+        <View style={styles.logoBar}>
+          <Image source={logo} style={styles.logoImage} resizeMode="contain" />
+        </View>
+      </SafeAreaView>
+
+      {/* Barra fissa ricerca */}
+      <SafeAreaView style={styles.searchBarSafeArea}>
         <TopBar
           toggleFilters={toggleFilters}
           searchText={searchText}
           onSearchChange={setSearchText}
+          style={styles.topBar}
         />
-
-        {!searchText && filtersOpen && (
+        {/* Filtro sotto ricerca */}
+        { !searchText && filtersOpen && (
           <FiltersMenu
             filters={filters}
             toggleFilter={toggleFilter}
             resetFilters={resetFilters}
           />
-        )}</SafeAreaView>
+        )}
+      </SafeAreaView>
 
-        <View style={styles.contentContainer}>
-          {searchText ? (
-            <SearchResultsSection
-              filteredBooks={filteredBooksBySearch}
-              navigation={navigation}
-            />
-          ) : isFilteringActive ? (
-            <FilteredBooksSection
-              filteredBooks={filteredBooksByFilters}
-              navigation={navigation}
-            />
-          ) : (
-            <ScrollView
-              style={styles.centralSection}
-              contentContainerStyle={styles.centralContentContainer}
-              keyboardShouldPersistTaps="handled"
-            >
-              <LastAddedSection
-                books={lastThreeBooks}
-                navigation={navigation}
-              />
-              <PlaylistSection books={books} navigation={navigation} />
-              <FavoriteSection books={books} navigation={navigation} />
-            </ScrollView>
-          )}
-        </View>
+      {/* Contenuto scrollabile */}
+      <View style={styles.contentContainer}>
+        {searchText ? (
+          <SearchResultsSection filteredBooks={filteredBooksBySearch} navigation={navigation} />
+        ) : isFilteringActive ? (
+          <FilteredBooksSection filteredBooks={filteredBooksByFilters} navigation={navigation} />
+        ) : (
+          <ScrollView
+            style={styles.centralSection}
+            contentContainerStyle={styles.centralContentContainer}
+            keyboardShouldPersistTaps="handled"
+          >
+            <LastAddedSection books={lastThreeBooks} navigation={navigation} />
+            <PlaylistSection books={books} navigation={navigation} />
+            <FavoriteSection books={books} navigation={navigation} />
+          </ScrollView>
+        )}
       </View>
-
-);
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: "#f5f7fa" },
-  container: { flex: 1 },
-  contentContainer: { flex: 1 },
+  container: {
+    flex: 1,
+    backgroundColor: "#000",       // sfondo nero
+  },
+
+  logoBarSafeArea: {
+    backgroundColor: "#000",
+  },
+
+  logoBar: {
+    height: 130,
+    paddingTop: 40,
+    backgroundColor: "#000",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomColor: "#222",
+    borderBottomWidth: 1,
+  },
+
+  logoImage: {
+    height: 80,
+    width: 140,
+  },
+
+  searchBarSafeArea: {
+    backgroundColor: "#000",
+    paddingHorizontal: 16,
+  },
+
+  topBar: {
+    backgroundColor: "#000",
+  },
+
+  contentContainer: {
+    flex: 1,
+  },
+
   centralSection: {
     flex: 1,
     paddingHorizontal: 16,
   },
+
   centralContentContainer: {
     paddingBottom: 40,
   },

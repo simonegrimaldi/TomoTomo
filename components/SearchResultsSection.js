@@ -44,8 +44,9 @@ const styles = StyleSheet.create({
   row: { justifyContent: "space-between", marginBottom: 16 },
   bookCard: {
     flex: 1 / 3,
+    paddingHorizontal:20,
     marginHorizontal: 4,
-    alignItems: "center",
+    alignItems: "left",
   },
   bookImage: {
     width: 100,
@@ -56,11 +57,12 @@ const styles = StyleSheet.create({
   bookTitle: {
     fontWeight: "600",
     fontSize: 14,
-    textAlign: "center",
+    color: "white",
+    textAlign: "left",
   },
   bookAuthor: {
     fontSize: 12,
     color: "#666",
-    textAlign: "center",
+    textAlign: "left",
   },
 });

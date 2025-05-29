@@ -15,7 +15,7 @@ export default function FiltersMenu({ filters, toggleFilter, resetFilters }) {
               onPress={() => toggleFilter("status", status)}
               style={styles.filterLabel}
             >
-              <Text style={{ color: filters.status[status] ? "blue" : "black" }}>
+              <Text style={{ color: filters.status[status] ? "#1e90ff" : "#ccc" }}>
                 {status}
               </Text>
             </TouchableOpacity>
@@ -42,33 +42,33 @@ export default function FiltersMenu({ filters, toggleFilter, resetFilters }) {
 
 const styles = StyleSheet.create({
   filtersMenu: {
-    backgroundColor: "#e1eaff",
+    backgroundColor: "#121212",
     paddingVertical: 12,
     borderBottomWidth: 2,
-    borderBottomColor: "#4a90e2",
+    borderBottomColor: "#FFF600", // blu acceso coerente
   },
   filterCategory: {
     marginHorizontal: 10,
   },
   filterTitle: {
-    fontWeight: "700",
+    fontWeight: "900",
     marginBottom: 6,
-    fontSize: 14,
-    color: "#1a3f72",
+    fontSize: 16,
+    color: "white", // testo chiaro
   },
   filterLabel: {
-    marginBottom: 4,
+    marginBottom: 8,
   },
   resetButton: {
     marginTop: 20,
-    backgroundColor: "#4a90e2",
-    paddingVertical: 10,
+    backgroundColor: "#FFF600",
+    paddingVertical: 12,
     marginHorizontal: 10,
     borderRadius: 8,
     alignItems: "center",
   },
   resetButtonText: {
-    color: "white",
+    color: "black",
     fontWeight: "700",
     fontSize: 16,
   },

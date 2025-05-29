@@ -1,10 +1,12 @@
 import React, { useContext, useMemo, useState } from "react";
-import { View, ScrollView, StyleSheet, SafeAreaView } from "react-native";
+import { View, ScrollView, StyleSheet, SafeAreaView, Text, Image } from "react-native";
 import { BooksContext } from "../context/BooksContext";
 import ProfileStats from "../components/ProfileStats";
 import GenrePieChart from "../components/GenrePieChart";
 import BookCarousel from "../components/BookCarousel";
 import FilterBar from "../components/FilterBar";
+
+import logo from "../assets/icon.png";
 
 export default function ProfileScreen({ navigation }) {
   const { books } = useContext(BooksContext);
@@ -44,9 +46,9 @@ export default function ProfileScreen({ navigation }) {
     });
     return Object.entries(genreMap).map(([name, count], idx) => ({
       name,
-      population: count, // <-- IMPORTANTE: deve chiamarsi 'population'!
+      population: count,
       color: `hsl(${(idx * 50) % 360}, 70%, 60%)`,
-      legendFontColor: "#333",
+      legendFontColor: "#FFD700",
       legendFontSize: 14,
     }));
   }, [booksRead]);
@@ -62,17 +64,26 @@ export default function ProfileScreen({ navigation }) {
   }, [booksRead, filterMonths]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f7fa" }}>
+    <SafeAreaView style={styles.safeArea}>
+      {/* Barra fissa logo */}
+      <View style={styles.logoBar}>
+        <Image source={logo} style={styles.logoImage} resizeMode="contain" />
+      </View>
+
+      {/* Scrollabile sotto */}
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{ padding: 20 }}
+        contentContainerStyle={{ padding: 20, paddingTop: 160 }}
       >
-        <ProfileStats
-          total={totalBooks}
-          avgTime={avgReadTime}
-          avgRating={avgRating}
-          readingCount={booksReading.length}
-        />
+        {/* Statistiche ben indentate e stilizzate */}
+        <View style={styles.statsContainer}>
+          <ProfileStats
+            total={totalBooks}
+            avgTime={avgReadTime}
+            avgRating={avgRating}
+            readingCount={booksReading.length}
+          />
+        </View>
 
         <GenrePieChart data={genreData} />
 
@@ -111,8 +122,39 @@ export default function ProfileScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#00000", // tema scuro
+  },
+  logoBar: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 140,
+    paddingTop: 40,
+    backgroundColor: "#000",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomColor: "#222",
+    borderBottomWidth: 1,
+    zIndex: 100,
+  },
+  logoImage: {
+    width: 140,
+    height: 80,
+  },
   container: {
     flex: 1,
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#00000", // un nero leggermente più chiaro per il contenuto
   },
+  statsContainer: {
+    marginBottom: 20,
+    padding: 12,
+    backgroundColor: "#00000", // sfondo scuro per la card statistiche
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#FFD700",
+  },
+  // Se vuoi puoi personalizzare ProfileStats per usare colori gialli / testo bianco
 });

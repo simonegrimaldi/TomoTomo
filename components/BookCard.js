@@ -20,14 +20,7 @@ const styles = StyleSheet.create({
   card: {
     width: 120,
     marginRight: 16,
-    alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    alignItems: 'left',
     paddingVertical: 8,
     paddingHorizontal: 6,
   },
@@ -43,6 +36,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1a3f72',
+    color: 'white',
   },
 });

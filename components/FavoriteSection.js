@@ -34,30 +34,28 @@ export default function FavoriteSection({ books, navigation }) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   sectionContainer: {
     width: "100%",
-    paddingHorizontal: 16,
     paddingVertical: 24,
-    borderRadius: 12,
-    backgroundColor: "white",
+    backgroundColor: "#121212",  // sfondo scuro invece che bianco
     elevation: 4,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4.65,
+    shadowOpacity: 0.7,
+    shadowRadius: 6,
     marginVertical: 16,
   },
   sectionTitle: {
-    fontWeight: "700",
+    fontWeight: "900",
+    paddingHorizontal:20,
     fontSize: 20,
     marginBottom: 12,
-    color: "#1a3f72",
+    color: "white",
   },
   noBooksText: {
     fontStyle: "italic",
-    color: "#666",
+    color: "#888",
     textAlign: "center",
     paddingVertical: 24,
   },

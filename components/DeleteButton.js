@@ -27,7 +27,7 @@ export default function DeleteButton({ bookId }) {
 
   return (
     <TouchableOpacity style={styles.deleteButton} onPress={confirmDelete}>
-      <Text style={styles.deleteText}>🗑️ Elimina libro</Text>
+      <Text style={styles.deleteText}>Elimina libro</Text>
     </TouchableOpacity>
   );
 }
@@ -35,7 +35,7 @@ export default function DeleteButton({ bookId }) {
 const styles = StyleSheet.create({
   deleteButton: {
     marginTop: 24,
-    backgroundColor: "#ff4d4d",
+    backgroundColor: "#FF0000",
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
