@@ -1,6 +1,8 @@
-import React, { useState, useContext, useMemo } from "react";
+import React, { useState, useContext, useMemo, useCallback } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "@react-navigation/native"; // ✅ aggiunto
+import { loadBooks } from "../services/Storage";           // ✅ aggiunto
 import { BooksContext } from "../context/BooksContext";
 
 import TopBar from "../components/TopBar";
@@ -20,7 +22,6 @@ const HomeScreen = ({ navigation }) => {
 
   const toggleFilters = () => setFiltersOpen((open) => !open);
 
-  // Funzione che aggiorna i filtri nel modo corretto
   const toggleFilter = (category, key) => {
     if (category === "rating") {
       setFilters((prev) => ({ ...prev, rating: key }));
@@ -29,7 +30,6 @@ const HomeScreen = ({ navigation }) => {
         ...prev,
         [category]: {
           ...prev[category],
-          // Per 'status' vogliamo solo UN filtro attivo per volta
           ...(category === "status"
             ? Object.fromEntries(
                 Object.keys(prev[category]).map((k) => [k, false])
@@ -48,19 +48,27 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
-  const { books } = useContext(BooksContext);
+  const { books, setBooks } = useContext(BooksContext); // ✅ assicurati che setBooks sia esposto nel context
 
-  // Ultimi 3 libri
+  // 🔄 Carica i libri ogni volta che torni sulla Home
+  useFocusEffect(
+    useCallback(() => {
+      const updateBooks = async () => {
+        const freshBooks = await loadBooks();
+        setBooks(freshBooks);
+      };
+      updateBooks();
+    }, [])
+  );
+
   const lastThreeBooks = books.slice(0, 3);
 
-  // Random pick libri
   const getRandomBooks = (arr, n) => {
     const shuffled = [...arr].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, n);
   };
   const randomBooks = useMemo(() => getRandomBooks(books, 10), [books]);
 
-  // Stato ricerca
   const [searchText, setSearchText] = useState("");
   const filteredBooksBySearch = useMemo(() => {
     if (!searchText) return [];
@@ -72,44 +80,31 @@ const HomeScreen = ({ navigation }) => {
     );
   }, [books, searchText]);
 
-  // Filtraggio per status e rating
   const filteredBooksByFilters = useMemo(() => {
     const { status, rating } = filters;
-
-    // Se non c'è filtro attivo (tutti false e rating 0), ritorna []
     const anyStatusActive = Object.values(status).some((v) => v);
     const ratingActive = rating > 0;
     if (!anyStatusActive && !ratingActive) return [];
 
     return books.filter((book) => {
-      // Controllo stato (se filtro attivo)
-      if (anyStatusActive) {
-        // Se il libro NON è in uno stato attivo, escludi
-        if (!status[book.status]) return false;
-      }
-      // Controllo rating
-      if (ratingActive) {
-        if (!book.rating || book.rating < rating) return false;
-      }
+      if (anyStatusActive && !status[book.status]) return false;
+      if (ratingActive && (!book.rating || book.rating < rating)) return false;
       return true;
     });
   }, [books, filters]);
 
-  // Decide cosa mostrare: priorità search > filtro > home
   const isFilteringActive =
     Object.values(filters.status).some((v) => v) || filters.rating > 0;
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {/* TopBar sempre visibile con ricerca */}
         <TopBar
           toggleFilters={toggleFilters}
           searchText={searchText}
           onSearchChange={setSearchText}
         />
 
-        {/* Filtro visibile solo se aperto e non stai cercando */}
         {!searchText && filtersOpen && (
           <FiltersMenu
             filters={filters}
@@ -117,6 +112,7 @@ const HomeScreen = ({ navigation }) => {
             resetFilters={resetFilters}
           />
         )}
+
         <View style={styles.contentContainer}>
           {searchText ? (
             <SearchResultsSection

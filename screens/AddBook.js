@@ -18,7 +18,8 @@ import * as ImagePicker from "expo-image-picker";
 import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as FileSystem from "expo-file-system";
-
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 const sanitizeFilename = (name) => {
   return name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
@@ -53,100 +54,96 @@ const StarRating = ({ rating, onChange }) => {
   );
 };
 
-const AddOrEditBook = ({ navigation, route }) => {
+const AddBook = ({ navigation, route }) => {
   const { addBook, updateBook } = useContext(BooksContext);
-  const isEditing = route.params?.book !== undefined;
-  const book = route.params?.book || {};
-
-const genres = [
-  "Narrativa",
-  "Fantasy",
-  "Fantascienza",
-  "Giallo",
-  "Horror",
-  "Romanzo storico",
-  "Biografia",
-  "Saggio",
-  "Avventura",
-  "Poesia",
-  "Thriller",
-  "Young Adult",
-  "Classico",
-  "Altro",
-];
-
-  const [title, setTitle] = useState(book.title || "");
-  const [author, setAuthor] = useState(book.author || "");
-  const [synopsis, setSynopsis] = useState(book.synopsis || "");
-  const [genre, setGenre] = useState(book.genre || genres[0]);
-  const [coverImageUri, setCoverImageUri] = useState(
-    book.cover_image_uri || ""
-  );
-  const [status, setStatus] = useState(book.status || "da leggere");
-  const [rating, setRating] = useState(book.rating || 0);
-  const [notes, setNotes] = useState(book.notes || "");
-
-  const [dateStart, setDateStart] = useState(
-    book.date_start ? new Date(book.date_start) : new Date()
-  );
-  const [dateEnd, setDateEnd] = useState(
-    book.date_end ? new Date(book.date_end) : new Date()
-  );
-
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [synopsis, setSynopsis] = useState("");
+  const [coverImageUri, setCoverImageUri] = useState("");
+  const [status, setStatus] = useState("da leggere");
+  const [rating, setRating] = useState(0);
+  const [notes, setNotes] = useState("");
+  const [dateStart, setDateStart] = useState(null);
+  const [dateEnd, setDateEnd] = useState(null);
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
-
-  // Reset dati quando lo status cambia a "da leggere"
-  useEffect(() => {
-    if (status === "da leggere") {
+  const genres = [
+    "Narrativa",
+    "Fantasy",
+    "Fantascienza",
+    "Giallo",
+    "Horror",
+    "Romanzo storico",
+    "Biografia",
+    "Saggio",
+    "Avventura",
+    "Poesia",
+    "Thriller",
+    "Young Adult",
+    "Classico",
+    "Altro",
+  ];
+  const [genre, setGenre] = useState(genres[0]);
+  useFocusEffect(
+    useCallback(() => {
+      // Reset all fields on screen focus
+      setTitle("");
+      setAuthor("");
+      setSynopsis("");
+      setGenre(genres[0]);
+      setCoverImageUri("");
+      setStatus("da leggere");
       setRating(0);
       setNotes("");
       setDateStart(null);
       setDateEnd(null);
-    }
-  }, [status]);
+    }, [])
+  );
 
   const pickImage = async () => {
-  const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  
-  if (permissionResult.status !== "granted") {
-    Alert.alert("Permesso negato", "Serve il permesso per accedere alla galleria");
-    return;
-  }
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-  const pickerResult = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images, // Corrected to MediaTypeOptions
-    quality: 1,
-  });
-
-  if (pickerResult.canceled) {
-    console.log("Image picker was canceled");
-    return; // attention: now it's 'canceled' not 'cancelled'
-  }
-
-  const uri = pickerResult.assets[0].uri; // Get the uri from assets
-  console.log("Selected image URI:", uri); // Debugging line
-
-  try {
-    const dirUri = FileSystem.documentDirectory + "assets/libri/";
-    const dirInfo = await FileSystem.getInfoAsync(dirUri);
-    if (!dirInfo.exists) {
-      await FileSystem.makeDirectoryAsync(dirUri, { intermediates: true });
+    if (permissionResult.status !== "granted") {
+      Alert.alert(
+        "Permesso negato",
+        "Serve il permesso per accedere alla galleria"
+      );
+      return;
     }
 
-    const fileExt = uri.split(".").pop();
-    const safeName = sanitizeFilename(title || "unnamed") + "." + fileExt;
-    const destUri = dirUri + safeName;
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images, // Corrected to MediaTypeOptions
+      quality: 1,
+    });
 
-    await FileSystem.copyAsync({ from: uri, to: destUri });
-    setCoverImageUri(destUri);
-    Alert.alert("Successo", "Immagine salvata correttamente!");
-  } catch (error) {
-    Alert.alert("Errore", "Impossibile salvare immagine: " + error.message);
-    console.error("Error saving image:", error); // Debugging line
-  }
-};
+    if (pickerResult.canceled) {
+      console.log("Image picker was canceled");
+      return; // attention: now it's 'canceled' not 'cancelled'
+    }
 
+    const uri = pickerResult.assets[0].uri; // Get the uri from assets
+    console.log("Selected image URI:", uri); // Debugging line
+
+    try {
+      const dirUri = FileSystem.documentDirectory + "assets/libri/";
+      const dirInfo = await FileSystem.getInfoAsync(dirUri);
+      if (!dirInfo.exists) {
+        await FileSystem.makeDirectoryAsync(dirUri, { intermediates: true });
+      }
+
+      const fileExt = uri.split(".").pop();
+      const safeName = sanitizeFilename(title || "unnamed") + "." + fileExt;
+      const destUri = dirUri + safeName;
+
+      await FileSystem.copyAsync({ from: uri, to: destUri });
+      setCoverImageUri(destUri);
+      Alert.alert("Successo", "Immagine salvata correttamente!");
+    } catch (error) {
+      Alert.alert("Errore", "Impossibile salvare immagine: " + error.message);
+      console.error("Error saving image:", error); // Debugging line
+    }
+  };
 
   const onChangeStartDate = (event, selectedDate) => {
     setShowStartDatePicker(false);
@@ -196,23 +193,21 @@ const genres = [
       genre,
       cover_image_uri: coverImageUri,
       status,
-      favorite: book.favorite || false,
+      favorite: false, // ora fisso a false
       rating: status === "letto" ? rating : null,
       notes: status === "letto" ? notes : null,
       date_start:
-        status === "in lettura" || (status === "letto" && !book.date_start)
-          ? dateStart?.toISOString().substring(0, 10)
+        (status === "in lettura" || status === "letto") && dateStart
+          ? dateStart.toISOString().substring(0, 10)
           : null,
       date_end:
-        status === "letto" ? dateEnd?.toISOString().substring(0, 10) : null,
+        status === "letto" && dateEnd
+          ? dateEnd.toISOString().substring(0, 10)
+          : null,
     };
 
     try {
-      if (isEditing) {
-        await updateBook(book.id, bookData);
-      } else {
-        await addBook(bookData);
-      }
+      await addBook(bookData);
 
       Alert.alert("Successo", "Libro salvato!", [
         { text: "OK", onPress: () => navigation.goBack() },
@@ -261,7 +256,11 @@ const genres = [
               style={styles.picker}
             >
               {genres.map((genreItem) => (
-                <Picker.Item key={genreItem} label={genreItem} value={genreItem} />
+                <Picker.Item
+                  key={genreItem}
+                  label={genreItem}
+                  value={genreItem}
+                />
               ))}
             </Picker>
 
@@ -287,7 +286,7 @@ const genres = [
             </Picker>
 
             {(status === "in lettura" ||
-              (status === "letto" && !book.date_start)) && (
+             (status === "letto" || status === "in lettura")) && (
               <>
                 <Button
                   title={`Select Start Date: ${
@@ -348,7 +347,6 @@ const genres = [
               <Text style={styles.submitButtonText}>Save Book</Text>
             </TouchableOpacity>
           </ScrollView>
-
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -426,4 +424,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddOrEditBook;
+export default AddBook;

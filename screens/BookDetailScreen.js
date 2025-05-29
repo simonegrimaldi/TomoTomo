@@ -1,140 +1,228 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
-import { Picker } from "@react-native-picker/picker";
+import React, { useState, useEffect, useContext } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import StarRating from "../components/StarRating";
+import EditActionButtons from "../components/EditActionButton";
+import DeleteButton from "../components/DeleteButton";
 import defaultImage from "../assets/libri/default_genre_image.png";
+import { loadBooks, saveBooks } from '../services/Storage'; // Assicurati di importare le funzioni
+import { BooksContext } from "../context/BooksContext"; // Importa il contesto
 
 export default function BookDetailScreen({ route, navigation }) {
   const { book } = route.params;
 
-  const [editable, setEditable] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [editedBook, setEditedBook] = useState({ ...book });
 
-  const handleConfirm = () => {
-    // TODO: salva le modifiche nel contesto o database
-    setEditable(false);
-    Alert.alert("Modifiche salvate");
-  };
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const loadedBooks = await loadBooks();
+      setBooks(loadedBooks);
+    };
+    fetchBooks();
+  }, []);
 
-  const handleCancel = () => {
+  const handleCancelEdit = () => {
     setEditedBook({ ...book });
-    setEditable(false);
+    setIsEditing(false);
   };
 
-  const handleDelete = () => {
-    // TODO: rimuovi dal database o contesto
-    Alert.alert("Libro eliminato", "", [{ text: "OK", onPress: () => navigation.goBack() }]);
-  };
+  const { updateBook } = useContext(BooksContext);
 
+const handleConfirmEdit = async () => {
+  try {
+    await updateBook(editedBook.id, editedBook);
+    setIsEditing(false);
+  } catch (err) {
+    console.error("Errore durante la conferma modifica:", err);
+  }
+};
   return (
-    <View style={styles.container}>
-      {/* Pulsante modifica */}
-      <View style={styles.header}>
-        {!editable ? (
-          <TouchableOpacity onPress={() => setEditable(true)} style={styles.editBtn}>
-            <Text style={styles.editText}>✏️ Modifica</Text>
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.editActions}>
-            <TouchableOpacity onPress={handleConfirm} style={styles.confirmBtn}>
-              <Text style={styles.actionText}>✔️</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleCancel} style={styles.cancelBtn}>
-              <Text style={styles.actionText}>❌</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+    <SafeAreaView style={styles.safeArea}>
+      <View style={styles.topBar}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text style={styles.backButtonText}>← Indietro</Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Immagine copertina */}
-      <Image
-        source={book.cover_image_uri ? { uri: book.cover_image_uri } : defaultImage}
-        style={styles.coverImage}
-      />
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Titolo centrato + Modifica */}
+        <View style={styles.header}>
+          <View style={styles.titleWrapper}>
+            <TextInput
+              style={[styles.title, isEditing && styles.editable]}
+              value={editedBook.title}
+              editable={isEditing}
+              onChangeText={(text) => setEditedBook({ ...editedBook, title: text })}
+            />
+          </View>
+          {!isEditing && (
+            <TouchableOpacity onPress={() => setIsEditing(true)} style={styles.editBtn}>
+              <Text style={styles.editText}>✏️</Text>
+            </TouchableOpacity>
+          )}
+        </View>
 
-      {/* Titolo */}
-      <TextInput
-        style={styles.input}
-        editable={editable}
-        value={editedBook.title}
-        onChangeText={(text) => setEditedBook({ ...editedBook, title: text })}
-      />
+        {/* Copertina */}
+        <Image
+          source={
+            editedBook.cover_image_uri
+              ? { uri: editedBook.cover_image_uri }
+              : defaultImage
+          }
+          style={styles.image}
+        />
 
-      {/* Autore */}
-      <TextInput
-        style={styles.input}
-        editable={editable}
-        value={editedBook.author}
-        onChangeText={(text) => setEditedBook({ ...editedBook, author: text })}
-      />
+        {/* Autore */}
+        <TextInput
+          style={[styles.input, isEditing && styles.editable]}
+          value={editedBook.author}
+          editable={isEditing}
+          onChangeText={(text) => setEditedBook({ ...editedBook, author: text })}
+        />
 
-      {/* Sinossi */}
-      <TextInput
-        style={[styles.input, { height: 80 }]}
-        editable={editable}
-        value={editedBook.synopsis}
-        multiline
-        onChangeText={(text) => setEditedBook({ ...editedBook, synopsis: text })}
-      />
+        {/* Date */}
+        <View style={styles.datesContainer}>
+          <Text style={styles.dateText}>Inizio: {editedBook.date_start || "—"}</Text>
+          <Text style={styles.dateText}>Fine: {editedBook.date_end || "—"}</Text>
+        </View>
 
-      {/* Stato */}
-      <Picker
-        enabled={editable}
-        selectedValue={editedBook.status}
-        onValueChange={(itemValue) =>
-          setEditedBook({ ...editedBook, status: itemValue })
-        }
-        style={styles.picker}
-      >
-        <Picker.Item label="Da leggere" value="da leggere" />
-        <Picker.Item label="In lettura" value="in lettura" />
-        <Picker.Item label="Letto" value="letto" />
-      </Picker>
+        {/* Sinossi */}
+        <TextInput
+          style={[styles.input, styles.multiline, isEditing && styles.editable]}
+          value={editedBook.synopsis}
+          editable={isEditing}
+          multiline
+          numberOfLines={4}
+          onChangeText={(text) => setEditedBook({ ...editedBook, synopsis: text })}
+        />
 
-      {/* Rating */}
-      <StarRating
-        rating={editedBook.rating || 0}
-        onChange={(r) => editable && setEditedBook({ ...editedBook, rating: r })}
-      />
+        {/* Valutazione */}
+        <Text style={styles.sectionTitle}>Valutazione</Text>
+        <StarRating
+          rating={editedBook.rating || 0}
+          editable={isEditing}
+          onChange={(r) => {
+            if (isEditing) {
+              setEditedBook({ ...editedBook, rating: r });
+            }
+          }}
+        />
 
-      {/* Elimina libro */}
-      <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
-        <Text style={styles.deleteText}>🗑️ Elimina libro</Text>
-      </TouchableOpacity>
-    </View>
+        {/* Bottoni modifica */}
+        {isEditing && (
+          <EditActionButtons
+            onCancel={handleCancelEdit}
+            onConfirm={handleConfirmEdit} // Passa la funzione di conferma
+          />
+        )}
+
+        {/* Elimina */}
+        <DeleteButton bookId={book.id} />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, backgroundColor: "#fff" },
-  header: { flexDirection: "row", justifyContent: "flex-end", marginBottom: 10 },
-  editBtn: { padding: 6 },
-  editText: { fontSize: 16, color: "#007bff" },
-  editActions: { flexDirection: "row", gap: 10 },
-  confirmBtn: { padding: 6 },
-  cancelBtn: { padding: 6 },
-  actionText: { fontSize: 20 },
-  coverImage: { width: 150, height: 220, alignSelf: "center", marginBottom: 20 },
-  input: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
-    fontSize: 16,
-    marginBottom: 12,
-    paddingVertical: 4,
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#eaeef1",
   },
-  picker: {
-    marginVertical: 12,
+  topBar: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    alignItems: "flex-start",
   },
-  deleteButton: {
-    marginTop: 30,
-    backgroundColor: "#ff4d4d",
-    paddingVertical: 12,
-    borderRadius: 8,
+  backButtonText: {
+    fontSize: 18,
+    color: "#007aff",
+  },
+  container: {
+    padding: 20,
     alignItems: "center",
   },
-  deleteText: {
-    color: "white",
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "stretch",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  titleWrapper: {
+    flex: 1,
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#333",
+    textAlign: "center",
+  },
+  editBtn: {
+    paddingHorizontal: 8,
+    backgroundColor: "#007aff",
+    borderRadius: 5,
+  },
+  editText: {
+    fontSize: 22,
+    color: "#fff",
+  },
+  image: {
+    width: 250,
+    height: 350,
+    borderRadius: 12,
+    marginVertical: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  input: {
+    width: "100%",
+    backgroundColor: "#fff",
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 12,
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: "#ccc",
+  },
+  editable: {
+    backgroundColor: "#e0f7fa",
+    borderColor: "#007aff",
+  },
+  multiline: {
+    textAlignVertical: "top",
+  },
+  sectionTitle: {
     fontWeight: "bold",
     fontSize: 16,
+    marginTop: 12,
+    marginBottom: 6,
+    alignSelf: "flex-start",
+    color: "#333",
+  },
+  datesContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    marginBottom: 10,
+  },
+  dateText: {
+    fontSize: 14,
+    color: "#555",
   },
 });
