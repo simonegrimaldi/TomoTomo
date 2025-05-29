@@ -89,8 +89,8 @@ const HomeScreen = ({ navigation }) => {
     Object.values(filters.status).some((v) => v) || filters.rating > 0;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
+        <SafeAreaView>
         <TopBar
           toggleFilters={toggleFilters}
           searchText={searchText}
@@ -103,7 +103,7 @@ const HomeScreen = ({ navigation }) => {
             toggleFilter={toggleFilter}
             resetFilters={resetFilters}
           />
-        )}
+        )}</SafeAreaView>
 
         <View style={styles.contentContainer}>
           {searchText ? (
@@ -132,8 +132,8 @@ const HomeScreen = ({ navigation }) => {
           )}
         </View>
       </View>
-    </SafeAreaView>
-  );
+
+);
 };
 
 const styles = StyleSheet.create({
@@ -143,7 +143,6 @@ const styles = StyleSheet.create({
   centralSection: {
     flex: 1,
     paddingHorizontal: 16,
-    marginTop: 16,
   },
   centralContentContainer: {
     paddingBottom: 40,

@@ -36,20 +36,20 @@ export default function ProfileScreen({ navigation }) {
     return Math.round(totalDays / booksRead.length);
   }, [booksRead]);
 
-const genreData = useMemo(() => {
-  const genreMap = {};
-  booksRead.forEach((b) => {
-    const genre = b.genre || "Altro";
-    genreMap[genre] = (genreMap[genre] || 0) + 1;
-  });
-  return Object.entries(genreMap).map(([name, count], idx) => ({
-    name,
-    population: count, // <-- IMPORTANTE: deve chiamarsi 'population'!
-    color: `hsl(${idx * 50 % 360}, 70%, 60%)`,
-    legendFontColor: "#333",
-    legendFontSize: 14,
-  }));
-}, [booksRead]);
+  const genreData = useMemo(() => {
+    const genreMap = {};
+    booksRead.forEach((b) => {
+      const genre = b.genre || "Altro";
+      genreMap[genre] = (genreMap[genre] || 0) + 1;
+    });
+    return Object.entries(genreMap).map(([name, count], idx) => ({
+      name,
+      population: count, // <-- IMPORTANTE: deve chiamarsi 'population'!
+      color: `hsl(${(idx * 50) % 360}, 70%, 60%)`,
+      legendFontColor: "#333",
+      legendFontSize: 14,
+    }));
+  }, [booksRead]);
 
   const now = new Date();
   const filteredReadBooks = useMemo(() => {
@@ -62,8 +62,11 @@ const genreData = useMemo(() => {
   }, [booksRead, filterMonths]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#f5f7fa' }}>
-      <ScrollView style={styles.container} contentContainerStyle={{ padding: 20 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f7fa" }}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ padding: 20 }}
+      >
         <ProfileStats
           total={totalBooks}
           avgTime={avgReadTime}
@@ -72,7 +75,7 @@ const genreData = useMemo(() => {
         />
 
         <GenrePieChart data={genreData} />
-        
+
         <FilterBar
           selected={filterMonths}
           onSelect={setFilterMonths}
@@ -82,17 +85,25 @@ const genreData = useMemo(() => {
         <BookCarousel
           title="Libri letti"
           books={filteredReadBooks}
-onBookPress={(book) => navigation.navigate("DetailBook", { bookId: book.id })}        />
+          onBookPress={(book) =>
+            navigation.navigate("DetailBook", { bookId: book.id })
+          }
+        />
 
         <BookCarousel
           title="Da leggere"
           books={booksToRead}
-onBookPress={(book) => navigation.navigate("DetailBook", { bookId: book.id })}        />
+          onBookPress={(book) =>
+            navigation.navigate("DetailBook", { bookId: book.id })
+          }
+        />
 
         <BookCarousel
           title="In lettura"
           books={booksReading}
-onBookPress={(book) => navigation.navigate("DetailBook", { bookId: book.id })}
+          onBookPress={(book) =>
+            navigation.navigate("DetailBook", { bookId: book.id })
+          }
         />
       </ScrollView>
     </SafeAreaView>

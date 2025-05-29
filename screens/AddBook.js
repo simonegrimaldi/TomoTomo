@@ -219,7 +219,6 @@ const AddBook = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.flex} edges={["top", "bottom"]}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -350,7 +349,6 @@ const AddBook = ({ navigation, route }) => {
           </ScrollView>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
   );
 };
 
