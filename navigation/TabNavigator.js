@@ -1,12 +1,12 @@
-import React from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import HomeScreen from '../screens/HomeScreen';
-import AddBook from '../screens/AddBook';
-import ProfileStackNavigator from './ProfileStackNavigator';
-import BookDetailScreen from '../screens/BookDetailScreen'; // ✅ Importato
-import BottomTabBar from '../components/BottomTabBar';
-import GenreBooksScreen from '../screens/GenreBooksScreen';
+import HomeScreen from "../screens/HomeScreen";
+import AddBook from "../screens/AddBook";
+import ProfileStackNavigator from "./ProfileStackNavigator";
+import BookDetailScreen from "../screens/BookDetailScreen"; // ✅ Importato
+import BottomTabBar from "../components/BottomTabBar";
+import GenreBooksScreen from "../screens/GenreBooksScreen";
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
@@ -16,7 +16,7 @@ export default function TabNavigator() {
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="AddOrEditBook" component={AddBook} />
+<Tab.Screen name="AddOrEditBook" component={AddBook} />
       <Tab.Screen name="Profile" component={ProfileStackNavigator} />
 
       {/* 👇 Aggiunto come schermata nascosta, con tabBarButton disattivato */}
@@ -26,10 +26,10 @@ export default function TabNavigator() {
         options={{ tabBarButton: () => null }}
       />
       <Tab.Screen
-  name="GenreBooks"
-  component={GenreBooksScreen}
-  options={{ tabBarButton: () => null }}
-/>
+        name="GenreBooks"
+        component={GenreBooksScreen}
+        options={{ tabBarButton: () => null }}
+      />
     </Tab.Navigator>
   );
 }

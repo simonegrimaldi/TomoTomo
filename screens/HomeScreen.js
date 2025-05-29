@@ -13,10 +13,10 @@ import RandomPicksSection from "../components/RandomPicksSection";
 import SearchResultsSection from "../components/SearchResultsSection";
 import FilteredBooksSection from "../components/FilteredBooksSection";
 
+
 const HomeScreen = ({ navigation }) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [genreFilter, setGenreFilter] = useState(null); // ✅ nuovo stato
 
   const [filters, setFilters] = useState({
     status: { "da leggere": false, "in lettura": false, letto: false },
@@ -100,13 +100,11 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {!genreFilter && (
   <TopBar
     toggleFilters={toggleFilters}
     searchText={searchText}
     onSearchChange={setSearchText}
   />
-)}
 
         {!searchText && filtersOpen && (
           <FiltersMenu
@@ -127,14 +125,7 @@ const HomeScreen = ({ navigation }) => {
               filteredBooks={filteredBooksByFilters}
               navigation={navigation}
             />
-          ) : genreFilter ? (
-            <GenreFilteredBooksSection
-              genreName={genreFilter}
-              filteredBooks={books.filter((b) => b.genre === genreFilter)}
-              navigation={navigation}
-              onBack={() => setGenreFilter(null)} // ✅ torna alla home
-            />
-          ) : (
+          )  : (
             <ScrollView
               style={styles.centralSection}
               contentContainerStyle={styles.centralContentContainer}

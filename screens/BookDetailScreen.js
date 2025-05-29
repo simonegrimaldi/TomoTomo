@@ -21,7 +21,7 @@ import defaultImage from "../assets/libri/default_genre_image.png";
 import { BooksContext } from "../context/BooksContext";
 
 export default function BookDetailScreen({ route, navigation }) {
-  const { bookId } = route.params;
+  const { bookId } = route.params; // Cambiato da book a bookId
   const { books, updateBook } = useContext(BooksContext);
 
   const [book, setBook] = useState(null);
@@ -36,18 +36,18 @@ export default function BookDetailScreen({ route, navigation }) {
     }, [])
   );
 
-useEffect(() => {
-  if (books.length > 0) {
-    const found = books.find((b) => b.id === bookId);
-    if (found) {
-      setBook(found);
-      setEditedBook({ ...found });
-    } else {
-      Alert.alert("Errore", "Libro non trovato.");
-      navigation.goBack(); // Torna indietro se il libro non viene trovato
+  useEffect(() => {
+    if (books.length > 0) {
+      const found = books.find((b) => b.id === bookId);
+      if (found) {
+        setBook(found);
+        setEditedBook({ ...found });
+      } else {
+        Alert.alert("Errore", "Libro non trovato.");
+        navigation.goBack(); // Torna indietro se il libro non viene trovato
+      }
     }
-  }
-}, [books, bookId]);
+  }, [books, bookId]);
 
   if (!book || !editedBook) {
     return (

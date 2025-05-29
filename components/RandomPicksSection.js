@@ -14,7 +14,7 @@ export default function RandomPicksSection({ books, navigation }) {
   const renderBook = ({ item }) => (
     <BookCard
       book={item}
-      onPress={() => navigation.navigate("DetailBook", { bookId: item.id })} // Passa bookId
+onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
     />
   );
 

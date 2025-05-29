@@ -33,11 +33,13 @@ export default function FilteredBooksSection({ filteredBooks, navigation }) {
       renderItem={({ item }) => (
         <TouchableOpacity
           style={styles.bookCard}
-          onPress={() => navigation.navigate("BookDetail", { book: item })}
+          onPress={() => navigation.navigate("DetailBook", { book: item })}
         >
           <Image
             source={
-              item.cover_image_uri ? { uri: item.cover_image_uri } : defaultGenreImage
+              item.cover_image_uri
+                ? { uri: item.cover_image_uri }
+                : defaultGenreImage
             }
             style={styles.bookImage}
           />

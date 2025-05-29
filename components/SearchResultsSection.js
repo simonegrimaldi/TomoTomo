@@ -20,7 +20,7 @@ export default function SearchResultsSection({ filteredBooks, navigation }) {
       renderItem={({ item }) => (
         <TouchableOpacity
           style={styles.bookCard}
-          onPress={() => navigation.navigate("BookDetail", { book: item })}
+onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
         >
           <Image
             source={item.cover_image_uri ? { uri: item.cover_image_uri } : defaultGenreImage}
