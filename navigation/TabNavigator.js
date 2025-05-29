@@ -6,7 +6,7 @@ import AddBook from '../screens/AddBook';
 import ProfileStackNavigator from './ProfileStackNavigator';
 import BookDetailScreen from '../screens/BookDetailScreen'; // ✅ Importato
 import BottomTabBar from '../components/BottomTabBar';
-
+import GenreBooksScreen from '../screens/GenreBooksScreen';
 const Tab = createBottomTabNavigator();
 
 export default function TabNavigator() {
@@ -25,6 +25,11 @@ export default function TabNavigator() {
         component={BookDetailScreen}
         options={{ tabBarButton: () => null }}
       />
+      <Tab.Screen
+  name="GenreBooks"
+  component={GenreBooksScreen}
+  options={{ tabBarButton: () => null }}
+/>
     </Tab.Navigator>
   );
 }

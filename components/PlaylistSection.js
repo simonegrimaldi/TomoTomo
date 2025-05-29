@@ -1,9 +1,10 @@
 import React, { useMemo } from "react";
 import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from "react-native";
 import defaultGenreImage from "../assets/libri/default_genre_image.png";
+import GenreCard from "./GenreCard"; 
 
 export default function PlaylistSection({ books, navigation }) {
-  const booksByGenre = useMemo(() => {
+    const booksByGenre = useMemo(() => {
     const grouped = {};
     books.forEach((book) => {
       const genre = book.genre || "Altro";
@@ -23,17 +24,18 @@ export default function PlaylistSection({ books, navigation }) {
     };
   });
 
-  const renderGenre = ({ item }) => (
-    <TouchableOpacity
-      style={styles.genreCard}
-      onPress={() => navigation.navigate("Home", { filterGenre: item.genreName })}
-    >
-      <Image source={item.genreImageUri} style={styles.genreImage} resizeMode="cover" />
-      <Text style={styles.genreTitle} numberOfLines={1}>
-        {item.genreName}
-      </Text>
-    </TouchableOpacity>
-  );
+const renderGenre = ({ item }) => (
+  <GenreCard
+    genreName={item.genreName}
+    genreImageUri={item.genreImageUri}
+    onPress={() =>
+      navigation.navigate("GenreBooks", {
+        genreName: item.genreName,
+        books,
+      })
+    }
+  />
+);
 
   if (genres.length === 0) {
     return (

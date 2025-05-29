@@ -1,8 +1,8 @@
 import React, { useState, useContext, useMemo, useCallback } from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useFocusEffect } from "@react-navigation/native"; // ✅ aggiunto
-import { loadBooks } from "../services/Storage";           // ✅ aggiunto
+import { useFocusEffect } from "@react-navigation/native";
+import { loadBooks } from "../services/Storage";
 import { BooksContext } from "../context/BooksContext";
 
 import TopBar from "../components/TopBar";
@@ -15,6 +15,9 @@ import FilteredBooksSection from "../components/FilteredBooksSection";
 
 const HomeScreen = ({ navigation }) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
+  const [genreFilter, setGenreFilter] = useState(null); // ✅ nuovo stato
+
   const [filters, setFilters] = useState({
     status: { "da leggere": false, "in lettura": false, letto: false },
     rating: 0,
@@ -48,9 +51,8 @@ const HomeScreen = ({ navigation }) => {
     });
   };
 
-  const { books, setBooks } = useContext(BooksContext); // ✅ assicurati che setBooks sia esposto nel context
+  const { books, setBooks } = useContext(BooksContext);
 
-  // 🔄 Carica i libri ogni volta che torni sulla Home
   useFocusEffect(
     useCallback(() => {
       const updateBooks = async () => {
@@ -69,7 +71,6 @@ const HomeScreen = ({ navigation }) => {
   };
   const randomBooks = useMemo(() => getRandomBooks(books, 10), [books]);
 
-  const [searchText, setSearchText] = useState("");
   const filteredBooksBySearch = useMemo(() => {
     if (!searchText) return [];
     const lower = searchText.toLowerCase();
@@ -99,11 +100,13 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        <TopBar
-          toggleFilters={toggleFilters}
-          searchText={searchText}
-          onSearchChange={setSearchText}
-        />
+        {!genreFilter && (
+  <TopBar
+    toggleFilters={toggleFilters}
+    searchText={searchText}
+    onSearchChange={setSearchText}
+  />
+)}
 
         {!searchText && filtersOpen && (
           <FiltersMenu
@@ -124,6 +127,13 @@ const HomeScreen = ({ navigation }) => {
               filteredBooks={filteredBooksByFilters}
               navigation={navigation}
             />
+          ) : genreFilter ? (
+            <GenreFilteredBooksSection
+              genreName={genreFilter}
+              filteredBooks={books.filter((b) => b.genre === genreFilter)}
+              navigation={navigation}
+              onBack={() => setGenreFilter(null)} // ✅ torna alla home
+            />
           ) : (
             <ScrollView
               style={styles.centralSection}
@@ -134,7 +144,10 @@ const HomeScreen = ({ navigation }) => {
                 books={lastThreeBooks}
                 navigation={navigation}
               />
-              <PlaylistSection books={books} navigation={navigation} />
+              <PlaylistSection
+                books={books}
+                navigation={navigation}
+              />
               <RandomPicksSection books={randomBooks} navigation={navigation} />
             </ScrollView>
           )}
