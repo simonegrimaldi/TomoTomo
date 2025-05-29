@@ -1,5 +1,4 @@
-# 📚 TomoTomo
-
+![immagine](images/image_1748502976561.png)
 **TomoTomo** è un'app mobile multipiattaforma per gestire la propria libreria personale, pensata per chi ama catalogare, consultare e organizzare i propri libri in modo semplice e intuitivo.
 L'app è sviluppata con React Native ed Expo, con persistenza dati locale tramite file.
 ***
