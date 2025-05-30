@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
-import { useNavigationState } from '@react-navigation/native';
 
 export default function BottomTabBar({ navigation }) {
   const state = navigation.getState();

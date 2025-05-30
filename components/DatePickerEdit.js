@@ -1,35 +1,32 @@
+// components/DatePickerEdit.js
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-export default function DatePickerEdit({
-  label,
-  date,
-  onChangeDate,
-  minimumDate,
-}) {
+const DatePickerEdit = ({ label, date, onDateChange, minimumDate }) => {
   const [showPicker, setShowPicker] = useState(false);
 
+  // Formatta la data da "YYYY-MM-DD" a data leggibile locale
   const formatDate = (dateString) => {
-  if (!dateString) return "";  // rimuovo "Seleziona", lascio vuoto
-  const parts = dateString.split("-");
-  if (parts.length !== 3) return "";
-  const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-  if (isNaN(dateObj.getTime())) return "";
-  return dateObj.toLocaleDateString();
-};
+    if (!dateString) return "Seleziona";
+    const parts = dateString.split("-");
+    if (parts.length !== 3) return "Seleziona";
+    const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+    if (isNaN(dateObj.getTime())) return "Seleziona";
+    return dateObj.toLocaleDateString();
+  };
 
-  const onChange = (_, selected) => {
+  const onChange = (_, selectedDate) => {
     setShowPicker(false);
-    if (selected) {
-      if (minimumDate && selected < minimumDate) {
+    if (selectedDate) {
+      if (minimumDate && selectedDate < minimumDate) {
         Alert.alert(
           "Errore",
           `La data di ${label.toLowerCase()} non può essere precedente a ${minimumDate.toLocaleDateString()}.`
         );
         return;
       }
-      onChangeDate(selected.toISOString().substring(0, 10));
+      onDateChange(selectedDate.toISOString().substring(0, 10));
     }
   };
 
@@ -37,9 +34,7 @@ export default function DatePickerEdit({
     <View style={styles.dateCard}>
       <Text style={styles.cardLabel}>{label}</Text>
       <TouchableOpacity onPress={() => setShowPicker(true)}>
-        <Text style={[styles.cardValue, { color: "#FFF600" }]}>
-          {formatDate(date)}
-        </Text>
+        <Text style={[styles.cardValue, { color: "#FFF600" }]}>{formatDate(date)}</Text>
       </TouchableOpacity>
 
       {showPicker && (
@@ -54,7 +49,7 @@ export default function DatePickerEdit({
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   dateCard: {
@@ -62,7 +57,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 16,
-    width: "48%",
+    width: "100%", // occuperà tutta la larghezza del contenitore padre
+    maxWidth: 400, // opzionale: limite massimo di larghezza su schermi grandi
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",
@@ -80,3 +76,5 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
+
+export default DatePickerEdit;

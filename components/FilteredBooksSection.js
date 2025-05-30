@@ -33,7 +33,7 @@ export default function FilteredBooksSection({ filteredBooks, navigation }) {
       renderItem={({ item }) => (
         <TouchableOpacity
           style={styles.bookCard}
-          onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
+          onPress={() => navigation.navigate("Detail", { bookId: item.id })}
           activeOpacity={0.8}
         >
           <Image
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   bookCard: {
     width: itemSize,
     margin: spacing / 2,
-    alignItems: "left",
+    alignItems: "flex-start",
     borderRadius: 8,
     padding: 6,
   },

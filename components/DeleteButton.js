@@ -17,7 +17,8 @@ export default function DeleteButton({ bookId }) {
           text: "Elimina",
           onPress: async () => {
   await removeBook(bookId);
-navigation.goBack() },
+  navigation.goBack();  // torna indietro alla pagina precedente
+},
           style: "destructive",
         },
       ]

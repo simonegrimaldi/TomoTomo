@@ -13,95 +13,17 @@ import {
 } from "react-native";
 import { BooksContext } from "../context/BooksContext";
 import * as ImagePicker from "expo-image-picker";
-import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as FileSystem from "expo-file-system";
 import { useFocusEffect } from "@react-navigation/native";
 import logo from "../assets/icon.png";
-import DateTimePicker from "@react-native-community/datetimepicker";
+
+import DatePickerEdit from "../components/DatePickerEdit";
+import LabeledPicker from "../components/LabeledPicker";
+import StarRating from "../components/StarRating";
 
 const sanitizeFilename = (name) =>
   name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
-
-const StarRating = ({ rating, onChange }) => {
-  const maxStars = 5;
-  return (
-    <View style={styles.starContainer}>
-      {[...Array(maxStars)].map((_, i) => {
-        const starNumber = i + 1;
-        const filled = starNumber <= rating;
-        return (
-          <TouchableOpacity
-            key={starNumber}
-            onPress={() => onChange(starNumber)}
-            activeOpacity={0.7}
-            style={styles.starTouchable}
-          >
-            <Text
-              style={[
-                styles.star,
-                filled ? styles.filledStar : styles.emptyStar,
-              ]}
-            >
-              {filled ? "★" : "☆"}
-            </Text>
-          </TouchableOpacity>
-        );
-      })}
-    </View>
-  );
-};
-
-// --- COMPONENTE DatePickerEdit ---
-const DatePickerEdit = ({ label, date, onDateChange, minimumDate }) => {
-  const [showPicker, setShowPicker] = useState(false);
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "Seleziona";
-    const parts = dateString.split("-");
-    if (parts.length !== 3) return "Seleziona";
-    const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-    if (isNaN(dateObj.getTime())) return "Seleziona";
-    return dateObj.toLocaleDateString();
-  };
-
-  const onChange = (_, selected) => {
-    setShowPicker(false);
-    if (selected) {
-      if (minimumDate && selected < minimumDate) {
-        Alert.alert(
-          "Errore",
-          `La data di ${label.toLowerCase()} non può essere precedente a ${minimumDate.toLocaleDateString()}.`
-        );
-        return;
-      }
-      // Passa la data in formato YYYY-MM-DD come stringa
-      onDateChange(selected.toISOString().substring(0, 10));
-    }
-  };
-
-  return (
-    <View style={styles.dateCard}>
-      <Text style={styles.cardLabel}>{label}</Text>
-      <TouchableOpacity onPress={() => setShowPicker(true)}>
-        <Text style={[styles.cardValue, { color: "#FFF600" }]}>
-          {formatDate(date)}
-        </Text>
-      </TouchableOpacity>
-      {showPicker && (
-        <DateTimePicker
-          mode="date"
-          display="default"
-          themeVariant="dark"
-          value={date ? new Date(date) : new Date()}
-          onChange={onChange}
-          minimumDate={minimumDate}
-        />
-      )}
-    </View>
-  );
-};
-// --- FINE COMPONENTE DatePickerEdit ---
 
 const AddBook = ({ navigation }) => {
   const { addBook } = useContext(BooksContext);
@@ -130,8 +52,8 @@ const AddBook = ({ navigation }) => {
   const [status, setStatus] = useState("da leggere");
   const [rating, setRating] = useState(0);
   const [notes, setNotes] = useState("");
-  const [dateStart, setDateStart] = useState(null); // stringa "YYYY-MM-DD" o null
-  const [dateEnd, setDateEnd] = useState(null); // stringa "YYYY-MM-DD" o null
+  const [dateStart, setDateStart] = useState(null);
+  const [dateEnd, setDateEnd] = useState(null);
   const [genre, setGenre] = useState(genres[0]);
 
   useFocusEffect(
@@ -164,7 +86,9 @@ const AddBook = ({ navigation }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
     });
+
     if (pickerResult.canceled) return;
+
     const uri = pickerResult.assets[0].uri;
 
     try {
@@ -173,7 +97,9 @@ const AddBook = ({ navigation }) => {
       if (!dirInfo.exists) {
         await FileSystem.makeDirectoryAsync(dirUri, { intermediates: true });
       }
-      const fileExt = uri.split(".").pop();
+      // Estraggo estensione in modo sicuro
+      const uriParts = uri.split(".");
+      const fileExt = uriParts[uriParts.length - 1].split(/\#|\?/)[0];
       const safeName = sanitizeFilename(title || "unnamed") + "." + fileExt;
       const destUri = dirUri + safeName;
       await FileSystem.copyAsync({ from: uri, to: destUri });
@@ -211,7 +137,8 @@ const AddBook = ({ navigation }) => {
       favorite: false,
       rating: status === "letto" ? rating : null,
       notes: status === "letto" ? notes : null,
-      date_start: (status === "in lettura" || status === "letto") ? dateStart : null,
+      date_start:
+        status === "in lettura" || status === "letto" ? dateStart : null,
       date_end: status === "letto" ? dateEnd : null,
     };
 
@@ -233,7 +160,6 @@ const AddBook = ({ navigation }) => {
       keyboardVerticalOffset={80}
     >
       <SafeAreaView style={styles.safeArea}>
-        {/* Barra fissa con logo */}
         <View style={styles.logoBar}>
           <Image source={logo} style={styles.logoImage} resizeMode="contain" />
         </View>
@@ -243,6 +169,7 @@ const AddBook = ({ navigation }) => {
           keyboardShouldPersistTaps="handled"
         >
           <Text style={styles.headerTitle}>Aggiungi libro</Text>
+
           <TextInput
             placeholder="Titolo"
             value={title}
@@ -267,20 +194,14 @@ const AddBook = ({ navigation }) => {
             placeholderTextColor="#888"
           />
 
-          <View style={styles.pickerWrapper}>
-            <Text style={styles.label}>Genere</Text>
-            <Picker
-              selectedValue={genre}
-              onValueChange={setGenre}
-              style={[styles.picker, styles.pickerColored]}
-              dropdownIconColor="#FFF600"
-              itemStyle={styles.pickerItemColored}
-            >
-              {genres.map((g) => (
-                <Picker.Item key={g} label={g} value={g} color="#FFF600" />
-              ))}
-            </Picker>
-          </View>
+          <LabeledPicker
+            label="Genere"
+            selectedValue={genre}
+            onValueChange={setGenre}
+            items={genres.map((g) => ({ label: g, value: g }))}
+            pickerStyle={styles.pickerColored}
+            itemStyle={styles.pickerItemColored}
+          />
 
           <View style={styles.imagePickerContainer}>
             <TouchableOpacity
@@ -291,58 +212,61 @@ const AddBook = ({ navigation }) => {
                 Seleziona copertina
               </Text>
             </TouchableOpacity>
-              {coverImageUri ? (
-                <Image
-                  source={{ uri: coverImageUri }}
-                  style={styles.coverImage}
-                />
-              ) : null}
+            {coverImageUri ? (
+              <Image
+                source={{ uri: coverImageUri }}
+                style={styles.coverImage}
+              />
+            ) : null}
           </View>
 
-          <View style={styles.pickerWrapper}>
-            <Text style={styles.label}>Stato</Text>
-            <Picker
-              selectedValue={status}
-              onValueChange={setStatus}
-              style={[styles.picker, styles.pickerColored]}
-              dropdownIconColor="#FFF600"
-              itemStyle={styles.pickerItemColored}
-            >
-              <Picker.Item
-                label="Da leggere"
-                value="da leggere"
-                color="#FFF600"
-              />
-              <Picker.Item
-                label="In lettura"
-                value="in lettura"
-                color="#FFF600"
-              />
-              <Picker.Item label="Letto" value="letto" color="#FFF600" />
-            </Picker>
-          </View>
+          <LabeledPicker
+            label="Stato"
+            selectedValue={status}
+            onValueChange={setStatus}
+            items={[
+              { label: "Da leggere", value: "da leggere" },
+              { label: "In lettura", value: "in lettura" },
+              { label: "Letto", value: "letto" },
+            ]}
+            pickerStyle={styles.pickerColored}
+            itemStyle={styles.pickerItemColored}
+          />
 
-          {(status === "in lettura" || status === "letto") && (
+            {(status === "in lettura") && (
             <View style={styles.statusDatesContainer}>
               <DatePickerEdit
                 label="Inizio"
                 date={dateStart}
                 onDateChange={setDateStart}
               />
+            </View>
+          )}
+
+          {(status === "letto") && (
+            <View style={styles.statusDatesContainer}>
               <DatePickerEdit
-                label="Fine"
-                date={dateEnd}
-                minimumDate={dateStart ? new Date(dateStart) : undefined}
-                onDateChange={setDateEnd}
+                label="Inizio"
+                date={dateStart}
+                onDateChange={setDateStart}
               />
+              {status === "letto" && (
+                <DatePickerEdit
+                  label="Fine"
+                  date={dateEnd}
+                  minimumDate={dateStart ? new Date(dateStart) : undefined}
+                  onDateChange={setDateEnd}
+                />
+              )}
             </View>
           )}
 
           {status === "letto" && (
             <>
               <Text style={styles.label}>Valutazione</Text>
-              <StarRating rating={rating} onChange={setRating} />
-
+<View style={{ marginBottom: 16 }}>
+  <StarRating rating={rating} onChange={setRating} />
+</View>
               <TextInput
                 placeholder="Note"
                 value={notes}
@@ -420,28 +344,16 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     color: "#aaa",
   },
-  pickerWrapper: {
-    backgroundColor: "#222",
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: "#666",
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
+  pickerColored: {
+    color: "#FFF600", // colore testo picker selezionato
   },
-  picker: {
-    color: "#FFF600",
-    fontSize: 16,
-    flex: 1,
-  },
-  pickerItem: {
-    color: "white",
+  pickerItemColored: {
+    color: "#FFF600", // colore testo elenco item
     fontSize: 16,
   },
-
   imagePickerContainer: {
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 12,
   },
   pickImageButton: {
     backgroundColor: "#FFF600",
@@ -463,47 +375,14 @@ const styles = StyleSheet.create({
     borderColor: "#444",
     resizeMode: "cover",
   },
-  starContainer: {
-    flexDirection: "row",
-    marginVertical: 12,
-    justifyContent: "flex-start",
+
+  statusDatesContainer: {
+    flexDirection: "column",
+    justifyContent: "space-between",
+    paddingHorizontal: 10,
+    marginBottom: 24,
   },
-  starTouchable: {
-    paddingHorizontal: 6,
-  },
-  star: {
-    fontSize: 32,
-    color: "#555",
-  },
-  filledStar: {
-    color: "#f1c40f",
-  },
-  emptyStar: {
-    color: "#555",
-  },
-  dateCard: {
-  backgroundColor: "#222",
-  paddingHorizontal: 14,
-  paddingVertical: 8,
-  borderRadius: 16,
-  width: "100%",  // piena larghezza
-  maxWidth: 400,  // opzionale, se vuoi limitare max larghezza su schermi grandi
-  alignItems: "center",
-  flexDirection: "row",
-  justifyContent: "center",
-  marginBottom: 12,
-},
-  cardLabel: {
-    color: "#aaa",
-    fontSize: 12,
-    fontWeight: "600",
-    marginRight: 6,
-  },
-  cardValue: {
-    color: "#eee",
-    fontSize: 14,
-    fontWeight: "700",
-  },
+
   submitButton: {
     backgroundColor: "#FFF600",
     paddingVertical: 16,
@@ -513,7 +392,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   submitButtonText: {
-    color: "#00000",
+    color: "#000",
     fontSize: 18,
     fontWeight: "700",
   },

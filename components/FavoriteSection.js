@@ -16,7 +16,7 @@ export default function FavoriteSection({ books, navigation }) {
   const renderBook = ({ item }) => (
     <BookCard
       book={item}
-      onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
+      onPress={() => navigation.navigate("Detail", { bookId: item.id })}
     />
   );
 

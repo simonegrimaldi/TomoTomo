@@ -5,7 +5,7 @@ import StarRating from "./StarRating";
 export default function FiltersMenu({ filters, toggleFilter, resetFilters }) {
   return (
     <View style={styles.filtersMenu}>
-      <ScrollView>
+      <ScrollView keyboardShouldPersistTaps="handled">
         {/* Stato */}
         <View style={styles.filterCategory}>
           <Text style={styles.filterTitle}>Stato</Text>
@@ -14,9 +14,16 @@ export default function FiltersMenu({ filters, toggleFilter, resetFilters }) {
               key={status}
               onPress={() => toggleFilter("status", status)}
               style={styles.filterLabel}
+              accessibilityRole="checkbox"
+              accessibilityState={{ checked: filters.status[status] }}
             >
-              <Text style={{ color: filters.status[status] ? "#1e90ff" : "#ccc" }}>
-                {status}
+              <Text
+                style={[
+                  styles.filterLabelText,
+                  filters.status[status] && styles.filterLabelActive,
+                ]}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)}
               </Text>
             </TouchableOpacity>
           ))}
@@ -32,7 +39,12 @@ export default function FiltersMenu({ filters, toggleFilter, resetFilters }) {
         </View>
 
         {/* Bottone reset filtri */}
-        <TouchableOpacity style={styles.resetButton} onPress={resetFilters}>
+        <TouchableOpacity
+          style={styles.resetButton}
+          onPress={resetFilters}
+          accessibilityRole="button"
+          accessibilityLabel="Reset filtri"
+        >
           <Text style={styles.resetButtonText}>Annulla filtri</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -43,32 +55,39 @@ export default function FiltersMenu({ filters, toggleFilter, resetFilters }) {
 const styles = StyleSheet.create({
   filtersMenu: {
     backgroundColor: "#121212",
-    paddingVertical: 12,
-    borderBottomWidth: 2,
-    borderBottomColor: "#FFF600", // blu acceso coerente
+    paddingVertical: 16,
   },
   filterCategory: {
-    marginHorizontal: 10,
+    marginHorizontal: 16,
+    marginBottom: 20,
   },
   filterTitle: {
     fontWeight: "900",
-    marginBottom: 6,
-    fontSize: 16,
-    color: "white", // testo chiaro
+    marginBottom: 12,
+    fontSize: 18,
+    color: "#FFF600",
   },
   filterLabel: {
-    marginBottom: 8,
+    marginBottom: 12,
+  },
+  filterLabelText: {
+    color: "#aaa",
+    fontSize: 16,
+  },
+  filterLabelActive: {
+    color: "#FFF600",
+    fontWeight: "700",
   },
   resetButton: {
-    marginTop: 20,
     backgroundColor: "#FFF600",
-    paddingVertical: 12,
-    marginHorizontal: 10,
-    borderRadius: 8,
+    paddingVertical: 14,
+    marginHorizontal: 16,
+    borderRadius: 10,
     alignItems: "center",
+    marginBottom: 20,
   },
   resetButtonText: {
-    color: "black",
+    color: "#000",
     fontWeight: "700",
     fontSize: 16,
   },

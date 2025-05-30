@@ -1,8 +1,8 @@
+// components/DatePickerDisplay.js
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-export default function DatePickerDisplay({ label, date }) {
-  // Funzione per formattare date "YYYY-MM-DD" in locale
+const DatePickerDisplay = ({ label, date }) => {
   const formatDate = (dateString) => {
     if (!dateString) return "-";
     const parts = dateString.split("-");
@@ -15,12 +15,10 @@ export default function DatePickerDisplay({ label, date }) {
   return (
     <View style={styles.dateCard}>
       <Text style={styles.cardLabel}>{label}</Text>
-      <Text style={[styles.cardValue, { color: "#FFF600", paddingLeft: 6 }]}>
-        {formatDate(date)}
-      </Text>
+      <Text style={styles.cardValue}>{formatDate(date)}</Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   dateCard: {
@@ -28,7 +26,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 16,
-    width: "48%",
+    width: "100%",  // tutta la larghezza disponibile
+    maxWidth: 400,
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",
@@ -46,3 +45,5 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
+
+export default DatePickerDisplay;

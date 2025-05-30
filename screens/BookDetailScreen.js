@@ -29,8 +29,6 @@ export default function BookDetailScreen({ route, navigation }) {
   const [book, setBook] = useState(null);
   const [editedBook, setEditedBook] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [showStartDate, setShowStartDate] = useState(false);
-  const [showEndDate, setShowEndDate] = useState(false);
 
   const toggleFavorite = async () => {
     const updated = { ...editedBook, favorite: !editedBook.favorite };
@@ -99,16 +97,6 @@ export default function BookDetailScreen({ route, navigation }) {
     } catch (err) {
       console.error("Errore durante la conferma modifica:", err);
     }
-  };
-
-  // Funzione per formattare le date da "YYYY-MM-DD" a formato locale leggibile
-  const formatDate = (dateString) => {
-    if (!dateString) return "-";
-    const parts = dateString.split("-");
-    if (parts.length !== 3) return "-";
-    const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
-    if (isNaN(dateObj.getTime())) return "-";
-    return dateObj.toLocaleDateString();
   };
 
   return (
@@ -192,73 +180,105 @@ export default function BookDetailScreen({ route, navigation }) {
           )}
         </View>
 
- {isEditing && (
-  <>
-    <View style={styles.statusContainerEdit}>
-      <Text style={styles.sectionTitle}>Stato</Text>
-      <Picker
-        selectedValue={editedBook.status?.toString() ?? "Da leggere"}
-        onValueChange={(value) => {
-          setEditedBook((prev) => {
-            let updated = { ...prev, status: value };
-            if (value === "Da leggere") {
-              updated.date_start = null;
-              updated.date_end = null;
-            }
-            if (
-              (value === "Letto" || value === "In lettura") &&
-              !prev.date_start
-            ) {
-              updated.date_start = new Date().toISOString().substring(0, 10);
-            }
-            if (value !== "Letto") updated.date_end = null;
-            return updated;
-          });
-        }}
-        style={[styles.picker, styles.pickerColored]}
-        dropdownIconColor="#FFF600"
-        itemStyle={styles.pickerItemColored}
-      >
-        <Picker.Item label="Da leggere" value="Da leggere" color="#FFF600" />
-        <Picker.Item label="In lettura" value="In lettura" color="#FFF600" />
-        <Picker.Item label="Letto" value="Letto" color="#FFF600" />
-      </Picker>
-    </View>
+        {isEditing && (
+          <>
+            <View style={styles.statusContainerEdit}>
+              <Text style={styles.sectionTitle}>Stato</Text>
+              <Picker
+                selectedValue={editedBook.status?.toString() ?? "Da leggere"}
+                onValueChange={(value) => {
+                  setEditedBook((prev) => {
+                    let updated = { ...prev, status: value };
+                    if (value === "Da leggere") {
+                      updated.date_start = null;
+                      updated.date_end = null;
+                      updated.rating = null;
+                      updated.notes = "";
+                    }
+                    if (
+                      (value === "Letto" || value === "In lettura") &&
+                      !prev.date_start
+                    ) {
+                      updated.date_start = new Date().toISOString().substring(0, 10);
+                    }
+                    if (value !== "Letto") {
+                      updated.date_end = null;
+                      updated.rating = null;
+                      updated.notes = "";
+                    }
+                    return updated;
+                  });
+                }}
+                style={[styles.picker, styles.pickerColored]}
+                dropdownIconColor="#FFF600"
+                itemStyle={styles.pickerItemColored}
+              >
+                <Picker.Item label="Da leggere" value="Da leggere" color="#FFF600" />
+                <Picker.Item label="In lettura" value="In lettura" color="#FFF600" />
+                <Picker.Item label="Letto" value="Letto" color="#FFF600" />
+              </Picker>
+            </View>
 
-    {editedBook.status !== "Da leggere" && (
-      <View style={styles.statusDatesContainerColumn}>
-  <DatePickerEdit
-    label="Inizio"
-    date={editedBook.date_start}
-    onChangeDate={(newDate) => {
-      setEditedBook((prev) => ({
-        ...prev,
-        date_start: newDate,
-        date_end:
-          prev.date_end && prev.date_end < newDate ? null : prev.date_end,
-      }));
-    }}
-  />
+            {editedBook.status !== "Da leggere" && (
+              <View style={styles.statusDatesContainer}>
+                <DatePickerEdit
+                  label="Inizio"
+                  date={editedBook.date_start}
+                  onDateChange={(newDate) => {
+                    setEditedBook((prev) => ({
+                      ...prev,
+                      date_start: newDate,
+                      date_end:
+                        prev.date_end && prev.date_end < newDate ? null : prev.date_end,
+                    }));
+                  }}
+                />
 
-  {editedBook.status === "Letto" && (
-    <DatePickerEdit
-      label="Fine"
-      date={editedBook.date_end}
-      minimumDate={editedBook.date_start ? new Date(editedBook.date_start) : null}
-      onChangeDate={(newDate) => {
-        setEditedBook((prev) => ({
-          ...prev,
-          date_end: newDate,
-        }));
-      }}
-    />
-  )}
-</View>
-    )}
-  </>
-)}
+                {editedBook.status === "Letto" && (
+                  <DatePickerEdit
+                    label="Fine"
+                    date={editedBook.date_end}
+                    minimumDate={editedBook.date_start ? new Date(editedBook.date_start) : null}
+                    onDateChange={(newDate) => {
+                      setEditedBook((prev) => ({
+                        ...prev,
+                        date_end: newDate,
+                      }));
+                    }}
+                  />
+                )}
+              </View>
+            )}
 
-{!isEditing && (
+            {/* Valutazione e Note solo se stato = Letto */}
+            {editedBook.status === "Letto" && (
+              <>
+                <Text style={styles.sectionTitle}>Valutazione</Text>
+                <StarRating
+                  rating={editedBook.rating || 0}
+                  onChange={(val) =>
+                    setEditedBook((prev) => ({ ...prev, rating: val }))
+                  }
+                />
+
+                <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Note</Text>
+                <TextInput
+                  placeholder="Inserisci note..."
+                  value={editedBook.notes || ""}
+                  onChangeText={(text) =>
+                    setEditedBook((prev) => ({ ...prev, notes: text }))
+                  }
+                  style={[styles.synopsisInput, styles.editable]}
+                  multiline
+                  numberOfLines={4}
+                  placeholderTextColor="#888"
+                />
+              </>
+            )}
+          </>
+        )}
+
+       {!isEditing && (
   <>
     <View style={styles.stateEditRow}>
       <View style={styles.statusContainer}>
@@ -282,72 +302,23 @@ export default function BookDetailScreen({ route, navigation }) {
       <DatePickerDisplay label="Fine" date={editedBook.date_end} />
     </View>
 
-    <View style={styles.ratingRow}>
-      <Text style={styles.sectionTitle}>Valutazione</Text>
-      <StarRating rating={editedBook.rating || 0} editable={false} />
-    </View>
+    {/* Valutazione e note solo se stato = Letto */}
+    {editedBook.status === "Letto" && (
+      <View style={styles.ratingRow}>
+        <Text style={styles.sectionTitle}>Valutazione</Text>
+        <StarRating rating={editedBook.rating || 0} editable={false} />
+
+        {editedBook.notes ? (
+          <>
+            <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Note</Text>
+            <Text style={styles.synopsisText}>{editedBook.notes}</Text>
+          </>
+        ) : null}
+      </View>
+    )}
   </>
 )}
 
-        {/* Genre */}
-        <View style={styles.genreContainer}>
-          <Text style={styles.sectionTitle}>Genere</Text>
-          {isEditing ? (
-            <Picker
-              selectedValue={editedBook.genre}
-              onValueChange={(value) =>
-                setEditedBook((prev) => ({ ...prev, genre: value }))
-              }
-              style={[styles.picker, styles.pickerColored]}
-              dropdownIconColor="#FFF600"
-              itemStyle={styles.pickerItemColored}
-            >
-              {[
-                "Narrativa",
-                "Fantasy",
-                "Fantascienza",
-                "Giallo",
-                "Horror",
-                "Romanzo storico",
-                "Biografia",
-                "Saggio",
-                "Avventura",
-                "Poesia",
-                "Thriller",
-                "Young Adult",
-                "Classico",
-                "Altro",
-              ].map((g) => (
-                <Picker.Item key={g} label={g} value={g} color="#FFF600" />
-              ))}
-            </Picker>
-          ) : (
-            <Text style={styles.cardValue}>{editedBook.genre}</Text>
-          )}
-        </View>
-
-        {/* Synopsis */}
-        <View style={styles.synopsisContainer}>
-          <Text style={styles.sectionTitle}>Sinossi</Text>
-          {isEditing ? (
-            <TextInput
-              style={[styles.synopsisInput, styles.editable]}
-              value={editedBook.synopsis}
-              editable
-              multiline
-              numberOfLines={6}
-              onChangeText={(text) =>
-                setEditedBook({ ...editedBook, synopsis: text })
-              }
-            />
-          ) : (
-            <Text style={styles.synopsisText}>
-              {editedBook.synopsis || "Nessuna sinossi disponibile."}
-            </Text>
-          )}
-        </View>
-
-        {/* Edit action buttons */}
         {isEditing && (
           <EditActionButtons
             onCancel={handleCancelEdit}
@@ -489,16 +460,16 @@ const styles = StyleSheet.create({
   },
 
   dateCard: {
-  backgroundColor: "#222",
-  paddingHorizontal: 14,
-  paddingVertical: 8,
-  borderRadius: 16,
-  width: "90%",                 // aumenta larghezza per coprire quasi tutto
-  alignItems: "center",
-  flexDirection: "row",
-  justifyContent: "center",
-  marginBottom: 12,
-},
+    backgroundColor: "#222",
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 16,
+    width: "48%", // metà larghezza per stare in riga
+    alignItems: "center",
+    flexDirection: "row", // testo e label su una riga
+    justifyContent: "center",
+    marginBottom: 12,
+  },
 
   cardLabel: {
     color: "#aaa",
@@ -618,7 +589,7 @@ const styles = StyleSheet.create({
   },
 
   statusDatesContainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
     paddingHorizontal: 10,
     marginBottom: 24,
@@ -654,12 +625,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 140,
   },
-  statusDatesContainerColumn: {
-  flexDirection: "column",       // disporre in colonna (verticale)
-  paddingHorizontal: 10,
-  marginBottom: 24,
-  width: "100%",                 // occupa tutta la larghezza
-  alignItems: "center",          // centra orizzontalmente i figli
-},
   editable: {},
 });

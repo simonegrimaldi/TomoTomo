@@ -81,7 +81,6 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
   },
   listContent: {
-    paddingHorizontal: 12,
     alignItems: "center",
     paddingHorizontal:25,
   },

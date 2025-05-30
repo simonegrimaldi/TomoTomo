@@ -59,9 +59,11 @@ const styles = StyleSheet.create({
     width: 120,
     marginRight: 16,
     paddingHorizontal: 20,
-    alignItems: "left",
+    alignItems: "flex-start",
     borderRadius: 10,
     padding: 8,
+    alignItems: "center"
+
   },
   bookImage: {
     width: 100,
@@ -76,5 +78,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: "#eee",
+        textAlign: "center",
+
   },
 });

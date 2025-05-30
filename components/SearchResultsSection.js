@@ -1,6 +1,11 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, Dimensions } from "react-native";
 import defaultGenreImage from "../assets/libri/default_genre_image.png";
+
+const screenWidth = Dimensions.get("window").width;
+const numColumns = 3;
+const spacing = 8;
+const cardWidth = (screenWidth - spacing * (numColumns + 1)) / numColumns;
 
 export default function SearchResultsSection({ filteredBooks, navigation }) {
   if (filteredBooks.length === 0) {
@@ -15,12 +20,12 @@ export default function SearchResultsSection({ filteredBooks, navigation }) {
     <FlatList
       data={filteredBooks}
       keyExtractor={(item) => item.id.toString()}
-      numColumns={3}
+      numColumns={numColumns}
       columnWrapperStyle={styles.row}
       renderItem={({ item }) => (
         <TouchableOpacity
           style={styles.bookCard}
-onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
+          onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
         >
           <Image
             source={item.cover_image_uri ? { uri: item.cover_image_uri } : defaultGenreImage}
@@ -41,28 +46,37 @@ onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
 const styles = StyleSheet.create({
   noResultsContainer: { padding: 20, alignItems: "center" },
   noResultsText: { fontStyle: "italic", color: "#666" },
-  row: { justifyContent: "space-between", marginBottom: 16 },
-  bookCard: {
-    flex: 1 / 3,
-    paddingHorizontal:20,
-    marginHorizontal: 4,
-    alignItems: "left",
+
+  row: {
+    justifyContent: "flex-start",
+    marginBottom: spacing,
+    paddingHorizontal: spacing / 2,
   },
+
+  bookCard: {
+    width: cardWidth,
+    marginHorizontal: spacing / 2,
+    marginBottom: spacing,
+    alignItems: "flex-start",
+  },
+
   bookImage: {
-    width: 100,
+    width: "100%",
     height: 150,
     borderRadius: 8,
     marginBottom: 6,
   },
+
   bookTitle: {
     fontWeight: "600",
     fontSize: 14,
     color: "white",
     textAlign: "left",
   },
+
   bookAuthor: {
     fontSize: 12,
     color: "#666",
-    textAlign: "left",
+    textAlign: "cente",
   },
 });

@@ -1,40 +1,59 @@
 import React, { useContext, useMemo, useState } from "react";
-import { View, ScrollView, StyleSheet, SafeAreaView, Text, Image } from "react-native";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  Image,
+} from "react-native";
 import { BooksContext } from "../context/BooksContext";
 import ProfileStats from "../components/ProfileStats";
 import GenrePieChart from "../components/GenrePieChart";
 import BookCarousel from "../components/BookCarousel";
-import FilterBar from "../components/FilterBar";
 import logo from "../assets/icon.png";
 
 export default function ProfileScreen({ navigation }) {
   const { books } = useContext(BooksContext);
-  const [filterMonths, setFilterMonths] = useState(12);
-
+  // Filtra libri in base allo stato (con lowercase per sicurezza)
   const booksRead = books.filter((b) => b.status?.toLowerCase() === "letto");
-  const booksToRead = books.filter((b) => b.status?.toLowerCase() === "da leggere");
-  const booksReading = books.filter((b) => b.status?.toLowerCase() === "in lettura");
+  const booksToRead = books.filter(
+    (b) => b.status?.toLowerCase() === "da leggere"
+  );
+  const booksReading = books.filter(
+    (b) => b.status?.toLowerCase() === "in lettura"
+  );
   const booksFavorite = books.filter((b) => b.favorite === true);
 
   const totalBooks = books.length;
-  const avgRating = booksRead.length > 0
-    ? booksRead.reduce((sum, b) => sum + (b.rating || 0), 0) / booksRead.length
-    : 0;
 
+  // Calcolo media rating libri letti
+  const avgRating =
+    booksRead.length > 0
+      ? booksRead.reduce((sum, b) => sum + (b.rating || 0), 0) /
+        booksRead.length
+      : 0;
+
+  // Calcolo tempo medio lettura in giorni
   const avgReadTime = (() => {
     if (booksRead.length === 0) return 0;
     let totalDays = 0;
+    let count = 0;
     booksRead.forEach((b) => {
       if (b.date_start && b.date_end) {
         const start = new Date(b.date_start);
         const end = new Date(b.date_end);
         const diff = (end - start) / (1000 * 3600 * 24);
-        if (!isNaN(diff)) totalDays += diff;
+        if (!isNaN(diff) && diff >= 0) {
+          totalDays += diff;
+          count++;
+        }
       }
     });
-    return Math.round(totalDays / booksRead.length);
+    return count > 0 ? Math.round(totalDays / count) : 0;
   })();
 
+  // Prepara dati per grafico generi
   const genreData = (() => {
     const genreMap = {};
     booksRead.forEach((b, idx) => {
@@ -51,14 +70,6 @@ export default function ProfileScreen({ navigation }) {
   })();
 
   const now = new Date();
-  const filteredReadBooks = useMemo(() => {
-    return booksRead.filter((b) => {
-      if (!b.date_end) return false;
-      const end = new Date(b.date_end);
-      const diffMonths = (now - end) / (1000 * 3600 * 24 * 30);
-      return diffMonths <= filterMonths;
-    });
-  }, [booksRead, filterMonths]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -93,20 +104,14 @@ export default function ProfileScreen({ navigation }) {
 
         <Text style={styles.sectionTitle}>La tua libreria</Text>
 
-        <FilterBar
-          selected={filterMonths}
-          onSelect={setFilterMonths}
-          options={[3, 6, 12]}
-        />
 
         <BookCarousel
           title="Libri letti"
-          books={filteredReadBooks}
+          books={booksRead} // qui prima era filteredReadBooks
           onBookPress={(book) =>
             navigation.navigate("DetailBook", { bookId: book.id })
           }
         />
-
         <BookCarousel
           title="Da leggere"
           books={booksToRead}
@@ -154,10 +159,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#FFF600",
-    marginBottom: 10,
     marginTop: 20,
-    textAlign: "center",
     marginBottom: 20,
+    textAlign: "center",
   },
   container: {
     flex: 1,

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useMemo, useCallback } from "react";
+import React, { useState, useContext, useMemo, useCallback,useEffect } from "react";
 import { View, ScrollView, StyleSheet, Image } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
@@ -12,6 +12,8 @@ import PlaylistSection from "../components/PlaylistSection";
 import FavoriteSection from "../components/FavoriteSection";
 import SearchResultsSection from "../components/SearchResultsSection";
 import FilteredBooksSection from "../components/FilteredBooksSection";
+import RandomBooksSection from "../components/RandomBooksSection"; // importa qui
+
 
 import logo from "../assets/icon.png";
 
@@ -48,17 +50,17 @@ const HomeScreen = ({ navigation }) => {
   }, [books, searchText]);
 
   const filteredBooksByFilters = useMemo(() => {
-    const { status, rating } = filters;
-    const anyStatusActive = Object.values(status).some((v) => v);
-    const ratingActive = rating > 0;
-    if (!anyStatusActive && !ratingActive) return [];
+  const { status, rating } = filters;
+  const anyStatusActive = Object.values(status).some((v) => v);
+  const ratingActive = rating > 0;
+  if (!anyStatusActive && !ratingActive) return [];
 
-    return books.filter((book) => {
-      if (anyStatusActive && !status[book.status]) return false;
-      if (ratingActive && (!book.rating || book.rating < rating)) return false;
-      return true;
-    });
-  }, [books, filters]);
+  return books.filter((book) => {
+    if (anyStatusActive && !status[book.status]) return false;
+    if (ratingActive && (!book.rating || book.rating !== rating)) return false;  // cambio qui: uguaglianza esatta
+    return true;
+  });
+}, [books, filters]);
 
   const isFilteringActive =
     Object.values(filters.status).some((v) => v) || filters.rating > 0;
@@ -82,6 +84,12 @@ const HomeScreen = ({ navigation }) => {
   };
   const resetFilters = () =>
     setFilters({ status: { "da leggere": false, "in lettura": false, letto: false }, rating: 0 });
+
+useEffect(() => {
+  if (searchText === "") {
+    resetFilters();
+  }
+}, [searchText]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -109,20 +117,27 @@ const HomeScreen = ({ navigation }) => {
       {/* CONTENUTO */}
       <View style={styles.contentContainer}>
         {searchText ? (
-          <SearchResultsSection filteredBooks={filteredBooksBySearch} navigation={navigation} />
-        ) : isFilteringActive ? (
-          <FilteredBooksSection filteredBooks={filteredBooksByFilters} navigation={navigation} />
-        ) : (
-          <ScrollView
-            style={styles.scrollContent}
-            contentContainerStyle={styles.scrollInner}
-            keyboardShouldPersistTaps="handled"
-          >
-            <LastAddedSection books={lastThreeBooks} navigation={navigation} />
-            <PlaylistSection books={books} navigation={navigation} />
-            <FavoriteSection books={books} navigation={navigation} />
-          </ScrollView>
-        )}
+        <SearchResultsSection
+          filteredBooks={filteredBooksBySearch}
+          navigation={navigation}
+        />
+      ) : isFilteringActive ? (
+        <FilteredBooksSection
+          filteredBooks={filteredBooksByFilters}
+          navigation={navigation}
+        />
+      ) : (
+        <ScrollView
+          style={styles.scrollContent}
+          contentContainerStyle={styles.scrollInner}
+          keyboardShouldPersistTaps="handled"
+        >
+          <LastAddedSection books={lastThreeBooks} navigation={navigation} />
+          <PlaylistSection books={books} navigation={navigation} />
+          {/* Sostituito FavoriteSection con RandomBooksSection */}
+          <RandomBooksSection books={books} navigation={navigation} />
+        </ScrollView>
+      )}
       </View>
     </SafeAreaView>
   );
