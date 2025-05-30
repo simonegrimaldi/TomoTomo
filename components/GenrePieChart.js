@@ -16,7 +16,11 @@ const chartConfig = {
 
 export default function GenrePieChart({ data }) {
   if (!data || data.length === 0) {
-    return <Text style={{ textAlign: 'center', marginVertical: 20 }}>Nessun dato disponibile</Text>;
+    return (
+      <Text style={{ textAlign: 'center', marginVertical: 20, color: 'grey' }}>
+        Non ci sono libri letti
+      </Text>
+    );
   }
 
   return (
@@ -26,7 +30,7 @@ export default function GenrePieChart({ data }) {
         width={screenWidth - 40}
         height={220}
         chartConfig={chartConfig}
-        accessor={'population'}  // <-- assicurati che il nome combaci
+        accessor={'population'}
         backgroundColor={'transparent'}
         paddingLeft={'15'}
         absolute

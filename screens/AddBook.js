@@ -38,7 +38,10 @@ const StarRating = ({ rating, onChange }) => {
             style={styles.starTouchable}
           >
             <Text
-              style={[styles.star, filled ? styles.filledStar : styles.emptyStar]}
+              style={[
+                styles.star,
+                filled ? styles.filledStar : styles.emptyStar,
+              ]}
             >
               {filled ? "★" : "☆"}
             </Text>
@@ -98,9 +101,13 @@ const AddBook = ({ navigation }) => {
   );
 
   const pickImage = async () => {
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.status !== "granted") {
-      Alert.alert("Permesso negato", "Serve il permesso per accedere alla galleria");
+      Alert.alert(
+        "Permesso negato",
+        "Serve il permesso per accedere alla galleria"
+      );
       return;
     }
 
@@ -141,7 +148,10 @@ const AddBook = ({ navigation }) => {
     setShowEndDatePicker(false);
     if (selectedDate) {
       if (dateStart && selectedDate < dateStart) {
-        Alert.alert("Errore", "La data di fine non può essere precedente alla data di inizio");
+        Alert.alert(
+          "Errore",
+          "La data di fine non può essere precedente alla data di inizio"
+        );
       } else {
         setDateEnd(selectedDate);
       }
@@ -150,11 +160,17 @@ const AddBook = ({ navigation }) => {
 
   const handleSubmit = async () => {
     if (!title || !author || !synopsis || !genre || !coverImageUri) {
-      Alert.alert("Errore", "Compila tutti i campi obbligatori incluso la copertina");
+      Alert.alert(
+        "Errore",
+        "Compila tutti i campi obbligatori incluso la copertina"
+      );
       return;
     }
     if (dateStart && dateEnd && dateEnd < dateStart) {
-      Alert.alert("Errore", "La data di fine lettura deve essere successiva o uguale alla data di inizio");
+      Alert.alert(
+        "Errore",
+        "La data di fine lettura deve essere successiva o uguale alla data di inizio"
+      );
       return;
     }
 
@@ -172,7 +188,10 @@ const AddBook = ({ navigation }) => {
         (status === "in lettura" || status === "letto") && dateStart
           ? dateStart.toISOString().substring(0, 10)
           : null,
-      date_end: status === "letto" && dateEnd ? dateEnd.toISOString().substring(0, 10) : null,
+      date_end:
+        status === "letto" && dateEnd
+          ? dateEnd.toISOString().substring(0, 10)
+          : null,
     };
 
     try {
@@ -202,12 +221,14 @@ const AddBook = ({ navigation }) => {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
+          <Text style={styles.headerTitle}>Aggiungi libro</Text>
           <TextInput
             placeholder="Titolo"
             value={title}
             onChangeText={setTitle}
             style={styles.input}
             placeholderTextColor="#888"
+            autoFocus
           />
           <TextInput
             placeholder="Autore"
@@ -225,40 +246,58 @@ const AddBook = ({ navigation }) => {
             placeholderTextColor="#888"
           />
 
-          <Text style={styles.label}>Genere</Text>
           <View style={styles.pickerWrapper}>
+            <Text style={styles.label}>Genere</Text>
             <Picker
               selectedValue={genre}
               onValueChange={setGenre}
-              style={styles.picker}
-              dropdownIconColor="#555"
+              style={[styles.picker, styles.pickerColored]}
+              dropdownIconColor="#FFF600"
+              itemStyle={styles.pickerItemColored}
             >
-              {genres.map((genreItem) => (
-                <Picker.Item key={genreItem} label={genreItem} value={genreItem} />
+              {genres.map((g) => (
+                <Picker.Item key={g} label={g} value={g} color="#FFF600" />
               ))}
             </Picker>
           </View>
 
           <View style={styles.imagePickerContainer}>
-            <TouchableOpacity style={styles.pickImageButton} onPress={pickImage}>
-              <Text style={styles.pickImageButtonText}>Seleziona copertina</Text>
+            <TouchableOpacity
+              style={styles.pickImageButton}
+              onPress={pickImage}
+            >
+              <Text style={styles.pickImageButtonText}>
+                Seleziona copertina
+              </Text>
             </TouchableOpacity>
             {coverImageUri ? (
-              <Image source={{ uri: coverImageUri }} style={styles.coverImage} />
+              <Image
+                source={{ uri: coverImageUri }}
+                style={styles.coverImage}
+              />
             ) : null}
           </View>
 
-          <Text style={styles.label}>Stato</Text>
           <View style={styles.pickerWrapper}>
+            <Text style={styles.label}>Stato</Text>
             <Picker
               selectedValue={status}
               onValueChange={setStatus}
-              style={styles.picker}
-              dropdownIconColor="#555"
+              style={[styles.picker, styles.pickerColored]}
+              dropdownIconColor="#FFF600"
+              itemStyle={styles.pickerItemColored}
             >
-              <Picker.Item label="Da leggere" value="da leggere" />
-              <Picker.Item label="In lettura" value="in lettura" />
-              <Picker.Item label="Letto" value="letto" />
+              <Picker.Item
+                label="Da leggere"
+                value="da leggere"
+                color="#FFF600"
+              />
+              <Picker.Item
+                label="In lettura"
+                value="in lettura"
+                color="#FFF600"
+              />
+              <Picker.Item label="Letto" value="letto" color="#FFF600" />
             </Picker>
           </View>
 
@@ -269,7 +308,8 @@ const AddBook = ({ navigation }) => {
                 onPress={() => setShowStartDatePicker(true)}
               >
                 <Text style={styles.datePickerText}>
-                  Data inizio: {dateStart ? dateStart.toLocaleDateString() : "Nessuna data"}
+                  Data inizio:{" "}
+                  {dateStart ? dateStart.toLocaleDateString() : "Nessuna data"}
                 </Text>
               </TouchableOpacity>
               {showStartDatePicker && (
@@ -303,7 +343,8 @@ const AddBook = ({ navigation }) => {
                 onPress={() => setShowEndDatePicker(true)}
               >
                 <Text style={styles.datePickerText}>
-                  Data fine: {dateEnd ? dateEnd.toLocaleDateString() : "Nessuna data"}
+                  Data fine:{" "}
+                  {dateEnd ? dateEnd.toLocaleDateString() : "Nessuna data"}
                 </Text>
               </TouchableOpacity>
               {showEndDatePicker && (
@@ -335,25 +376,31 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   logoBar: {
-    height: 130,
-    paddingTop: 40,
-    backgroundColor: "#000",
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#222",
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
+    height: 140,
+    paddingTop: 40,
+    backgroundColor: "#000",
+    alignItems: "center",
+    justifyContent: "center",
+    borderBottomColor: "#FFD700",
+    borderBottomWidth: 1,
     zIndex: 100,
   },
   logoImage: {
     height: 80,
     width: 140,
   },
+  headerTitle: {
+    fontSize: 24,
+    color: "#FFF600",
+    textAlign: "center",
+    marginBottom: 20,
+  },
   scrollContent: {
-    paddingTop: 140,
+    paddingTop: 100,
     paddingBottom: 40,
     backgroundColor: "#000",
   },
@@ -383,16 +430,20 @@ const styles = StyleSheet.create({
   backgroundColor: "#222",
   borderRadius: 12,
   borderWidth: 1,
-  borderColor: "#444",
+  borderColor: "#666",
   marginBottom: 20,
-  overflow: "hidden",
-  height: 60,              // aumento altezza per dare più spazio al picker
-  justifyContent: "center" // centra verticalmente il contenuto
+  paddingHorizontal: 10,
+  paddingVertical: 4, // <--- aggiunto
 },
-picker: {
-  height: 60,              // stessa altezza del contenitore
-  color: "#eee",
-},
+  picker: {
+    color: "#FFF600",
+    fontSize: 16,
+    flex: 1,
+  },
+  pickerItem: {
+    color: "white", // forza colore testo item
+    fontSize: 16,
+  },
 
   imagePickerContainer: {
     alignItems: "center",
@@ -406,7 +457,7 @@ picker: {
     marginBottom: 16,
   },
   pickImageButtonText: {
-    color: "#00000",
+    color: "#000",
     fontSize: 16,
     fontWeight: "600",
   },

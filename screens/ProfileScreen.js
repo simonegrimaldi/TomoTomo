@@ -5,26 +5,23 @@ import ProfileStats from "../components/ProfileStats";
 import GenrePieChart from "../components/GenrePieChart";
 import BookCarousel from "../components/BookCarousel";
 import FilterBar from "../components/FilterBar";
-
 import logo from "../assets/icon.png";
 
 export default function ProfileScreen({ navigation }) {
   const { books } = useContext(BooksContext);
-
   const [filterMonths, setFilterMonths] = useState(12);
 
-  const booksRead = books.filter((b) => b.status === "letto");
-  const booksToRead = books.filter((b) => b.status === "da leggere");
-  const booksReading = books.filter((b) => b.status === "in lettura");
+  const booksRead = books.filter((b) => b.status?.toLowerCase() === "letto");
+  const booksToRead = books.filter((b) => b.status?.toLowerCase() === "da leggere");
+  const booksReading = books.filter((b) => b.status?.toLowerCase() === "in lettura");
+  const booksFavorite = books.filter((b) => b.favorite === true);
 
   const totalBooks = books.length;
-  const avgRating = useMemo(() => {
-    if (booksRead.length === 0) return 0;
-    const total = booksRead.reduce((sum, b) => sum + (b.rating || 0), 0);
-    return total / booksRead.length;
-  }, [booksRead]);
+  const avgRating = booksRead.length > 0
+    ? booksRead.reduce((sum, b) => sum + (b.rating || 0), 0) / booksRead.length
+    : 0;
 
-  const avgReadTime = useMemo(() => {
+  const avgReadTime = (() => {
     if (booksRead.length === 0) return 0;
     let totalDays = 0;
     booksRead.forEach((b) => {
@@ -36,22 +33,22 @@ export default function ProfileScreen({ navigation }) {
       }
     });
     return Math.round(totalDays / booksRead.length);
-  }, [booksRead]);
+  })();
 
-  const genreData = useMemo(() => {
+  const genreData = (() => {
     const genreMap = {};
-    booksRead.forEach((b) => {
+    booksRead.forEach((b, idx) => {
       const genre = b.genre || "Altro";
       genreMap[genre] = (genreMap[genre] || 0) + 1;
     });
     return Object.entries(genreMap).map(([name, count], idx) => ({
       name,
       population: count,
-      color: `hsl(${(idx * 50) % 360}, 70%, 60%)`,
+      color: `hsl(${(idx * 50) % 360}, 70%, 50%)`,
       legendFontColor: "#FFD700",
       legendFontSize: 14,
     }));
-  }, [booksRead]);
+  })();
 
   const now = new Date();
   const filteredReadBooks = useMemo(() => {
@@ -65,17 +62,11 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Barra fissa logo */}
       <View style={styles.logoBar}>
         <Image source={logo} style={styles.logoImage} resizeMode="contain" />
       </View>
 
-      {/* Scrollabile sotto */}
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={{ padding: 20, paddingTop: 160 }}
-      >
-        {/* Statistiche ben indentate e stilizzate */}
+      <ScrollView style={styles.container}>
         <View style={styles.statsContainer}>
           <ProfileStats
             total={totalBooks}
@@ -86,6 +77,21 @@ export default function ProfileScreen({ navigation }) {
         </View>
 
         <GenrePieChart data={genreData} />
+
+        {booksFavorite.length > 0 && (
+          <>
+            <Text style={styles.sectionTitle}>I tuoi preferiti</Text>
+            <BookCarousel
+              title=""
+              books={booksFavorite}
+              onBookPress={(book) =>
+                navigation.navigate("DetailBook", { bookId: book.id })
+              }
+            />
+          </>
+        )}
+
+        <Text style={styles.sectionTitle}>La tua libreria</Text>
 
         <FilterBar
           selected={filterMonths}
@@ -124,7 +130,7 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#00000", // tema scuro
+    backgroundColor: "#0a0a0a",
   },
   logoBar: {
     position: "absolute",
@@ -136,7 +142,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
-    borderBottomColor: "#222",
+    borderBottomColor: "#FFF600",
     borderBottomWidth: 1,
     zIndex: 100,
   },
@@ -144,17 +150,27 @@ const styles = StyleSheet.create({
     width: 140,
     height: 80,
   },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FFF600",
+    marginBottom: 10,
+    marginTop: 20,
+    textAlign: "center",
+    marginBottom: 20,
+  },
   container: {
     flex: 1,
-    backgroundColor: "#00000", // un nero leggermente più chiaro per il contenuto
+    padding: 20,
+    paddingTop: 100,
+    backgroundColor: "#0a0a0a",
   },
   statsContainer: {
     marginBottom: 20,
-    padding: 12,
-    backgroundColor: "#00000", // sfondo scuro per la card statistiche
+    padding: 16,
+    backgroundColor: "#111111",
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: "#FFD700",
+    borderColor: "#FFF600",
   },
-  // Se vuoi puoi personalizzare ProfileStats per usare colori gialli / testo bianco
 });

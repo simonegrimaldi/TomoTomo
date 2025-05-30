@@ -16,9 +16,8 @@ export default function DeleteButton({ bookId }) {
         {
           text: "Elimina",
           onPress: async () => {
-            await removeBook(bookId); // ⬅️ Chiamata corretta
-            navigation.goBack();
-          },
+  await removeBook(bookId);
+navigation.goBack() },
           style: "destructive",
         },
       ]

@@ -1,5 +1,6 @@
 import React, { useState, useContext, useMemo, useCallback } from "react";
-import { View, ScrollView, StyleSheet, SafeAreaView, Image } from "react-native";
+import { View, ScrollView, StyleSheet, Image } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { loadBooks } from "../services/Storage";
 import { BooksContext } from "../context/BooksContext";
@@ -8,46 +9,19 @@ import TopBar from "../components/TopBar";
 import FiltersMenu from "../components/FiltersMenu";
 import LastAddedSection from "../components/LastAddedSection";
 import PlaylistSection from "../components/PlaylistSection";
-import FavoriteSection from "../components/FavoriteSection"; 
+import FavoriteSection from "../components/FavoriteSection";
 import SearchResultsSection from "../components/SearchResultsSection";
 import FilteredBooksSection from "../components/FilteredBooksSection";
 
-import logo from "../assets/icon.png";  // import logo
+import logo from "../assets/icon.png";
 
 const HomeScreen = ({ navigation }) => {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [searchText, setSearchText] = useState("");
-
   const [filters, setFilters] = useState({
     status: { "da leggere": false, "in lettura": false, letto: false },
     rating: 0,
   });
-
-  const toggleFilters = () => setFiltersOpen((open) => !open);
-
-  const toggleFilter = (category, key) => {
-    if (category === "rating") {
-      setFilters((prev) => ({ ...prev, rating: key }));
-    } else {
-      setFilters((prev) => ({
-        ...prev,
-        [category]: {
-          ...prev[category],
-          ...(category === "status"
-            ? Object.fromEntries(Object.keys(prev[category]).map((k) => [k, false]))
-            : {}),
-          [key]: !prev[category][key],
-        },
-      }));
-    }
-  };
-
-  const resetFilters = () => {
-    setFilters({
-      status: { "da leggere": false, "in lettura": false, letto: false },
-      rating: 0,
-    });
-  };
 
   const { books, setBooks } = useContext(BooksContext);
 
@@ -89,34 +63,50 @@ const HomeScreen = ({ navigation }) => {
   const isFilteringActive =
     Object.values(filters.status).some((v) => v) || filters.rating > 0;
 
-  return (
-    <View style={styles.container}>
-      {/* Barra fissa logo */}
-      <SafeAreaView style={styles.logoBarSafeArea}>
-        <View style={styles.logoBar}>
-          <Image source={logo} style={styles.logoImage} resizeMode="contain" />
-        </View>
-      </SafeAreaView>
+  const toggleFilters = () => setFiltersOpen((open) => !open);
+  const toggleFilter = (category, key) => {
+    if (category === "rating") {
+      setFilters((prev) => ({ ...prev, rating: key }));
+    } else {
+      setFilters((prev) => ({
+        ...prev,
+        [category]: {
+          ...prev[category],
+          ...(category === "status"
+            ? Object.fromEntries(Object.keys(prev[category]).map((k) => [k, false]))
+            : {}),
+          [key]: !prev[category][key],
+        },
+      }));
+    }
+  };
+  const resetFilters = () =>
+    setFilters({ status: { "da leggere": false, "in lettura": false, letto: false }, rating: 0 });
 
-      {/* Barra fissa ricerca */}
-      <SafeAreaView style={styles.searchBarSafeArea}>
+  return (
+    <SafeAreaView style={styles.safeArea}>
+      {/* LOGO */}
+      <View style={styles.logoBar}>
+        <Image source={logo} style={styles.logoImage} resizeMode="contain" />
+      </View>
+
+      {/* BARRA DI RICERCA */}
+      <View style={styles.topBarWrapper}>
         <TopBar
           toggleFilters={toggleFilters}
           searchText={searchText}
           onSearchChange={setSearchText}
-          style={styles.topBar}
         />
-        {/* Filtro sotto ricerca */}
-        { !searchText && filtersOpen && (
+        {!searchText && filtersOpen && (
           <FiltersMenu
             filters={filters}
             toggleFilter={toggleFilter}
             resetFilters={resetFilters}
           />
         )}
-      </SafeAreaView>
+      </View>
 
-      {/* Contenuto scrollabile */}
+      {/* CONTENUTO */}
       <View style={styles.contentContainer}>
         {searchText ? (
           <SearchResultsSection filteredBooks={filteredBooksBySearch} navigation={navigation} />
@@ -124,8 +114,8 @@ const HomeScreen = ({ navigation }) => {
           <FilteredBooksSection filteredBooks={filteredBooksByFilters} navigation={navigation} />
         ) : (
           <ScrollView
-            style={styles.centralSection}
-            contentContainerStyle={styles.centralContentContainer}
+            style={styles.scrollContent}
+            contentContainerStyle={styles.scrollInner}
             keyboardShouldPersistTaps="handled"
           >
             <LastAddedSection books={lastThreeBooks} navigation={navigation} />
@@ -134,54 +124,48 @@ const HomeScreen = ({ navigation }) => {
           </ScrollView>
         )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: "#000",       // sfondo nero
-  },
-
-  logoBarSafeArea: {
     backgroundColor: "#000",
   },
-
   logoBar: {
-    height: 130,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 140,
     paddingTop: 40,
     backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
-    borderBottomColor: "#222",
-    borderBottomWidth: 1,
-  },
+        borderBottomColor: "#FFD700",
 
+    borderBottomWidth: 1,
+    zIndex: 100,
+  },
   logoImage: {
     height: 80,
     width: 140,
   },
-
-  searchBarSafeArea: {
-    backgroundColor: "#000",
+  topBarWrapper: {
+    marginTop:90,
     paddingHorizontal: 16,
-  },
-
-  topBar: {
     backgroundColor: "#000",
   },
-
   contentContainer: {
     flex: 1,
+    backgroundColor: "#000",
   },
-
-  centralSection: {
+  scrollContent: {
     flex: 1,
     paddingHorizontal: 16,
   },
-
-  centralContentContainer: {
+  scrollInner: {
     paddingBottom: 40,
   },
 });
