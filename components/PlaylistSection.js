@@ -29,7 +29,7 @@ export default function PlaylistSection({ books, navigation }) {
       genreName={item.genreName}
       genreImageUri={item.genreImageUri}
       onPress={() =>
-        navigation.navigate("GenreBooks", {
+        navigation.navigate("Genre", {
           genreName: item.genreName,
           books,
         })

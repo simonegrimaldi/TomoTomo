@@ -123,6 +123,19 @@ export default function BookDetailScreen({ route, navigation }) {
           <Ionicons name="arrow-back" size={24} color="#FFF600" />
         </TouchableOpacity>
         <Image source={logo} style={styles.logoImage} resizeMode="contain" />
+        <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButtonOverlay}>
+          <Image
+            source={
+              editedBook.favorite
+                ? require('../assets/Preferiti.png')
+                : require('../assets/nonPreferiti.png')
+            }
+            style={[
+              styles.favoriteIconImage,
+              { tintColor: editedBook.favorite ? '#ffd700' : '#888' }
+            ]}
+          />
+        </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -136,19 +149,7 @@ export default function BookDetailScreen({ route, navigation }) {
             style={styles.coverImage}
             resizeMode="contain"
           />
-          <TouchableOpacity
-            onPress={toggleFavorite}
-            style={styles.favoriteButtonOverlay}
-          >
-            <Text
-              style={[
-                styles.favoriteIcon,
-                editedBook.favorite && styles.favoriteActive,
-              ]}
-            >
-              {editedBook.favorite ? "❤" : "🤍"}
-            </Text>
-          </TouchableOpacity>
+        
         </View>
 
         <View style={styles.titleAuthorContainer}>
@@ -418,15 +419,17 @@ const styles = StyleSheet.create({
   },
   coverContainer: {
     width: "100%",
-    height: 400, // altezza per dare spazio all'immagine
+    height: 300, // altezza per dare spazio all'immagine
     backgroundColor: "#000",
-    marginBottom: 16,
   },
 
   coverImage: {
-    width: "100%",
-    height: "100%",
-  },
+  width: "100%",
+  height: "100%",
+  resizeMode: "contain",
+  paddingLeft:40,
+  paddingRight:40,
+},
 
   titleAuthorContainer: {
     backgroundColor: "#000",
@@ -558,11 +561,10 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   favoriteButtonOverlay: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    padding: 6,
-    zIndex: 10,
+     position: "absolute",
+    right: 16,
+    top: "100%",
+    transform: [{ translateY: -12 }],
   },
 
   favoriteIcon: {
@@ -659,5 +661,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 140,
   },
+  favoriteIconImage: {
+  width: 30,  // o la dimensione che preferisci
+  height: 30,
+},
   editable: {},
 });

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
 
 export default function BottomTabBar({ navigation }) {
   const state = navigation.getState();
@@ -27,12 +27,12 @@ export default function BottomTabBar({ navigation }) {
       </TouchableOpacity>
 
       <TouchableOpacity
-        onPress={() => handleNavigate('AddOrEditBook')}
+        onPress={() => handleNavigate('AddBook')}
         style={styles.navBtn}
       >
         <Image
           source={require('../assets/add.png')}
-          style={[styles.icon, isActive('AddOrEditBook') && styles.activeIcon]}
+          style={[styles.icon, isActive('AddBook') && styles.activeIcon]}
         />
       </TouchableOpacity>
 
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     backgroundColor: '#000000', // nero vero
     paddingVertical: 8,          // un po' più di padding verticale
-    height: 80,                  // aumenta altezza tab bar
+    height: 90,                  // aumenta altezza tab bar
   },
   navBtn: {
     alignItems: 'center',

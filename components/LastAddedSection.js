@@ -12,7 +12,7 @@ export default function LastAddedSection({ books, navigation }) {
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.bookCard}
-      onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
+      onPress={() => navigation.navigate("Detail", { bookId: item.id })}
       activeOpacity={0.8}
     >
       <Image source={{ uri: item.cover_image_uri }} style={styles.bookImage} />

@@ -95,7 +95,7 @@ export default function ProfileScreen({ navigation }) {
               title=""
               books={booksFavorite}
               onBookPress={(book) =>
-                navigation.navigate("DetailBook", { bookId: book.id })
+                navigation.navigate("Detail", { bookId: book.id })
               }
             />
           </>
@@ -107,14 +107,14 @@ export default function ProfileScreen({ navigation }) {
           title="Libri letti"
           books={booksRead}
           onBookPress={(book) =>
-            navigation.navigate("DetailBook", { bookId: book.id })
+            navigation.navigate("Detail", { bookId: book.id })
           }
         />
         <BookCarousel
           title="Da leggere"
           books={booksToRead}
           onBookPress={(book) =>
-            navigation.navigate("DetailBook", { bookId: book.id })
+            navigation.navigate("Detail", { bookId: book.id })
           }
         />
 
@@ -122,7 +122,7 @@ export default function ProfileScreen({ navigation }) {
           title="In lettura"
           books={booksReading}
           onBookPress={(book) =>
-            navigation.navigate("DetailBook", { bookId: book.id })
+            navigation.navigate("Detail", { bookId: book.id })
           }
         />
       </ScrollView>
@@ -133,7 +133,7 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "#000",
   },
   logoBar: {
     position: "absolute",
@@ -155,12 +155,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 100,
+    paddingTop: 100, // Spazio per il logo sopra (logoBar)
     backgroundColor: "#0a0a0a",
-    
   },
   statsContainer: {
-    marginTop:10,
+    marginTop: 10,
     marginBottom: 20,
     padding: 16,
     backgroundColor: "#111111",

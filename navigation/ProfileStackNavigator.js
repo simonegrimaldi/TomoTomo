@@ -1,16 +1,18 @@
-// navigation/ProfileStackNavigator.js
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ProfileScreen from '../screens/ProfileScreen';
-import BookDetailScreen from '../screens/BookDetailScreen';
 
-const Stack = createNativeStackNavigator();
+import ProfileScreen from '../screens/ProfileScreen';
+import DetailScreen from '../screens/DetailScreen';
+
+const ProfileStack = createNativeStackNavigator();
 
 export default function ProfileStackNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="ProfileMain" component={ProfileScreen} />
-      <Stack.Screen name="DetailBook" component={BookDetailScreen} />
-    </Stack.Navigator>
+    <ProfileStack.Navigator
+    screenOptions={{
+    headerShown: false, // nasconde header in tutte le schermate
+  }}>
+      <ProfileStack.Screen name="ProfileMain" component={ProfileScreen} options={{ title: 'Profilo' }} />
+    </ProfileStack.Navigator>
   );
 }

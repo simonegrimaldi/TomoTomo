@@ -1,16 +1,20 @@
-// navigation/HomeStackNavigator.js
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from '../screens/HomeScreen';
-import GenreBooksScreen from '../screens/GenreBooksScreen';
 
-const Stack = createNativeStackNavigator();
+import HomeScreen from '../screens/HomeScreen';
+import DetailScreen from '../screens/DetailScreen';
+import GenreScreen from '../screens/GenreScreen';
+
+const HomeStack = createNativeStackNavigator();
 
 export default function HomeStackNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="HomeMain" component={HomeScreen} />
-      <Stack.Screen name="GenreBooks" component={GenreBooksScreen} />
-    </Stack.Navigator>
+    <HomeStack.Navigator
+    screenOptions={{
+    headerShown: false, // nasconde header in tutte le schermate
+  }}>
+      <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home'}} />
+      <HomeStack.Screen name="Genre" component={GenreScreen} options={{ title: 'Genere' }} />
+    </HomeStack.Navigator>
   );
 }

@@ -1,9 +1,8 @@
-// navigation/TabNavigator.js
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import HomeStackNavigator from './HomeStackNavigator';
-import AddBook from '../screens/AddBook';
+import AddScreen from '../screens/AddScreen';
 import ProfileStackNavigator from './ProfileStackNavigator';
 import BottomTabBar from '../components/BottomTabBar';
 
@@ -16,7 +15,7 @@ export default function TabNavigator() {
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen name="Home" component={HomeStackNavigator} />
-      <Tab.Screen name="AddOrEditBook" component={AddBook} />
+      <Tab.Screen name="AddBook" component={AddScreen} />
       <Tab.Screen name="Profile" component={ProfileStackNavigator} />
     </Tab.Navigator>
   );

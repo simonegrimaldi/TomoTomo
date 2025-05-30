@@ -91,7 +91,7 @@ useEffect(() => {
 }, [searchText]);
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.safeArea}>
       {/* LOGO */}
       <View style={styles.logoBar}>
         <Image source={logo} style={styles.logoImage} resizeMode="contain" />
@@ -138,7 +138,7 @@ useEffect(() => {
         </ScrollView>
       )}
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

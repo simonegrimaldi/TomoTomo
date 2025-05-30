@@ -23,7 +23,7 @@ export default function RandomBooksSection({ books, navigation }) {
   const renderBook = ({ item }) => (
     <TouchableOpacity
       style={styles.bookCard}
-      onPress={() => navigation.navigate("DetailBook", { bookId: item.id })}
+      onPress={() => navigation.navigate("Detail", { bookId: item.id })}
     >
       <Image
         source={item.cover_image_uri ? { uri: item.cover_image_uri } : defaultGenreImage}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import {
   View,
   Text,
@@ -97,7 +97,7 @@ const AddBook = ({ navigation }) => {
       if (!dirInfo.exists) {
         await FileSystem.makeDirectoryAsync(dirUri, { intermediates: true });
       }
-      // Estraggo estensione in modo sicuro
+      // Estrai estensione in modo sicuro
       const uriParts = uri.split(".");
       const fileExt = uriParts[uriParts.length - 1].split(/\#|\?/)[0];
       const safeName = sanitizeFilename(title || "unnamed") + "." + fileExt;
@@ -157,7 +157,7 @@ const AddBook = ({ navigation }) => {
     <KeyboardAvoidingView
       style={styles.flex}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={80}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 80}
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.logoBar}>
@@ -167,6 +167,7 @@ const AddBook = ({ navigation }) => {
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
           <Text style={styles.headerTitle}>Aggiungi libro</Text>
 
@@ -233,7 +234,7 @@ const AddBook = ({ navigation }) => {
             itemStyle={styles.pickerItemColored}
           />
 
-            {(status === "in lettura") && (
+          {status === "in lettura" && (
             <View style={styles.statusDatesContainer}>
               <DatePickerEdit
                 label="Inizio"
@@ -243,7 +244,7 @@ const AddBook = ({ navigation }) => {
             </View>
           )}
 
-          {(status === "letto") && (
+          {status === "letto" && (
             <View style={styles.statusDatesContainer}>
               <DatePickerEdit
                 label="Inizio"
@@ -264,9 +265,9 @@ const AddBook = ({ navigation }) => {
           {status === "letto" && (
             <>
               <Text style={styles.label}>Valutazione</Text>
-<View style={{ marginBottom: 16 }}>
-  <StarRating rating={rating} onChange={setRating} />
-</View>
+              <View style={{ marginBottom: 16 }}>
+                <StarRating rating={rating} onChange={setRating} />
+              </View>
               <TextInput
                 placeholder="Note"
                 value={notes}
@@ -303,13 +304,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
-    borderBottomColor: "#FFD700",
+    borderBottomColor: "#FFF600",
     borderBottomWidth: 1,
     zIndex: 100,
   },
   logoImage: {
-    height: 80,
     width: 140,
+    height: 80,
   },
   headerTitle: {
     fontSize: 24,
@@ -318,7 +319,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   scrollContent: {
-    paddingTop: 100,
+    paddingTop: 140, // spazio sotto barra logo assoluta
     paddingBottom: 40,
     backgroundColor: "#000",
   },
