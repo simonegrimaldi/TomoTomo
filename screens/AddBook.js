@@ -12,13 +12,13 @@ import {
   Platform,
 } from "react-native";
 import { BooksContext } from "../context/BooksContext";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { Picker } from "@react-native-picker/picker";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as FileSystem from "expo-file-system";
 import { useFocusEffect } from "@react-navigation/native";
 import logo from "../assets/icon.png";
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 const sanitizeFilename = (name) =>
   name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
@@ -52,6 +52,57 @@ const StarRating = ({ rating, onChange }) => {
   );
 };
 
+// --- COMPONENTE DatePickerEdit ---
+const DatePickerEdit = ({ label, date, onDateChange, minimumDate }) => {
+  const [showPicker, setShowPicker] = useState(false);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "Seleziona";
+    const parts = dateString.split("-");
+    if (parts.length !== 3) return "Seleziona";
+    const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+    if (isNaN(dateObj.getTime())) return "Seleziona";
+    return dateObj.toLocaleDateString();
+  };
+
+  const onChange = (_, selected) => {
+    setShowPicker(false);
+    if (selected) {
+      if (minimumDate && selected < minimumDate) {
+        Alert.alert(
+          "Errore",
+          `La data di ${label.toLowerCase()} non può essere precedente a ${minimumDate.toLocaleDateString()}.`
+        );
+        return;
+      }
+      // Passa la data in formato YYYY-MM-DD come stringa
+      onDateChange(selected.toISOString().substring(0, 10));
+    }
+  };
+
+  return (
+    <View style={styles.dateCard}>
+      <Text style={styles.cardLabel}>{label}</Text>
+      <TouchableOpacity onPress={() => setShowPicker(true)}>
+        <Text style={[styles.cardValue, { color: "#FFF600" }]}>
+          {formatDate(date)}
+        </Text>
+      </TouchableOpacity>
+      {showPicker && (
+        <DateTimePicker
+          mode="date"
+          display="default"
+          themeVariant="dark"
+          value={date ? new Date(date) : new Date()}
+          onChange={onChange}
+          minimumDate={minimumDate}
+        />
+      )}
+    </View>
+  );
+};
+// --- FINE COMPONENTE DatePickerEdit ---
+
 const AddBook = ({ navigation }) => {
   const { addBook } = useContext(BooksContext);
 
@@ -79,10 +130,8 @@ const AddBook = ({ navigation }) => {
   const [status, setStatus] = useState("da leggere");
   const [rating, setRating] = useState(0);
   const [notes, setNotes] = useState("");
-  const [dateStart, setDateStart] = useState(null);
-  const [dateEnd, setDateEnd] = useState(null);
-  const [showStartDatePicker, setShowStartDatePicker] = useState(false);
-  const [showEndDatePicker, setShowEndDatePicker] = useState(false);
+  const [dateStart, setDateStart] = useState(null); // stringa "YYYY-MM-DD" o null
+  const [dateEnd, setDateEnd] = useState(null); // stringa "YYYY-MM-DD" o null
   const [genre, setGenre] = useState(genres[0]);
 
   useFocusEffect(
@@ -136,28 +185,6 @@ const AddBook = ({ navigation }) => {
     }
   };
 
-  const onChangeStartDate = (event, selectedDate) => {
-    setShowStartDatePicker(false);
-    if (selectedDate) {
-      setDateStart(selectedDate);
-      if (dateEnd && selectedDate > dateEnd) setDateEnd(selectedDate);
-    }
-  };
-
-  const onChangeEndDate = (event, selectedDate) => {
-    setShowEndDatePicker(false);
-    if (selectedDate) {
-      if (dateStart && selectedDate < dateStart) {
-        Alert.alert(
-          "Errore",
-          "La data di fine non può essere precedente alla data di inizio"
-        );
-      } else {
-        setDateEnd(selectedDate);
-      }
-    }
-  };
-
   const handleSubmit = async () => {
     if (!title || !author || !synopsis || !genre || !coverImageUri) {
       Alert.alert(
@@ -184,14 +211,8 @@ const AddBook = ({ navigation }) => {
       favorite: false,
       rating: status === "letto" ? rating : null,
       notes: status === "letto" ? notes : null,
-      date_start:
-        (status === "in lettura" || status === "letto") && dateStart
-          ? dateStart.toISOString().substring(0, 10)
-          : null,
-      date_end:
-        status === "letto" && dateEnd
-          ? dateEnd.toISOString().substring(0, 10)
-          : null,
+      date_start: (status === "in lettura" || status === "letto") ? dateStart : null,
+      date_end: status === "letto" ? dateEnd : null,
     };
 
     try {
@@ -270,12 +291,12 @@ const AddBook = ({ navigation }) => {
                 Seleziona copertina
               </Text>
             </TouchableOpacity>
-            {coverImageUri ? (
-              <Image
-                source={{ uri: coverImageUri }}
-                style={styles.coverImage}
-              />
-            ) : null}
+              {coverImageUri ? (
+                <Image
+                  source={{ uri: coverImageUri }}
+                  style={styles.coverImage}
+                />
+              ) : null}
           </View>
 
           <View style={styles.pickerWrapper}>
@@ -302,26 +323,19 @@ const AddBook = ({ navigation }) => {
           </View>
 
           {(status === "in lettura" || status === "letto") && (
-            <>
-              <TouchableOpacity
-                style={styles.datePickerButton}
-                onPress={() => setShowStartDatePicker(true)}
-              >
-                <Text style={styles.datePickerText}>
-                  Data inizio:{" "}
-                  {dateStart ? dateStart.toLocaleDateString() : "Nessuna data"}
-                </Text>
-              </TouchableOpacity>
-              {showStartDatePicker && (
-                <DateTimePicker
-                  value={dateStart || new Date()}
-                  mode="date"
-                  display="default"
-                  onChange={onChangeStartDate}
-                  maximumDate={new Date()}
-                />
-              )}
-            </>
+            <View style={styles.statusDatesContainer}>
+              <DatePickerEdit
+                label="Inizio"
+                date={dateStart}
+                onDateChange={setDateStart}
+              />
+              <DatePickerEdit
+                label="Fine"
+                date={dateEnd}
+                minimumDate={dateStart ? new Date(dateStart) : undefined}
+                onDateChange={setDateEnd}
+              />
+            </View>
           )}
 
           {status === "letto" && (
@@ -337,26 +351,6 @@ const AddBook = ({ navigation }) => {
                 multiline
                 placeholderTextColor="#888"
               />
-
-              <TouchableOpacity
-                style={styles.datePickerButton}
-                onPress={() => setShowEndDatePicker(true)}
-              >
-                <Text style={styles.datePickerText}>
-                  Data fine:{" "}
-                  {dateEnd ? dateEnd.toLocaleDateString() : "Nessuna data"}
-                </Text>
-              </TouchableOpacity>
-              {showEndDatePicker && (
-                <DateTimePicker
-                  value={dateEnd || new Date()}
-                  mode="date"
-                  display="default"
-                  onChange={onChangeEndDate}
-                  maximumDate={new Date()}
-                  minimumDate={dateStart || undefined}
-                />
-              )}
             </>
           )}
 
@@ -427,21 +421,21 @@ const styles = StyleSheet.create({
     color: "#aaa",
   },
   pickerWrapper: {
-  backgroundColor: "#222",
-  borderRadius: 12,
-  borderWidth: 1,
-  borderColor: "#666",
-  marginBottom: 20,
-  paddingHorizontal: 10,
-  paddingVertical: 4, // <--- aggiunto
-},
+    backgroundColor: "#222",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#666",
+    marginBottom: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+  },
   picker: {
     color: "#FFF600",
     fontSize: 16,
     flex: 1,
   },
   pickerItem: {
-    color: "white", // forza colore testo item
+    color: "white",
     fontSize: 16,
   },
 
@@ -487,16 +481,28 @@ const styles = StyleSheet.create({
   emptyStar: {
     color: "#555",
   },
-  datePickerButton: {
-    backgroundColor: "#222",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 12,
-    marginBottom: 20,
+  dateCard: {
+  backgroundColor: "#222",
+  paddingHorizontal: 14,
+  paddingVertical: 8,
+  borderRadius: 16,
+  width: "100%",  // piena larghezza
+  maxWidth: 400,  // opzionale, se vuoi limitare max larghezza su schermi grandi
+  alignItems: "center",
+  flexDirection: "row",
+  justifyContent: "center",
+  marginBottom: 12,
+},
+  cardLabel: {
+    color: "#aaa",
+    fontSize: 12,
+    fontWeight: "600",
+    marginRight: 6,
   },
-  datePickerText: {
-    fontSize: 16,
+  cardValue: {
     color: "#eee",
+    fontSize: 14,
+    fontWeight: "700",
   },
   submitButton: {
     backgroundColor: "#FFF600",

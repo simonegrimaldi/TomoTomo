@@ -11,9 +11,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { useFocusEffect } from "@react-navigation/native";
-
+import DatePickerDisplay from '../components/DatePickerDisplay';
+import DatePickerEdit from '../components/DatePickerEdit';
 import StarRating from "../components/StarRating";
 import EditActionButtons from "../components/EditActionButton";
 import DeleteButton from "../components/DeleteButton";
@@ -33,11 +33,11 @@ export default function BookDetailScreen({ route, navigation }) {
   const [showEndDate, setShowEndDate] = useState(false);
 
   const toggleFavorite = async () => {
-  const updated = { ...editedBook, favorite: !editedBook.favorite };
-  const { id, ...updatedFields } = updated;
-  await updateBook(id, updatedFields);
-  setEditedBook(updated);
-};
+    const updated = { ...editedBook, favorite: !editedBook.favorite };
+    const { id, ...updatedFields } = updated;
+    await updateBook(id, updatedFields);
+    setEditedBook(updated);
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -94,11 +94,21 @@ export default function BookDetailScreen({ route, navigation }) {
 
     try {
       const { id, ...updatedFields } = editedBook;
-await updateBook(id, updatedFields);
+      await updateBook(id, updatedFields);
       setIsEditing(false);
     } catch (err) {
       console.error("Errore durante la conferma modifica:", err);
     }
+  };
+
+  // Funzione per formattare le date da "YYYY-MM-DD" a formato locale leggibile
+  const formatDate = (dateString) => {
+    if (!dateString) return "-";
+    const parts = dateString.split("-");
+    if (parts.length !== 3) return "-";
+    const dateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+    if (isNaN(dateObj.getTime())) return "-";
+    return dateObj.toLocaleDateString();
   };
 
   return (
@@ -182,181 +192,102 @@ await updateBook(id, updatedFields);
           )}
         </View>
 
-        {isEditing && (
-          <>
-            <View style={styles.statusContainerEdit}>
-              <Text style={styles.sectionTitle}>Stato</Text>
-              <Picker
-                selectedValue={editedBook.status?.toString() ?? "Da leggere"}
-                onValueChange={(value) => {
-                  setEditedBook((prev) => {
-                    let updated = { ...prev, status: value };
-                    if (value === "Da leggere") {
-                      updated.date_start = null;
-                      updated.date_end = null;
-                    }
-                    if (
-                      (value === "Letto" || value === "In lettura") &&
-                      !prev.date_start
-                    ) {
-                      updated.date_start = new Date()
-                        .toISOString()
-                        .substring(0, 10);
-                    }
-                    if (value !== "Letto") updated.date_end = null;
-                    return updated;
-                  });
-                }}
-                style={[styles.picker, styles.pickerColored]}
-                dropdownIconColor="#FFF600"
-                itemStyle={styles.pickerItemColored}
-              >
-                <Picker.Item
-                  label="Da leggere"
-                  value="Da leggere"
-                  color="#FFF600"
-                />
-                <Picker.Item
-                  label="In lettura"
-                  value="In lettura"
-                  color="#FFF600"
-                />
-                <Picker.Item label="Letto" value="Letto" color="#FFF600" />
-              </Picker>
-            </View>
-            {editedBook.status !== "Da leggere" && (
-              <View style={styles.statusDatesContainer}>
-                <View style={styles.dateCard}>
-                  <Text style={styles.cardLabel}>Inizio</Text>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (editedBook.status !== "Da leggere")
-                        setShowStartDate(true);
-                    }}
-                  >
-                    <Text style={[styles.cardValue, { color: "#FFF600" }]}>
-                      {" "}
-                      {!showStartDate
-                        ? editedBook.date_start || "Seleziona"
-                        : ""}
-                    </Text>
-                  </TouchableOpacity>
-                  {showStartDate && (
-                    <DateTimePicker
-                      mode="date"
-                      display="default"
-                      themeVariant="dark"
-                      value={
-                        editedBook.date_start
-                          ? new Date(editedBook.date_start)
-                          : new Date()
-                      }
-                      onChange={(_, selected) => {
-                        setShowStartDate(false);
-                        if (selected) {
-                          setEditedBook((prev) => ({
-                            ...prev,
-                            date_start: selected.toISOString().substring(0, 10),
-                            date_end:
-                              prev.date_end &&
-                              new Date(prev.date_end) < selected
-                                ? null
-                                : prev.date_end,
-                          }));
-                        }
-                      }}
-                    />
-                  )}
-                </View>
+ {isEditing && (
+  <>
+    <View style={styles.statusContainerEdit}>
+      <Text style={styles.sectionTitle}>Stato</Text>
+      <Picker
+        selectedValue={editedBook.status?.toString() ?? "Da leggere"}
+        onValueChange={(value) => {
+          setEditedBook((prev) => {
+            let updated = { ...prev, status: value };
+            if (value === "Da leggere") {
+              updated.date_start = null;
+              updated.date_end = null;
+            }
+            if (
+              (value === "Letto" || value === "In lettura") &&
+              !prev.date_start
+            ) {
+              updated.date_start = new Date().toISOString().substring(0, 10);
+            }
+            if (value !== "Letto") updated.date_end = null;
+            return updated;
+          });
+        }}
+        style={[styles.picker, styles.pickerColored]}
+        dropdownIconColor="#FFF600"
+        itemStyle={styles.pickerItemColored}
+      >
+        <Picker.Item label="Da leggere" value="Da leggere" color="#FFF600" />
+        <Picker.Item label="In lettura" value="In lettura" color="#FFF600" />
+        <Picker.Item label="Letto" value="Letto" color="#FFF600" />
+      </Picker>
+    </View>
 
-                {editedBook.status === "Letto" && (
-                  <View style={styles.dateCard}>
-                    <Text style={styles.cardLabel}>Fine</Text>
-                    <TouchableOpacity onPress={() => setShowEndDate(true)}>
-                      <Text style={[styles.cardValue, { color: "#FFF600" }]}>
-                        {" "}
-                        {!showEndDate ? editedBook.date_end || "Seleziona" : ""}
-                      </Text>
-                    </TouchableOpacity>
-                    {showEndDate && (
-                      <DateTimePicker
-                        mode="date"
-                        display="default"
-                        themeVariant="dark"
-                        value={
-                          editedBook.date_end
-                            ? new Date(editedBook.date_end)
-                            : new Date()
-                        }
-                        onChange={(_, selected) => {
-                          setShowEndDate(false);
-                          if (selected) {
-                            if (
-                              editedBook.date_start &&
-                              new Date(selected) <
-                                new Date(editedBook.date_start)
-                            ) {
-                              Alert.alert(
-                                "Errore",
-                                "La data di fine non può precedere quella di inizio."
-                              );
-                              return;
-                            }
-                            setEditedBook((prev) => ({
-                              ...prev,
-                              date_end: selected.toISOString().substring(0, 10),
-                            }));
-                          }
-                        }}
-                      />
-                    )}
-                  </View>
-                )}
-              </View>
-            )}
-          </>
-        )}
+    {editedBook.status !== "Da leggere" && (
+      <View style={styles.statusDatesContainerColumn}>
+  <DatePickerEdit
+    label="Inizio"
+    date={editedBook.date_start}
+    onChangeDate={(newDate) => {
+      setEditedBook((prev) => ({
+        ...prev,
+        date_start: newDate,
+        date_end:
+          prev.date_end && prev.date_end < newDate ? null : prev.date_end,
+      }));
+    }}
+  />
 
-        {!isEditing && (
-          <>
-            <View style={styles.stateEditRow}>
-              <View style={styles.statusContainer}>
-                <Text style={[styles.cardLabel, styles.statusLabelNonEditing]}>
-                  Stato
-                </Text>
-                <Text style={[styles.cardValue, styles.statusValueNonEditing]}>
-                  {editedBook.status}
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => setIsEditing(true)}
-                style={styles.editButtonRight}
-              >
-                <Text style={styles.editText}>Modifica</Text>
-              </TouchableOpacity>
-            </View>
+  {editedBook.status === "Letto" && (
+    <DatePickerEdit
+      label="Fine"
+      date={editedBook.date_end}
+      minimumDate={editedBook.date_start ? new Date(editedBook.date_start) : null}
+      onChangeDate={(newDate) => {
+        setEditedBook((prev) => ({
+          ...prev,
+          date_end: newDate,
+        }));
+      }}
+    />
+  )}
+</View>
+    )}
+  </>
+)}
 
-            <View style={styles.statusDatesContainer}>
-              <View style={styles.dateCard}>
-                <Text style={styles.cardLabel}>Inizio</Text>
-                <Text style={[styles.cardValue, { color: "#FFF600" }]}>
-                  {editedBook.date_start || "-"}
-                </Text>
-              </View>
-              <View style={styles.dateCard}>
-                <Text style={styles.cardLabel}>Fine</Text>
-                <Text style={[styles.cardValue, { color: "#FFF600" }]}>
-                  {editedBook.date_end || "-"}
-                </Text>
-              </View>
-            </View>
+{!isEditing && (
+  <>
+    <View style={styles.stateEditRow}>
+      <View style={styles.statusContainer}>
+        <Text style={[styles.cardLabel, styles.statusLabelNonEditing]}>
+          Stato
+        </Text>
+        <Text style={[styles.cardValue, styles.statusValueNonEditing]}>
+          {editedBook.status}
+        </Text>
+      </View>
+      <TouchableOpacity
+        onPress={() => setIsEditing(true)}
+        style={styles.editButtonRight}
+      >
+        <Text style={styles.editText}>Modifica</Text>
+      </TouchableOpacity>
+    </View>
 
-            <View style={styles.ratingRow}>
-              <Text style={styles.sectionTitle}>Valutazione</Text>
-              <StarRating rating={editedBook.rating || 0} editable={false} />
-            </View>
-          </>
-        )}
+    <View style={styles.statusDatesContainer}>
+      <DatePickerDisplay label="Inizio" date={editedBook.date_start} />
+      <DatePickerDisplay label="Fine" date={editedBook.date_end} />
+    </View>
+
+    <View style={styles.ratingRow}>
+      <Text style={styles.sectionTitle}>Valutazione</Text>
+      <StarRating rating={editedBook.rating || 0} editable={false} />
+    </View>
+  </>
+)}
 
         {/* Genre */}
         <View style={styles.genreContainer}>
@@ -558,16 +489,16 @@ const styles = StyleSheet.create({
   },
 
   dateCard: {
-    backgroundColor: "#222",
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 16,
-    width: "48%", // metà larghezza per stare in riga
-    alignItems: "center",
-    flexDirection: "row", // testo e label su una riga
-    justifyContent: "center",
-    marginBottom: 12,
-  },
+  backgroundColor: "#222",
+  paddingHorizontal: 14,
+  paddingVertical: 8,
+  borderRadius: 16,
+  width: "90%",                 // aumenta larghezza per coprire quasi tutto
+  alignItems: "center",
+  flexDirection: "row",
+  justifyContent: "center",
+  marginBottom: 12,
+},
 
   cardLabel: {
     color: "#aaa",
@@ -723,5 +654,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 140,
   },
+  statusDatesContainerColumn: {
+  flexDirection: "column",       // disporre in colonna (verticale)
+  paddingHorizontal: 10,
+  marginBottom: 24,
+  width: "100%",                 // occupa tutta la larghezza
+  alignItems: "center",          // centra orizzontalmente i figli
+},
   editable: {},
 });
