@@ -21,17 +21,30 @@ export default function BookCarousel({ title, books, onBookPress }) {
 }
 
 const styles = StyleSheet.create({
-  section: { marginBottom: 20 },
+  section: {
+    width: "100%",
+    paddingVertical: 20,
+    backgroundColor: "#121212", // sfondo scuro
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.7,
+    shadowRadius: 5,
+   },
   sectionTitle: {
     fontWeight: "bold",
     fontSize: 16,
-    marginBottom: 8,
     color: "white",
+    marginLeft:20,
+    marginRight:20,
   },
   cover: {
     width: 100,
     height: 150,
     borderRadius: 8,
-    marginRight: 10,
+        marginTop:10,
+
+    marginLeft: 20,
+    marginRight:20
   },
 });

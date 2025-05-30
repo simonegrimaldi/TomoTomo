@@ -61,8 +61,11 @@ const styles = StyleSheet.create({
     fontWeight: "900",
     paddingHorizontal: 20,
     fontSize: 18,
-    marginBottom: 12,
-    color: "white",
+    marginBottom: 10,
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FFF600",
+    textAlign: "left",
   },
   noBooksText: {
     fontStyle: "italic",

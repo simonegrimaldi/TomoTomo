@@ -9,7 +9,6 @@ import TopBar from "../components/TopBar";
 import FiltersMenu from "../components/FiltersMenu";
 import LastAddedSection from "../components/LastAddedSection";
 import PlaylistSection from "../components/PlaylistSection";
-import FavoriteSection from "../components/FavoriteSection";
 import SearchResultsSection from "../components/SearchResultsSection";
 import FilteredBooksSection from "../components/FilteredBooksSection";
 import RandomBooksSection from "../components/RandomBooksSection"; // importa qui
@@ -158,9 +157,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
-        borderBottomColor: "#FFD700",
-
-    borderBottomWidth: 1,
     zIndex: 100,
   },
   logoImage: {
@@ -171,6 +167,8 @@ const styles = StyleSheet.create({
     marginTop:90,
     paddingHorizontal: 16,
     backgroundColor: "#000",
+    borderBottomColor: '#FFF600',
+    borderBottomWidth:1,
   },
   contentContainer: {
     flex: 1,
@@ -178,11 +176,8 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flex: 1,
-    paddingHorizontal: 16,
   },
-  scrollInner: {
-    paddingBottom: 40,
-  },
+
 });
 
 export default HomeScreen;

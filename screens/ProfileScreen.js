@@ -155,11 +155,12 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 20,
     paddingTop: 100,
     backgroundColor: "#0a0a0a",
+    
   },
   statsContainer: {
+    marginTop:10,
     marginBottom: 20,
     padding: 16,
     backgroundColor: "#111111",
@@ -171,8 +172,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#FFF600",
-    marginTop: 20,
-    marginBottom: 20,
-    textAlign: "center",
+    margin: 20,
+    textAlign: "left",
   },
 });

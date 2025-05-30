@@ -6,7 +6,7 @@ export default function TopBar({ toggleFilters, searchText, onSearchChange }) {
     <View style={styles.topBar}>
       <TextInput
         style={styles.searchInput}
-        placeholder="Cerca libri per titolo o autore..."
+        placeholder="Cerca"
         placeholderTextColor="#888"
         value={searchText}
         onChangeText={onSearchChange}
@@ -31,10 +31,10 @@ const styles = StyleSheet.create({
   topBar: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 10,
     paddingHorizontal: 12,
     backgroundColor: "#000", // sfondo nero
     borderRadius: 24,
+    marginBottom: 20
   },
   searchInput: {
     flex: 1,

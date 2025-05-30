@@ -53,7 +53,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     fontSize: 18,
     marginBottom: 10,
-    color: "#eee",
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FFF600",
+    textAlign: "left",
   },
   bookCard: {
     width: 120,
@@ -62,7 +65,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     borderRadius: 10,
     padding: 8,
-    alignItems: "center"
+    alignItems: "center",
+    
 
   },
   bookImage: {
