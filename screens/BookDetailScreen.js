@@ -12,8 +12,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect } from "@react-navigation/native";
-import DatePickerDisplay from '../components/DatePickerDisplay';
-import DatePickerEdit from '../components/DatePickerEdit';
+import DatePickerDisplay from "../components/DatePickerDisplay";
+import DatePickerEdit from "../components/DatePickerEdit";
 import StarRating from "../components/StarRating";
 import EditActionButtons from "../components/EditActionButton";
 import DeleteButton from "../components/DeleteButton";
@@ -29,7 +29,8 @@ export default function BookDetailScreen({ route, navigation }) {
   const [book, setBook] = useState(null);
   const [editedBook, setEditedBook] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
-
+  const capitalize = (str) =>
+    str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : "";
   const toggleFavorite = async () => {
     const updated = { ...editedBook, favorite: !editedBook.favorite };
     const { id, ...updatedFields } = updated;
@@ -57,17 +58,17 @@ export default function BookDetailScreen({ route, navigation }) {
   }, [books, bookId]);
 
   useEffect(() => {
-  if (books.length > 0) {
-    const found = books.find((b) => b.id === bookId);
-    if (found) {
-      setBook(found);
-      setEditedBook({ ...found });
-    } else {
-      // Invece di alert e reset, torna indietro semplice se il libro è stato eliminato
-      navigation.goBack();
+    if (books.length > 0) {
+      const found = books.find((b) => b.id === bookId);
+      if (found) {
+        setBook(found);
+        setEditedBook({ ...found });
+      } else {
+        // Invece di alert e reset, torna indietro semplice se il libro è stato eliminato
+        navigation.goBack();
+      }
     }
-  }
-}, [books, bookId]);
+  }, [books, bookId]);
 
   if (!book || !editedBook) {
     return (
@@ -198,7 +199,7 @@ export default function BookDetailScreen({ route, navigation }) {
             <View style={styles.statusContainerEdit}>
               <Text style={styles.sectionTitle}>Stato</Text>
               <Picker
-                selectedValue={editedBook.status?.toString() ?? "Da leggere"}
+                selectedValue={capitalize(editedBook.status) || "Da leggere"}
                 onValueChange={(value) => {
                   setEditedBook((prev) => {
                     let updated = { ...prev, status: value };
@@ -212,7 +213,9 @@ export default function BookDetailScreen({ route, navigation }) {
                       (value === "Letto" || value === "In lettura") &&
                       !prev.date_start
                     ) {
-                      updated.date_start = new Date().toISOString().substring(0, 10);
+                      updated.date_start = new Date()
+                        .toISOString()
+                        .substring(0, 10);
                     }
                     if (value !== "Letto") {
                       updated.date_end = null;
@@ -226,8 +229,16 @@ export default function BookDetailScreen({ route, navigation }) {
                 dropdownIconColor="#FFF600"
                 itemStyle={styles.pickerItemColored}
               >
-                <Picker.Item label="Da leggere" value="Da leggere" color="#FFF600" />
-                <Picker.Item label="In lettura" value="In lettura" color="#FFF600" />
+                <Picker.Item
+                  label="Da leggere"
+                  value="Da leggere"
+                  color="#FFF600"
+                />
+                <Picker.Item
+                  label="In lettura"
+                  value="In lettura"
+                  color="#FFF600"
+                />
                 <Picker.Item label="Letto" value="Letto" color="#FFF600" />
               </Picker>
             </View>
@@ -242,7 +253,9 @@ export default function BookDetailScreen({ route, navigation }) {
                       ...prev,
                       date_start: newDate,
                       date_end:
-                        prev.date_end && prev.date_end < newDate ? null : prev.date_end,
+                        prev.date_end && prev.date_end < newDate
+                          ? null
+                          : prev.date_end,
                     }));
                   }}
                 />
@@ -251,7 +264,11 @@ export default function BookDetailScreen({ route, navigation }) {
                   <DatePickerEdit
                     label="Fine"
                     date={editedBook.date_end}
-                    minimumDate={editedBook.date_start ? new Date(editedBook.date_start) : null}
+                    minimumDate={
+                      editedBook.date_start
+                        ? new Date(editedBook.date_start)
+                        : null
+                    }
                     onDateChange={(newDate) => {
                       setEditedBook((prev) => ({
                         ...prev,
@@ -274,7 +291,9 @@ export default function BookDetailScreen({ route, navigation }) {
                   }
                 />
 
-                <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Note</Text>
+                <Text style={[styles.sectionTitle, { marginTop: 20 }]}>
+                  Note
+                </Text>
                 <TextInput
                   placeholder="Inserisci note..."
                   value={editedBook.notes || ""}
@@ -291,46 +310,48 @@ export default function BookDetailScreen({ route, navigation }) {
           </>
         )}
 
-       {!isEditing && (
-  <>
-    <View style={styles.stateEditRow}>
-      <View style={styles.statusContainer}>
-        <Text style={[styles.cardLabel, styles.statusLabelNonEditing]}>
-          Stato
-        </Text>
-        <Text style={[styles.cardValue, styles.statusValueNonEditing]}>
-          {editedBook.status}
-        </Text>
-      </View>
-      <TouchableOpacity
-        onPress={() => setIsEditing(true)}
-        style={styles.editButtonRight}
-      >
-        <Text style={styles.editText}>Modifica</Text>
-      </TouchableOpacity>
-    </View>
-
-    <View style={styles.statusDatesContainer}>
-      <DatePickerDisplay label="Inizio" date={editedBook.date_start} />
-      <DatePickerDisplay label="Fine" date={editedBook.date_end} />
-    </View>
-
-    {/* Valutazione e note solo se stato = Letto */}
-    {editedBook.status === "Letto" && (
-      <View style={styles.ratingRow}>
-        <Text style={styles.sectionTitle}>Valutazione</Text>
-        <StarRating rating={editedBook.rating || 0} editable={false} />
-
-        {editedBook.notes ? (
+        {!isEditing && (
           <>
-            <Text style={[styles.sectionTitle, { marginTop: 20 }]}>Note</Text>
-            <Text style={styles.synopsisText}>{editedBook.notes}</Text>
+            <View style={styles.stateEditRow}>
+              <View style={styles.statusContainer}>
+                <Text style={[styles.cardLabel, styles.statusLabelNonEditing]}>
+                  Stato
+                </Text>
+                <Text style={[styles.cardValue, styles.statusValueNonEditing]}>
+                  {editedBook.status}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setIsEditing(true)}
+                style={styles.editButtonRight}
+              >
+                <Text style={styles.editText}>Modifica</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.statusDatesContainer}>
+              <DatePickerDisplay label="Inizio" date={editedBook.date_start} />
+              <DatePickerDisplay label="Fine" date={editedBook.date_end} />
+            </View>
+
+            {/* Valutazione e note solo se stato = Letto */}
+            {editedBook.status === "Letto" && (
+              <View style={styles.ratingRow}>
+                <Text style={styles.sectionTitle}>Valutazione</Text>
+                <StarRating rating={editedBook.rating || 0} editable={false} />
+
+                {editedBook.notes ? (
+                  <>
+                    <Text style={[styles.sectionTitle, { marginTop: 20 }]}>
+                      Note
+                    </Text>
+                    <Text style={styles.synopsisText}>{editedBook.notes}</Text>
+                  </>
+                ) : null}
+              </View>
+            )}
           </>
-        ) : null}
-      </View>
-    )}
-  </>
-)}
+        )}
 
         {isEditing && (
           <EditActionButtons
