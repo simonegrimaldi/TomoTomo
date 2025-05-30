@@ -56,6 +56,19 @@ export default function BookDetailScreen({ route, navigation }) {
     }
   }, [books, bookId]);
 
+  useEffect(() => {
+  if (books.length > 0) {
+    const found = books.find((b) => b.id === bookId);
+    if (found) {
+      setBook(found);
+      setEditedBook({ ...found });
+    } else {
+      // Invece di alert e reset, torna indietro semplice se il libro è stato eliminato
+      navigation.goBack();
+    }
+  }
+}, [books, bookId]);
+
   if (!book || !editedBook) {
     return (
       <SafeAreaView style={styles.safeArea}>

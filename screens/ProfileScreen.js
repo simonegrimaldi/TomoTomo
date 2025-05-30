@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext } from "react";
 import {
   View,
   ScrollView,
@@ -15,7 +15,7 @@ import logo from "../assets/icon.png";
 
 export default function ProfileScreen({ navigation }) {
   const { books } = useContext(BooksContext);
-  // Filtra libri in base allo stato (con lowercase per sicurezza)
+
   const booksRead = books.filter((b) => b.status?.toLowerCase() === "letto");
   const booksToRead = books.filter(
     (b) => b.status?.toLowerCase() === "da leggere"
@@ -27,14 +27,12 @@ export default function ProfileScreen({ navigation }) {
 
   const totalBooks = books.length;
 
-  // Calcolo media rating libri letti
   const avgRating =
     booksRead.length > 0
       ? booksRead.reduce((sum, b) => sum + (b.rating || 0), 0) /
         booksRead.length
       : 0;
 
-  // Calcolo tempo medio lettura in giorni
   const avgReadTime = (() => {
     if (booksRead.length === 0) return 0;
     let totalDays = 0;
@@ -53,7 +51,6 @@ export default function ProfileScreen({ navigation }) {
     return count > 0 ? Math.round(totalDays / count) : 0;
   })();
 
-  // Prepara dati per grafico generi
   const genreData = (() => {
     const genreMap = {};
     booksRead.forEach((b, idx) => {
@@ -69,15 +66,17 @@ export default function ProfileScreen({ navigation }) {
     }));
   })();
 
-  const now = new Date();
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.logoBar}>
         <Image source={logo} style={styles.logoImage} resizeMode="contain" />
       </View>
 
-      <ScrollView style={styles.container}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.statsContainer}>
           <ProfileStats
             total={totalBooks}
@@ -104,10 +103,9 @@ export default function ProfileScreen({ navigation }) {
 
         <Text style={styles.sectionTitle}>La tua libreria</Text>
 
-
         <BookCarousel
           title="Libri letti"
-          books={booksRead} // qui prima era filteredReadBooks
+          books={booksRead}
           onBookPress={(book) =>
             navigation.navigate("DetailBook", { bookId: book.id })
           }
@@ -155,14 +153,6 @@ const styles = StyleSheet.create({
     width: 140,
     height: 80,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#FFF600",
-    marginTop: 20,
-    marginBottom: 20,
-    textAlign: "center",
-  },
   container: {
     flex: 1,
     padding: 20,
@@ -176,5 +166,13 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#FFF600",
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FFF600",
+    marginTop: 20,
+    marginBottom: 20,
+    textAlign: "center",
   },
 });
