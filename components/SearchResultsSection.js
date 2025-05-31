@@ -6,16 +6,18 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  Dimensions,
+  useWindowDimensions,
 } from "react-native";
 import defaultGenreImage from "../assets/libri/default_genre_image.png";
 
-const screenWidth = Dimensions.get("window").width;
 const numColumns = 3;
 const spacing = 12;
-const itemSize = (screenWidth - spacing * (numColumns + 1)) / numColumns;
 
 export default function SearchResultsSection({ filteredBooks, navigation }) {
+  const { width: screenWidth } = useWindowDimensions();
+
+  const itemSize = (screenWidth - spacing * (numColumns + 1)) / numColumns;
+
   if (!filteredBooks || filteredBooks.length === 0) {
     return (
       <View style={styles.noResultsContainer}>
@@ -29,10 +31,10 @@ export default function SearchResultsSection({ filteredBooks, navigation }) {
       data={filteredBooks}
       keyExtractor={(item) => item.id.toString()}
       numColumns={numColumns}
-      contentContainerStyle={styles.listContent}
+      contentContainerStyle={styles.listContent(spacing)}
       renderItem={({ item }) => (
         <TouchableOpacity
-          style={styles.bookCard}
+          style={styles.bookCard(itemSize, spacing)}
           onPress={() => navigation.navigate("Detail", { bookId: item.id })}
           activeOpacity={0.8}
         >
@@ -42,7 +44,7 @@ export default function SearchResultsSection({ filteredBooks, navigation }) {
                 ? { uri: item.cover_image_uri }
                 : defaultGenreImage
             }
-            style={styles.bookImage}
+            style={styles.bookImage(itemSize)}
           />
           <Text style={styles.bookTitle} numberOfLines={2}>
             {item.title}
@@ -65,24 +67,24 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     color: "#aaa",
   },
-  listContent: {
+  listContent: (spacing) => ({
     padding: spacing,
-  },
-  bookCard: {
+  }),
+  bookCard: (itemSize, spacing) => ({
     width: itemSize,
     margin: spacing / 2,
     alignItems: "flex-start",
     borderRadius: 8,
     padding: 6,
-    backgroundColor: "#121212",
-  },
-  bookImage: {
-    width: itemSize,
+    backgroundColor: "#121212", // mantieni grigio anche nei singoli card
+  }),
+  bookImage: (itemSize) => ({
+    width: itemSize * 0.9,
     height: itemSize * 1.5,
     borderRadius: 8,
     marginBottom: 6,
-    resizeMode: "cover",
-  },
+    resizeMode: "contain", // per miglior adattamento immagine
+  }),
   bookTitle: {
     fontWeight: "600",
     fontSize: 14,

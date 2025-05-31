@@ -1,9 +1,6 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, useWindowDimensions, StyleSheet } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
-import { Dimensions } from 'react-native';
-
-const screenWidth = Dimensions.get('window').width;
 
 const chartConfig = {
   backgroundColor: '#ffffff',
@@ -15,6 +12,8 @@ const chartConfig = {
 };
 
 export default function GenrePieChart({ data }) {
+  const { width: screenWidth } = useWindowDimensions();
+
   if (!data || data.length === 0) {
     return (
       <Text style={{ textAlign: 'center', marginVertical: 20, color: 'grey' }}>
@@ -23,18 +22,32 @@ export default function GenrePieChart({ data }) {
     );
   }
 
+  const marginHorizontal = 10;
+  const maxChartWidth = 400;
+
+  // Calcolo larghezza del grafico: non meno di 200px e max 400px
+  const chartWidth = Math.min(Math.max(screenWidth - marginHorizontal * 2, 400), maxChartWidth);
+
   return (
-    <View>
+    <View style={[styles.container, { paddingHorizontal: marginHorizontal }]}>
       <PieChart
         data={data}
-        width={screenWidth - 40}
+        width={chartWidth}
         height={220}
         chartConfig={chartConfig}
-        accessor={'population'}
-        backgroundColor={'transparent'}
-        paddingLeft={'15'}
+        accessor="population"
+        backgroundColor="transparent"
+        paddingLeft={10}
         absolute
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: "center",
+    marginVertical: 10, // ridotto da 20 a 10 per avvicinare testo e grafico
+    backgroundColor: "#222",
+  },
+});

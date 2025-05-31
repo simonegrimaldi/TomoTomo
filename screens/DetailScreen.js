@@ -11,7 +11,10 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { Picker } from "@react-native-picker/picker";
 import { useFocusEffect } from "@react-navigation/native";
 import DatePickerDisplay from "../components/DatePickerDisplay";
@@ -103,7 +106,7 @@ export default function BookDetailScreen({ route, navigation }) {
 
   return (
     <KeyboardAvoidingView
-      style={styles.keyboardAvoiding} 
+      style={styles.keyboardAvoiding}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       keyboardVerticalOffset={-40}
     >
@@ -139,7 +142,7 @@ export default function BookDetailScreen({ route, navigation }) {
 
         {/* ScrollView “normale” senza flexGrow */}
         <ScrollView
-          style={styles.scrollFlex}  
+          style={styles.scrollFlex}
           contentContainerStyle={[
             styles.scrollContent,
             { paddingBottom: insets.bottom + 20 },
@@ -311,7 +314,7 @@ export default function BookDetailScreen({ route, navigation }) {
                     onChangeText={(text) =>
                       setEditedBook((prev) => ({ ...prev, notes: text }))
                     }
-                    style={[styles.synopsisInput, styles.editable]}
+                    style={[styles.synopsisInput, { color: "white" }]}
                     multiline
                     numberOfLines={4}
                     placeholderTextColor="#888"
@@ -323,6 +326,14 @@ export default function BookDetailScreen({ route, navigation }) {
 
           {!isEditing && (
             <>
+              {editedBook.synopsis ? (
+                <>
+                  <Text style={[styles.sectionTitle, { marginTop: 20, marginLeft:16, }]}>
+                    Sinossi
+                  </Text>
+                  <Text style={styles.synopsisText}>{editedBook.synopsis}</Text>
+                </>
+              ) : null}
               {/* Mostra Stato “statico” + bottone Modifica */}
               <View style={styles.stateEditRow}>
                 <View style={styles.statusContainer}>
@@ -358,7 +369,10 @@ export default function BookDetailScreen({ route, navigation }) {
               {editedBook.status === "Letto" && (
                 <View style={styles.ratingRow}>
                   <Text style={styles.sectionTitle}>Valutazione</Text>
-                  <StarRating rating={editedBook.rating || 0} editable={false} />
+                  <StarRating
+                    rating={editedBook.rating || 0}
+                    editable={false}
+                  />
 
                   {editedBook.notes ? (
                     <>
@@ -529,20 +543,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 140,
   },
-  editable: {},
+  editable: { color: "#000" },
   stateEditRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 10,
     marginBottom: 20,
+    // opzionale per prevenire overflow:
+    flexWrap: "nowrap",
   },
+
   statusContainer: {
     backgroundColor: "#222",
     borderRadius: 16,
     paddingHorizontal: 10,
     paddingVertical: 8,
-    width: 180,
+    // Rimuovo width fissa e uso flex per adattarsi allo spazio
+    flex: 1,
+    marginRight: 10, // Spazio tra stato e bottone
     justifyContent: "center",
   },
   cardLabel: {
@@ -582,10 +601,23 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 24,
+    // Impedisce che il bottone si restringa troppo
+    flexShrink: 0,
   },
+
   editText: {
     color: "#000",
     fontSize: 18,
     fontWeight: "600",
+    textAlign: "center",
   },
+  synopsisText: {
+  color: "#eee",
+  fontSize: 16,
+  lineHeight: 22,
+  paddingHorizontal: 20,
+  marginBottom: 20,
+  textAlign: "center",
+  
+},
 });

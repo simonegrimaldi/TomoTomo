@@ -74,7 +74,7 @@ export default function ProfileScreen({ navigation }) {
 
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{ flexGrow: 1, paddingBottom: 20 }}
+        contentContainerStyle={{ paddingBottom: 20 }}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.statsContainer}>
@@ -85,7 +85,6 @@ export default function ProfileScreen({ navigation }) {
             readingCount={booksReading.length}
           />
         </View>
-
         <GenrePieChart data={genreData} />
 
         {booksFavorite.length > 0 && (
@@ -155,7 +154,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 100, // Spazio per il logo sopra (logoBar)
+    paddingTop: 140, // distanza fissa pari all'altezza logoBar
     backgroundColor: "#0a0a0a",
   },
   statsContainer: {

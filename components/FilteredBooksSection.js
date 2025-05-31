@@ -74,13 +74,15 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     borderRadius: 8,
     padding: 6,
+    backgroundColor: "#121212",
   },
   bookImage: {
-    width: itemSize,
+    width: itemSize * 0.9,
     height: itemSize * 1.5,
     borderRadius: 8,
     marginBottom: 6,
-    resizeMode: "cover",
+      resizeMode: "contain", // Prova a cambiare da cover a contain
+
   },
   bookTitle: {
     fontWeight: "600",

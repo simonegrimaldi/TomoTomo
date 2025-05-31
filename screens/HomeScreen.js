@@ -55,10 +55,10 @@ const HomeScreen = ({ navigation }) => {
   if (!anyStatusActive && !ratingActive) return [];
 
   return books.filter((book) => {
-    if (anyStatusActive && !status[book.status]) return false;
-    if (ratingActive && (!book.rating || book.rating !== rating)) return false;  // cambio qui: uguaglianza esatta
-    return true;
-  });
+  if (anyStatusActive && !status[book.status?.toLowerCase()]) return false;
+  if (ratingActive && (!book.rating || book.rating !== rating)) return false;
+  return true;
+});
 }, [books, filters]);
 
   const isFilteringActive =
@@ -163,12 +163,13 @@ const styles = StyleSheet.create({
     width: 140,
   },
   topBarWrapper: {
-    position: "relative",
+    position: "relative", // già presente
     marginTop: 140,
     paddingHorizontal: 16,
     backgroundColor: "#000",
     borderBottomColor: "#FFF600",
     borderBottomWidth: 1,
+    zIndex: 100,
   },
   contentContainer: {
     flex: 1,
@@ -177,7 +178,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     flex: 1,
   },
-
 });
 
 export default HomeScreen;

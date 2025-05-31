@@ -1,10 +1,23 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
+  SafeAreaView,
+} from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 import defaultImage from "../assets/libri/default_genre_image.png";
 import logo from "../assets/icon.png";
+
+const screenWidth = Dimensions.get("window").width;
+const numColumns = 3;
+const spacing = 12;
+const itemSize = (screenWidth - spacing * (numColumns + 1)) / numColumns;
 
 export default function GenreBooksScreen() {
   const navigation = useNavigation();
@@ -17,13 +30,18 @@ export default function GenreBooksScreen() {
     <TouchableOpacity
       style={styles.bookCard}
       onPress={() => navigation.navigate("Detail", { bookId: item.id })}
+      activeOpacity={0.8}
     >
       <Image
         source={item.cover_image_uri ? { uri: item.cover_image_uri } : defaultImage}
         style={styles.bookImage}
       />
-      <Text style={styles.bookTitle} numberOfLines={2}>{item.title}</Text>
-      <Text style={styles.bookAuthor} numberOfLines={1}>{item.author}</Text>
+      <Text style={styles.bookTitle} numberOfLines={2}>
+        {item.title}
+      </Text>
+      <Text style={styles.bookAuthor} numberOfLines={1}>
+        {item.author}
+      </Text>
     </TouchableOpacity>
   );
 
@@ -31,10 +49,7 @@ export default function GenreBooksScreen() {
     <SafeAreaView style={styles.container}>
       {/* Barra con bottone indietro e logo centrato */}
       <View style={styles.logoBar}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}
-        >
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#FFF600" />
         </TouchableOpacity>
         <Image source={logo} style={styles.logoImage} resizeMode="contain" />
@@ -49,7 +64,7 @@ export default function GenreBooksScreen() {
         data={genreBooks}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderItem}
-        numColumns={3}
+        numColumns={numColumns}
         contentContainerStyle={styles.listContent}
       />
     </SafeAreaView>
@@ -57,7 +72,10 @@ export default function GenreBooksScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "black" },
+  container: {
+    flex: 1,
+    backgroundColor: "black",
+  },
 
   logoBar: {
     height: 100,
@@ -76,11 +94,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     zIndex: 10,
-  },
-
-  backText: {
-    fontSize: 16,
-    color: "white",
   },
 
   logoImage: {
@@ -104,32 +117,36 @@ const styles = StyleSheet.create({
   },
 
   listContent: {
-    padding: 12,
+    padding: spacing,
   },
 
   bookCard: {
-    width: 100,
-    margin: 8,
-    alignItems: "center",
+    width: itemSize,
+    margin: spacing / 2,
+    alignItems: "flex-start",
+    borderRadius: 8,
+    padding: 6,
+    backgroundColor: "#121212",
   },
 
   bookImage: {
-    width: 100,
-    height: 150,
+    width: itemSize * 0.9,
+    height: itemSize * 1.5,
     borderRadius: 8,
-    marginBottom: 8,
+    marginBottom: 6,
+    resizeMode: "contain",
   },
 
   bookTitle: {
     fontSize: 14,
-    fontWeight: "bold",
-    textAlign: "center",
-    color: "white",
+    fontWeight: "600",
+    textAlign: "left",
+    color: "#eee",
   },
 
   bookAuthor: {
     fontSize: 12,
-    color: "#ccc",
-    textAlign: "center",
+    color: "#888",
+    textAlign: "left",
   },
 });

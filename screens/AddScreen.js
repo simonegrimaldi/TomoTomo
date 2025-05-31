@@ -35,14 +35,12 @@ export default function AddBook({ navigation }) {
     "Fantascienza",
     "Giallo",
     "Horror",
-    "Romanzo storico",
+    "Romanzo",
     "Biografia",
     "Saggio",
     "Avventura",
     "Poesia",
     "Thriller",
-    "Young Adult",
-    "Classico",
     "Altro",
   ];
 
