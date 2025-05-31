@@ -20,6 +20,32 @@ export default function GenreBooksScreen() {
 
   const genreBooks = books.filter((book) => book.genre === genreName);
 
+  if (genreBooks.length === 0) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.logoBar}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="#FFF600" />
+          </TouchableOpacity>
+          <Image source={logo} style={styles.logoImage} resizeMode="contain" />
+        </View>
+
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>{genreName}</Text>
+        </View>
+
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyText}>
+            Nessun libro di questo genere nella libreria
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.bookCard}
@@ -136,4 +162,16 @@ const styles = StyleSheet.create({
     color: "#888",
     textAlign: "left",
   },
+  emptyContainer: {
+  flex: 1,
+  justifyContent: "center",
+  alignItems: "center",
+  padding: 20,
+},
+emptyText: {
+  fontSize: 16,
+  color: "#aaa",
+  fontStyle: "italic",
+  textAlign: "center",
+},
 });
