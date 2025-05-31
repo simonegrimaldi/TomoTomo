@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
   bookCard: (itemSize, spacing) => ({
     width: itemSize,
     margin: spacing / 2,
-    alignItems: "flex-start",
+    alignItems: "center",
     borderRadius: 8,
     padding: 6,
     backgroundColor: "#121212", // mantieni grigio anche nei singoli card
@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
     width: itemSize * 0.9,
     height: itemSize * 1.5,
     borderRadius: 8,
-    marginBottom: 6,
-    resizeMode: "contain", // per miglior adattamento immagine
+    margin: 6,
+    resizeMode: "cover", // per miglior adattamento immagine
   }),
   bookTitle: {
     fontWeight: "600",

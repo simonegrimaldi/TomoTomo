@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   bookCard: {
     width: itemSize,
     margin: spacing / 2,
-    alignItems: "flex-start",
+    alignItems: "center",
     borderRadius: 8,
     padding: 6,
     backgroundColor: "#121212",
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     height: itemSize * 1.5,
     borderRadius: 8,
     marginBottom: 6,
-    resizeMode: "contain",
+    resizeMode: "cover",
   },
 
   bookTitle: {

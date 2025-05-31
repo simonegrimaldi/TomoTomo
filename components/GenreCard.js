@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
   genreCard: {
     width: 120,
     borderRadius: 12,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     paddingVertical: 10,
     zIndex: 1,
   },
