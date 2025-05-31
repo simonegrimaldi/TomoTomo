@@ -54,35 +54,42 @@ export default function FiltersMenu({ filters, toggleFilter, resetFilters }) {
 
 const styles = StyleSheet.create({
   filtersMenu: {
+    marginTop:71,
+    // Posizionamento assoluto per sovrapporre al contenuto sottostante
+    position: "absolute",
+    top: 0,
+    right: 0,
     backgroundColor: "#121212",
+    zIndex: 200,        // deve stare sopra logoBar (zIndex: 100)
     paddingVertical: 16,
+    borderEndStartRadius:10
   },
   filterCategory: {
     marginHorizontal: 16,
     marginBottom: 20,
-    alignItems: "flex-end", // Sposta il contenuto verso destra
+    alignItems: "flex-end", // sposta il contenuto della categoria verso destra
   },
   filterTitle: {
     fontWeight: "900",
     marginBottom: 12,
     fontSize: 18,
     color: "#FFF600",
-    textAlign: "right", // Allinea il testo a destra
+    textAlign: "center",     // allinea il titolo a destra
     width: "100%",
   },
   filterLabel: {
     marginBottom: 12,
     width: "100%",
-    alignItems: "flex-end", // Sposta ogni opzione verso destra
+    alignItems: "flex-end",  // sposta ogni singola voce di stato verso destra
   },
   filterLabelText: {
     color: "#aaa",
     fontSize: 16,
-    textAlign: "right", // Allinea il testo delle etichette a destra
+    textAlign: "right",      // allinea il testo delle etichette a destra
     width: "100%",
   },
   filterLabelActive: {
-    color: "#FFF600",
+    color: "white",
     fontWeight: "700",
   },
   resetButton: {
@@ -92,7 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginBottom: 20,
-    alignSelf: "flex-end", // Posiziona il pulsante di reset sul lato destro
+    alignSelf: "center",   // posiziona il pulsante di reset sul lato destro
   },
   resetButtonText: {
     color: "#000",

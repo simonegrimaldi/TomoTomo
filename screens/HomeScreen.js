@@ -163,11 +163,12 @@ const styles = StyleSheet.create({
     width: 140,
   },
   topBarWrapper: {
-    marginTop:150,
+    position: "relative",
+    marginTop: 140,
     paddingHorizontal: 16,
     backgroundColor: "#000",
-    borderBottomColor: '#FFF600',
-    borderBottomWidth:1,
+    borderBottomColor: "#FFF600",
+    borderBottomWidth: 1,
   },
   contentContainer: {
     flex: 1,
