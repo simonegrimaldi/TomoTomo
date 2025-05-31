@@ -15,7 +15,7 @@ export default function MainStackNavigator() {
 
       {/* Schermate extra fuori dalla tab bar */}
       <MainStack.Screen name="Detail" component={DetailScreen} />
-      <MainStack.Screen name="Genre" component={GenreScreen} />
     </MainStack.Navigator>
   );
 }
+
