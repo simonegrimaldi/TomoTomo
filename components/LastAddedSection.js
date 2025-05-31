@@ -23,7 +23,7 @@ export default function LastAddedSection({ books, navigation }) {
         source={ item.cover_image_uri ? { uri: item.cover_image_uri } : defaultGenreImage }
         style={styles.bookImage}
       />
-      <Text style={styles.bookTitle} numberOfLines={1}>
+      <Text style={styles.bookTitle} numberOfLines={2}>
         {item.title}
       </Text>
     </TouchableOpacity>
@@ -80,10 +80,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   bookTitle: {
-    fontSize: 14,
     fontWeight: "600",
+    fontSize: 14,
+    textAlign: "left",
     color: "#eee",
-    textAlign: "center",
   },
 
   // Stile per quando non ci sono libri
