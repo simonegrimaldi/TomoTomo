@@ -1,5 +1,11 @@
 import React from "react";
-import { View, TextInput, TouchableOpacity, Text, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+} from "react-native";
 
 export default function TopBar({ toggleFilters, searchText, onSearchChange }) {
   return (
@@ -32,9 +38,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 12,
-    backgroundColor: "#000", // sfondo nero
+    backgroundColor: "#000",
     borderRadius: 24,
-    marginBottom: 20
+    marginBottom: 20,
   },
   searchInput: {
     flex: 1,
@@ -43,7 +49,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 45,
     fontSize: 14,
-    color: "#eee",           // testo chiaro
+    color: "#eee",
   },
   filterBtn: {
     marginLeft: 8,

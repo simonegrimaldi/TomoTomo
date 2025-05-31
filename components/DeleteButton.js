@@ -1,4 +1,3 @@
-// components/DeleteButton.js
 import React, { useContext } from "react";
 import { Alert, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";

@@ -1,4 +1,3 @@
-// components/BookCoverImage.js
 import React from "react";
 import { Image, StyleSheet } from "react-native";
 import defaultImage from "../assets/libri/default_genre_image.png";

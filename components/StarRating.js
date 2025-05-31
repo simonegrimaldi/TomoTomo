@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 
 const StarRating = ({ rating, onChange = () => {}, editable = true }) => {
   const maxStars = 5;
@@ -20,8 +20,13 @@ const StarRating = ({ rating, onChange = () => {}, editable = true }) => {
             accessibilityLabel={`${starNumber} stars`}
             disabled={!editable}
           >
-            <Text style={[styles.star, filled ? styles.filledStar : styles.emptyStar]}>
-              {filled ? '★' : '☆'}
+            <Text
+              style={[
+                styles.star,
+                filled ? styles.filledStar : styles.emptyStar,
+              ]}
+            >
+              {filled ? "★" : "☆"}
             </Text>
           </TouchableOpacity>
         );
@@ -32,19 +37,19 @@ const StarRating = ({ rating, onChange = () => {}, editable = true }) => {
 
 const styles = StyleSheet.create({
   starContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   star: {
     fontSize: 32,
     marginHorizontal: 4,
   },
   filledStar: {
-    color: '#ffd700',
+    color: "#ffd700",
   },
   emptyStar: {
-    color: '#aaa',
+    color: "#aaa",
   },
 });
 

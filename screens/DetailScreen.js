@@ -59,7 +59,6 @@ export default function BookDetailScreen({ route, navigation }) {
         setBook(found);
         setEditedBook({ ...found });
       } else {
-        // Se non lo trova (perché forse è stato eliminato), torna indietro
         navigation.goBack();
       }
     }
@@ -207,33 +206,34 @@ export default function BookDetailScreen({ route, navigation }) {
           </View>
 
           {isEditing ? (
-  <>
-    <Text style={[styles.sectionTitle, { marginTop: 20, marginLeft: 16 }]}>
-      Sinossi
-    </Text>
-    <TextInput
-      placeholder="Inserisci la sinossi..."
-      value={editedBook.synopsis || ""}
-      onChangeText={(text) =>
-        setEditedBook((prev) => ({ ...prev, synopsis: text }))
-      }
-      style={[styles.synopsisInput, { color: "white" }]}
-      multiline
-      numberOfLines={4}
-      placeholderTextColor="#888"
-    />
-  </>
-) : (
-  // In visualizzazione normale, mostra solo se esiste la sinossi
-  editedBook.synopsis ? (
-    <>
-      <Text style={[styles.sectionTitle, { marginTop: 20, marginLeft: 16 }]}>
-        Sinossi
-      </Text>
-      <Text style={styles.synopsisText}>{editedBook.synopsis}</Text>
-    </>
-  ) : null
-)}
+            <>
+              <Text
+                style={[styles.sectionTitle, { marginTop: 20, marginLeft: 16 }]}
+              >
+                Sinossi
+              </Text>
+              <TextInput
+                placeholder="Inserisci la sinossi..."
+                value={editedBook.synopsis || ""}
+                onChangeText={(text) =>
+                  setEditedBook((prev) => ({ ...prev, synopsis: text }))
+                }
+                style={[styles.synopsisInput, { color: "white" }]}
+                multiline
+                numberOfLines={4}
+                placeholderTextColor="#888"
+              />
+            </>
+          ) : editedBook.synopsis ? (
+            <>
+              <Text
+                style={[styles.sectionTitle, { marginTop: 20, marginLeft: 16 }]}
+              >
+                Sinossi
+              </Text>
+              <Text style={styles.synopsisText}>{editedBook.synopsis}</Text>
+            </>
+          ) : null}
 
           {isEditing && (
             <>
@@ -472,8 +472,6 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
   },
-
-  // ③ RIMUOVIAMO flexGrow:1 da contentContainerStyle
   scrollFlex: {
     flex: 1,
   },
@@ -559,7 +557,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   synopsisInput: {
-    marginBottom:10,
+    marginBottom: 10,
     backgroundColor: "#222",
     color: "#eee",
     padding: 14,
@@ -574,7 +572,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 10,
     marginBottom: 20,
-    // opzionale per prevenire overflow:
     flexWrap: "nowrap",
   },
 
@@ -583,9 +580,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     paddingHorizontal: 10,
     paddingVertical: 8,
-    // Rimuovo width fissa e uso flex per adattarsi allo spazio
     flex: 1,
-    marginRight: 10, // Spazio tra stato e bottone
+    marginRight: 10,
     justifyContent: "center",
   },
   cardLabel: {
@@ -625,7 +621,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 24,
-    // Impedisce che il bottone si restringa troppo
     flexShrink: 0,
   },
 
@@ -636,12 +631,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   synopsisText: {
-  color: "#eee",
-  fontSize: 16,
-  lineHeight: 22,
-  paddingHorizontal: 20,
-  marginBottom: 20,
-  textAlign: "center",
-  
-},
+    color: "#eee",
+    fontSize: 16,
+    lineHeight: 22,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    textAlign: "center",
+  },
 });

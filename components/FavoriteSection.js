@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   sectionContainer: {
     width: "100%",
     paddingVertical: 24,
-    backgroundColor: "#121212",  // sfondo scuro invece che bianco
+    backgroundColor: "#121212", 
     elevation: 4,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontWeight: "900",
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     fontSize: 20,
     marginBottom: 12,
     color: "white",

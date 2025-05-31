@@ -81,8 +81,7 @@ const styles = StyleSheet.create({
     height: itemSize * 1.5,
     borderRadius: 8,
     marginBottom: 6,
-      resizeMode: "cover", // Prova a cambiare da cover a contain
-
+    resizeMode: "cover", 
   },
   bookTitle: {
     fontWeight: "600",

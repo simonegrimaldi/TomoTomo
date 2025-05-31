@@ -1,4 +1,3 @@
-// components/DatePickerDisplay.js
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
@@ -26,7 +25,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 16,
-    width: "100%",  // tutta la larghezza disponibile
+    width: "100%",
     maxWidth: 400,
     alignItems: "center",
     flexDirection: "row",

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import { View, Text, FlatList, StyleSheet } from "react-native";
 import defaultGenreImage from "../assets/libri/default_genre_image.png";
-import GenreCard from "./GenreCard"; 
+import GenreCard from "./GenreCard";
 
 export default function PlaylistSection({ books, navigation }) {
   const booksByGenre = useMemo(() => {
@@ -14,15 +14,17 @@ export default function PlaylistSection({ books, navigation }) {
     return grouped;
   }, [books]);
 
-  const genres = Object.entries(booksByGenre).map(([genreName, booksInGenre]) => {
-    const lastAddedBook = booksInGenre[0];
-    return {
-      genreName,
-      genreImageUri: lastAddedBook?.cover_image_uri
-        ? { uri: lastAddedBook.cover_image_uri }
-        : defaultGenreImage,
-    };
-  });
+  const genres = Object.entries(booksByGenre).map(
+    ([genreName, booksInGenre]) => {
+      const lastAddedBook = booksInGenre[0];
+      return {
+        genreName,
+        genreImageUri: lastAddedBook?.cover_image_uri
+          ? { uri: lastAddedBook.cover_image_uri }
+          : defaultGenreImage,
+      };
+    }
+  );
 
   const renderGenre = ({ item }) => (
     <GenreCard
@@ -85,6 +87,6 @@ const styles = StyleSheet.create({
   },
   listContent: {
     alignItems: "center",
-    paddingHorizontal:25,
+    paddingHorizontal: 25,
   },
 });

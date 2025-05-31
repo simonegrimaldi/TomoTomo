@@ -1,9 +1,15 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+} from "react-native";
 import defaultGenreImage from "../assets/libri/default_genre_image.png";
 
 export default function RandomBooksSection({ books, navigation }) {
-  // Funzione per estrarre max 3 libri casuali
   const getRandomBooks = () => {
     if (books.length <= 3) return books;
     const shuffled = [...books].sort(() => 0.5 - Math.random());
@@ -26,7 +32,11 @@ export default function RandomBooksSection({ books, navigation }) {
       onPress={() => navigation.navigate("Detail", { bookId: item.id })}
     >
       <Image
-        source={item.cover_image_uri ? { uri: item.cover_image_uri } : defaultGenreImage}
+        source={
+          item.cover_image_uri
+            ? { uri: item.cover_image_uri }
+            : defaultGenreImage
+        }
         style={styles.bookImage}
       />
       <Text style={styles.bookTitle} numberOfLines={3}>
@@ -84,8 +94,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     borderRadius: 10,
     padding: 8,
-    alignItems: "center"
-
+    alignItems: "center",
   },
   bookImage: {
     width: 100,
@@ -101,6 +110,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "left",
     color: "#eee",
-
   },
 });

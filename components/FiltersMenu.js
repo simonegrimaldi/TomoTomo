@@ -1,5 +1,11 @@
 import React from "react";
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import StarRating from "./StarRating";
 
 export default function FiltersMenu({ filters, toggleFilter, resetFilters }) {
@@ -54,38 +60,37 @@ export default function FiltersMenu({ filters, toggleFilter, resetFilters }) {
 
 const styles = StyleSheet.create({
   filtersMenu: {
-    marginTop:71,
-    // Posizionamento assoluto per sovrapporre al contenuto sottostante
+    marginTop: 71,
     position: "absolute",
     top: 0,
     right: 0,
     backgroundColor: "#121212",
-    zIndex: 200,        // deve stare sopra logoBar (zIndex: 100)
+    zIndex: 200,
     paddingVertical: 16,
-    borderEndStartRadius:10
+    borderEndStartRadius: 10,
   },
   filterCategory: {
     marginHorizontal: 16,
     marginBottom: 20,
-    alignItems: "flex-end", // sposta il contenuto della categoria verso destra
+    alignItems: "flex-end",
   },
   filterTitle: {
     fontWeight: "900",
     marginBottom: 12,
     fontSize: 18,
     color: "#FFF600",
-    textAlign: "center",     // allinea il titolo a destra
+    textAlign: "center",
     width: "100%",
   },
   filterLabel: {
     marginBottom: 12,
     width: "100%",
-    alignItems: "flex-end",  // sposta ogni singola voce di stato verso destra
+    alignItems: "flex-end",
   },
   filterLabelText: {
     color: "#aaa",
     fontSize: 16,
-    textAlign: "right",      // allinea il testo delle etichette a destra
+    textAlign: "right",
     width: "100%",
   },
   filterLabelActive: {
@@ -99,7 +104,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginBottom: 20,
-    alignSelf: "center",   // posiziona il pulsante di reset sul lato destro
+    alignSelf: "center",
   },
   resetButtonText: {
     color: "#000",

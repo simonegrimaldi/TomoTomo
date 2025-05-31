@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: 140, // distanza fissa pari all'altezza logoBar
+    paddingTop: 140,
     backgroundColor: "#0a0a0a",
   },
   statsContainer: {

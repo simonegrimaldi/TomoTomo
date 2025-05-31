@@ -1,9 +1,15 @@
 import React from "react";
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from "react-native";
-import defaultGenreImage from "../assets/libri/default_genre_image.png"; // Puoi continuare a mostrare un’immagine di placeholder se preferisci
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+} from "react-native";
+import defaultGenreImage from "../assets/libri/default_genre_image.png"; 
 
 export default function LastAddedSection({ books, navigation }) {
-  // Se non ci sono libri, ritorna UI “vuota”
   if (!books || books.length === 0) {
     return (
       <View style={styles.emptyContainer}>
@@ -12,7 +18,6 @@ export default function LastAddedSection({ books, navigation }) {
     );
   }
 
-  // Altrimenti, mostriamo la lista orizzontale
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.bookCard}
@@ -20,7 +25,11 @@ export default function LastAddedSection({ books, navigation }) {
       activeOpacity={0.8}
     >
       <Image
-        source={ item.cover_image_uri ? { uri: item.cover_image_uri } : defaultGenreImage }
+        source={
+          item.cover_image_uri
+            ? { uri: item.cover_image_uri }
+            : defaultGenreImage
+        }
         style={styles.bookImage}
       />
       <Text style={styles.bookTitle} numberOfLines={2}>
@@ -86,7 +95,6 @@ const styles = StyleSheet.create({
     color: "#eee",
   },
 
-  // Stile per quando non ci sono libri
   emptyContainer: {
     width: "100%",
     paddingVertical: 47,

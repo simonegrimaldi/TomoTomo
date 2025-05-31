@@ -33,7 +33,9 @@ export default function GenreBooksScreen() {
       activeOpacity={0.8}
     >
       <Image
-        source={item.cover_image_uri ? { uri: item.cover_image_uri } : defaultImage}
+        source={
+          item.cover_image_uri ? { uri: item.cover_image_uri } : defaultImage
+        }
         style={styles.bookImage}
       />
       <Text style={styles.bookTitle} numberOfLines={2}>
@@ -49,7 +51,10 @@ export default function GenreBooksScreen() {
     <SafeAreaView style={styles.container}>
       {/* Barra con bottone indietro e logo centrato */}
       <View style={styles.logoBar}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
           <Ionicons name="arrow-back" size={24} color="#FFF600" />
         </TouchableOpacity>
         <Image source={logo} style={styles.logoImage} resizeMode="contain" />

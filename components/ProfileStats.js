@@ -1,8 +1,12 @@
-// components/ProfileStats.js
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
-export default function ProfileStats({ total, avgTime, avgRating, readingCount }) {
+export default function ProfileStats({
+  total,
+  avgTime,
+  avgRating,
+  readingCount,
+}) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Statistiche</Text>
@@ -25,29 +29,29 @@ const Stat = ({ label, value }) => (
 
 const styles = StyleSheet.create({
   container: { marginBottom: 20 },
-  title: { 
-    fontSize: 18, 
-    fontWeight: "900", 
+  title: {
+    fontSize: 18,
+    fontWeight: "900",
     marginBottom: 8,
-    color: "#FFF600", // giallo brillante per il titolo
+    color: "#FFF600",
     textAlign: "left",
   },
-  row: { 
-    flexDirection: "row", 
-    justifyContent: "space-around" 
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-around",
   },
-  statBox: { 
+  statBox: {
     alignItems: "left",
     flex: 1,
   },
-  value: { 
-    fontSize: 22, 
+  value: {
+    fontSize: 22,
     fontWeight: "medium",
-    color: "#FFF600", 
+    color: "#FFF600",
   },
-  label: { 
-    fontSize: 12, 
-    color: "#ccc", // testo leggero per le etichette
+  label: {
+    fontSize: 12,
+    color: "#ccc", 
     marginTop: 4,
   },
 });

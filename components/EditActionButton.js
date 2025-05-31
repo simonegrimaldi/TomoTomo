@@ -4,11 +4,17 @@ import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 export default function EditActionButtons({ onCancel, onConfirm }) {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={[styles.button, styles.cancel]} onPress={onCancel}>
+      <TouchableOpacity
+        style={[styles.button, styles.cancel]}
+        onPress={onCancel}
+      >
         <Text style={styles.text}>Annulla</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.button, styles.confirm]} onPress={onConfirm}>
+      <TouchableOpacity
+        style={[styles.button, styles.confirm]}
+        onPress={onConfirm}
+      >
         <Text style={styles.text}>Conferma</Text>
       </TouchableOpacity>
     </View>

@@ -1,4 +1,3 @@
-// components/DatePickerEdit.js
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -6,7 +5,6 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 const DatePickerEdit = ({ label, date, onDateChange, minimumDate }) => {
   const [showPicker, setShowPicker] = useState(false);
 
-  // Formatta la data da "YYYY-MM-DD" a data leggibile locale
   const formatDate = (dateString) => {
     if (!dateString) return "Seleziona";
     const parts = dateString.split("-");
@@ -34,7 +32,9 @@ const DatePickerEdit = ({ label, date, onDateChange, minimumDate }) => {
     <View style={styles.dateCard}>
       <Text style={styles.cardLabel}>{label}</Text>
       <TouchableOpacity onPress={() => setShowPicker(true)}>
-        <Text style={[styles.cardValue, { color: "#FFF600" }]}>{formatDate(date)}</Text>
+        <Text style={[styles.cardValue, { color: "#FFF600" }]}>
+          {formatDate(date)}
+        </Text>
       </TouchableOpacity>
 
       {showPicker && (
@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 8,
     borderRadius: 16,
-    width: "100%", // occuperà tutta la larghezza del contenitore padre
-    maxWidth: 400, // opzionale: limite massimo di larghezza su schermi grandi
+    width: "100%",
+    maxWidth: 400,
     alignItems: "center",
     flexDirection: "row",
     justifyContent: "center",

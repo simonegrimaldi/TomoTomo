@@ -71,12 +71,14 @@ export default function AddBook({ navigation }) {
     }, [])
   );
 
-  // Funzione per scegliere un’immagine dalla galleria e copiarla in locale
   const pickImage = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.status !== "granted") {
-      Alert.alert("Permesso negato", "Serve il permesso per accedere alla galleria");
+      Alert.alert(
+        "Permesso negato",
+        "Serve il permesso per accedere alla galleria"
+      );
       return;
     }
 
@@ -95,7 +97,8 @@ export default function AddBook({ navigation }) {
       }
       const uriParts = uri.split(".");
       const fileExt = uriParts[uriParts.length - 1].split(/\#|\?/)[0];
-const safeName = sanitizeFilename(title || "unnamed") + "_" + Date.now() + "." + fileExt;
+      const safeName =
+        sanitizeFilename(title || "unnamed") + "_" + Date.now() + "." + fileExt;
       const destUri = dirUri + safeName;
       await FileSystem.copyAsync({ from: uri, to: destUri });
       setCoverImageUri(destUri);
@@ -105,7 +108,6 @@ const safeName = sanitizeFilename(title || "unnamed") + "_" + Date.now() + "." +
     }
   };
 
-  // Quando si preme “Salva libro”
   const handleSubmit = async () => {
     if (!title || !author || !synopsis || !genre || !coverImageUri) {
       Alert.alert(
@@ -132,13 +134,14 @@ const safeName = sanitizeFilename(title || "unnamed") + "_" + Date.now() + "." +
       favorite: false,
       rating: status === "letto" ? rating : null,
       notes: status === "letto" ? notes : null,
-      date_start: status === "in lettura" || status === "letto" ? dateStart : null,
+      date_start:
+        status === "in lettura" || status === "letto" ? dateStart : null,
       date_end: status === "letto" ? dateEnd : null,
     };
 
     try {
       await addBook(bookData);
-      navigation.goBack()
+      navigation.goBack();
     } catch (error) {
       Alert.alert("Errore", "Si è verificato un errore durante il salvataggio");
       console.error(error);
@@ -206,11 +209,19 @@ const safeName = sanitizeFilename(title || "unnamed") + "_" + Date.now() + "." +
 
           {/* Selezione copertina */}
           <View style={styles.imagePickerContainer}>
-            <TouchableOpacity style={styles.pickImageButton} onPress={pickImage}>
-              <Text style={styles.pickImageButtonText}>Seleziona copertina</Text>
+            <TouchableOpacity
+              style={styles.pickImageButton}
+              onPress={pickImage}
+            >
+              <Text style={styles.pickImageButtonText}>
+                Seleziona copertina
+              </Text>
             </TouchableOpacity>
             {coverImageUri ? (
-              <Image source={{ uri: coverImageUri }} style={styles.coverImage} />
+              <Image
+                source={{ uri: coverImageUri }}
+                style={styles.coverImage}
+              />
             ) : null}
           </View>
 
@@ -316,7 +327,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   scrollContent: {
-    paddingTop: 160, // spazio per bar al di sopra
+    paddingTop: 160, 
     paddingBottom: 40,
     backgroundColor: "#000",
   },
@@ -336,10 +347,10 @@ const styles = StyleSheet.create({
     textAlignVertical: "top",
   },
   pickerColored: {
-    color: "#FFF600", // testo selezionato giallo
+    color: "#FFF600", 
   },
   pickerItemColored: {
-    color: "#FFF600", // voci dropdown gialle
+    color: "#FFF600",
     fontSize: 16,
   },
   imagePickerContainer: {

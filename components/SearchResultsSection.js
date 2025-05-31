@@ -76,14 +76,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderRadius: 8,
     padding: 6,
-    backgroundColor: "#121212", // mantieni grigio anche nei singoli card
+    backgroundColor: "#121212", 
   }),
   bookImage: (itemSize) => ({
     width: itemSize * 0.9,
     height: itemSize * 1.5,
     borderRadius: 8,
     margin: 6,
-    resizeMode: "cover", // per miglior adattamento immagine
+    resizeMode: "cover", 
   }),
   bookTitle: {
     fontWeight: "600",

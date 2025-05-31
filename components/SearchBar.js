@@ -1,4 +1,3 @@
-// components/SearchBar.js
 import React from "react";
 import { TextInput, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -28,9 +27,9 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: "white",
     borderRadius: 20,
-    height: 40,           // altezza fissa
+    height: 40,
     paddingHorizontal: 16,
     fontSize: 16,
-    textAlignVertical: "center", 
+    textAlignVertical: "center",
   },
 });
