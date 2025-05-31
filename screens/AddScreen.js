@@ -35,7 +35,7 @@ export default function AddBook({ navigation }) {
     "Fantascienza",
     "Giallo",
     "Horror",
-    "Romanzo",
+    "Romanzo Storico",
     "Biografia",
     "Saggio",
     "Avventura",
@@ -95,7 +95,7 @@ export default function AddBook({ navigation }) {
       }
       const uriParts = uri.split(".");
       const fileExt = uriParts[uriParts.length - 1].split(/\#|\?/)[0];
-      const safeName = sanitizeFilename(title || "unnamed") + "." + fileExt;
+const safeName = sanitizeFilename(title || "unnamed") + "_" + Date.now() + "." + fileExt;
       const destUri = dirUri + safeName;
       await FileSystem.copyAsync({ from: uri, to: destUri });
       setCoverImageUri(destUri);

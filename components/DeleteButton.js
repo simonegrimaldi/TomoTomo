@@ -8,29 +8,32 @@ export default function DeleteButton({ bookId }) {
   const navigation = useNavigation();
   const { removeBook } = useContext(BooksContext);
 
- const confirmDelete = () => {
-  Alert.alert(
-    "Conferma eliminazione",
-    "Sei sicuro di voler eliminare questo libro?",
-    [
-      { text: "Annulla", style: "cancel" },
-      {
-        text: "Elimina",
-        style: "destructive",
-        onPress: async () => {
-          await removeBook(bookId);
+  const confirmDelete = () => {
+    Alert.alert(
+      "Conferma eliminazione",
+      "Sei sicuro di voler eliminare questo libro?",
+      [
+        { text: "Annulla", style: "cancel" },
+        {
+          text: "Elimina",
+          style: "destructive",
+          onPress: async () => {
+            await removeBook(bookId);
 
-         if (navigation.canGoBack()) {
-  navigation.goBack();
-} else {
-  // Naviga forzatamente alla HomeMain nello stack Home
-  navigation.navigate('Home', { screen: 'HomeMain' });
-}
+            onPress: async () => {
+              await removeBook(bookId);
+
+              if (navigation.canGoBack()) {
+                navigation.popToTop();
+              } else {
+                navigation.navigate("HomeMain");
+              }
+            };
+          },
         },
-      },
-    ]
-  );
-};
+      ]
+    );
+  };
 
   return (
     <TouchableOpacity style={styles.deleteButton} onPress={confirmDelete}>

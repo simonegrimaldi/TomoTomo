@@ -15,8 +15,6 @@ export default function HomeStackNavigator() {
   }}>
       <HomeStack.Screen name="HomeMain" component={HomeScreen} options={{ title: 'Home'}} />
       <HomeStack.Screen name="Genre" component={GenreScreen} options={{ title: 'Genere' }} />
-      <HomeStack.Screen name="Detail" component={DetailScreen} />
-
     </HomeStack.Navigator>
   );
 }
