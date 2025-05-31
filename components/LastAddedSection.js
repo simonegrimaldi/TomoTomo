@@ -1,21 +1,28 @@
 import React from "react";
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-} from "react-native";
+import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet } from "react-native";
+import defaultGenreImage from "../assets/libri/default_genre_image.png"; // Puoi continuare a mostrare un’immagine di placeholder se preferisci
 
 export default function LastAddedSection({ books, navigation }) {
+  // Se non ci sono libri, ritorna UI “vuota”
+  if (!books || books.length === 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Text style={styles.emptyText}>Nessun libro disponibile</Text>
+      </View>
+    );
+  }
+
+  // Altrimenti, mostriamo la lista orizzontale
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.bookCard}
       onPress={() => navigation.navigate("Detail", { bookId: item.id })}
       activeOpacity={0.8}
     >
-      <Image source={{ uri: item.cover_image_uri }} style={styles.bookImage} />
+      <Image
+        source={ item.cover_image_uri ? { uri: item.cover_image_uri } : defaultGenreImage }
+        style={styles.bookImage}
+      />
       <Text style={styles.bookTitle} numberOfLines={1}>
         {item.title}
       </Text>
@@ -29,8 +36,9 @@ export default function LastAddedSection({ books, navigation }) {
         data={books}
         renderItem={renderItem}
         keyExtractor={(item) => item.id.toString()}
-        horizontal={true}
+        horizontal
         showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.listContent}
       />
     </View>
   );
@@ -40,34 +48,27 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     paddingVertical: 24,
-    backgroundColor: "#121212", // sfondo scuro
+    backgroundColor: "#121212",
     marginVertical: 16,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.7,
-    shadowRadius: 5,
   },
   title: {
     fontWeight: "900",
     paddingHorizontal: 20,
     fontSize: 18,
     marginBottom: 10,
-    fontSize: 18,
-    fontWeight: "bold",
     color: "#FFF600",
     textAlign: "left",
+  },
+  listContent: {
+    paddingHorizontal: 20,
+    alignItems: "center",
   },
   bookCard: {
     width: 120,
     marginRight: 16,
-    paddingHorizontal: 20,
-    alignItems: "flex-start",
-    borderRadius: 10,
     padding: 8,
     alignItems: "center",
-    
-
+    borderRadius: 10,
   },
   bookImage: {
     width: 100,
@@ -82,7 +83,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: "#eee",
-        textAlign: "center",
+    textAlign: "center",
+  },
 
+  // Stile per quando non ci sono libri
+  emptyContainer: {
+    width: "100%",
+    paddingVertical: 47,
+    backgroundColor: "#121212",
+    marginVertical: 16,
+    alignItems: "center",
+  },
+  emptyText: {
+    fontStyle: "italic",
+    color: "#888",
+    textAlign: "center",
   },
 });

@@ -28,46 +28,36 @@ export default function GenreBooksScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        {/* Barra con bottone indietro e logo centrato */}
-        <View style={styles.logoBar}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}
-          >
-            <Ionicons name="arrow-back" size={24} color="#FFF600" />
-          </TouchableOpacity>
-          <Image source={logo} style={styles.logoImage} resizeMode="contain" />
-        </View>
-
-        {/* Titolo categoria centrato */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>{genreName}</Text>
-        </View>
-
-        <FlatList
-          data={genreBooks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderItem}
-          numColumns={3}
-          contentContainerStyle={styles.listContent}
-        />
+    <SafeAreaView style={styles.container}>
+      {/* Barra con bottone indietro e logo centrato */}
+      <View style={styles.logoBar}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <Ionicons name="arrow-back" size={24} color="#FFF600" />
+        </TouchableOpacity>
+        <Image source={logo} style={styles.logoImage} resizeMode="contain" />
       </View>
+
+      {/* Titolo categoria centrato */}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>{genreName}</Text>
+      </View>
+
+      <FlatList
+        data={genreBooks}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderItem}
+        numColumns={3}
+        contentContainerStyle={styles.listContent}
+      />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "black",
-  },
-
-  container: { 
-    flex: 1, 
-    backgroundColor: "black",
-  },
+  container: { flex: 1, backgroundColor: "black" },
 
   logoBar: {
     height: 100,

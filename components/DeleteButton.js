@@ -1,3 +1,4 @@
+// components/DeleteButton.js
 import React, { useContext } from "react";
 import { Alert, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -5,29 +6,42 @@ import { BooksContext } from "../context/BooksContext";
 
 export default function DeleteButton({ bookId }) {
   const navigation = useNavigation();
-  const { removeBook } = useContext(BooksContext); // ⬅️ Usa removeBook
+  const { removeBook } = useContext(BooksContext);
 
   const confirmDelete = () => {
-  Alert.alert(
-    "Conferma eliminazione",
-    "Sei sicuro di voler eliminare questo libro?",
-    [
-      { text: "Annulla", style: "cancel" },
-      {
-        text: "Elimina",
-        onPress: async () => {
-          await removeBook(bookId);
-          if (navigation.canGoBack()) {
-            navigation.goBack();
-          } else {
-            navigation.navigate("Home");  // fallback se non può tornare indietro
-          }
+    Alert.alert(
+      "Conferma eliminazione",
+      "Sei sicuro di voler eliminare questo libro?",
+      [
+        { text: "Annulla", style: "cancel" },
+        {
+          text: "Elimina",
+          style: "destructive",
+          onPress: async () => {
+            // 1) Rimuovo il libro dai dati e aggiorno il file persistente
+            await removeBook(bookId);
+
+            // 2) Cerco di tornare indietro nella pila corrente:
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+              return;
+            }
+
+            // 3) Se qui non c'era uno schermo precedente,
+            //    invio il reset al parent (cioè al TabNavigator)
+            const parentNav = navigation.getParent();
+            if (parentNav) {
+              parentNav.reset({
+                index: 0,
+                routes: [{ name: "MainHome" }],
+              });
+            }
+          },
         },
-        style: "destructive",
-      },
-    ]
-  );
-};
+      ]
+    );
+  };
+
   return (
     <TouchableOpacity style={styles.deleteButton} onPress={confirmDelete}>
       <Text style={styles.deleteText}>Elimina libro</Text>

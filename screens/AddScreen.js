@@ -1,3 +1,4 @@
+// screens/AddBook.js
 import React, { useState, useContext, useCallback } from "react";
 import {
   View,
@@ -11,21 +12,21 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { BooksContext } from "../context/BooksContext";
 import * as ImagePicker from "expo-image-picker";
-import { SafeAreaView } from "react-native-safe-area-context";
 import * as FileSystem from "expo-file-system";
 import { useFocusEffect } from "@react-navigation/native";
-import logo from "../assets/icon.png";
 
 import DatePickerEdit from "../components/DatePickerEdit";
 import LabeledPicker from "../components/LabeledPicker";
 import StarRating from "../components/StarRating";
+import logo from "../assets/icon.png";
 
 const sanitizeFilename = (name) =>
   name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
 
-const AddBook = ({ navigation }) => {
+export default function AddBook({ navigation }) {
   const { addBook } = useContext(BooksContext);
 
   const genres = [
@@ -56,6 +57,7 @@ const AddBook = ({ navigation }) => {
   const [dateEnd, setDateEnd] = useState(null);
   const [genre, setGenre] = useState(genres[0]);
 
+  // Al focus dello schermo, resetta tutti i campi
   useFocusEffect(
     useCallback(() => {
       setTitle("");
@@ -71,14 +73,12 @@ const AddBook = ({ navigation }) => {
     }, [])
   );
 
+  // Funzione per scegliere un’immagine dalla galleria e copiarla in locale
   const pickImage = async () => {
     const permissionResult =
       await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.status !== "granted") {
-      Alert.alert(
-        "Permesso negato",
-        "Serve il permesso per accedere alla galleria"
-      );
+      Alert.alert("Permesso negato", "Serve il permesso per accedere alla galleria");
       return;
     }
 
@@ -86,18 +86,15 @@ const AddBook = ({ navigation }) => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       quality: 1,
     });
-
     if (pickerResult.canceled) return;
 
     const uri = pickerResult.assets[0].uri;
-
     try {
       const dirUri = FileSystem.documentDirectory + "assets/libri/";
       const dirInfo = await FileSystem.getInfoAsync(dirUri);
       if (!dirInfo.exists) {
         await FileSystem.makeDirectoryAsync(dirUri, { intermediates: true });
       }
-      // Estrai estensione in modo sicuro
       const uriParts = uri.split(".");
       const fileExt = uriParts[uriParts.length - 1].split(/\#|\?/)[0];
       const safeName = sanitizeFilename(title || "unnamed") + "." + fileExt;
@@ -111,6 +108,7 @@ const AddBook = ({ navigation }) => {
     }
   };
 
+  // Quando si preme “Salva libro”
   const handleSubmit = async () => {
     if (!title || !author || !synopsis || !genre || !coverImageUri) {
       Alert.alert(
@@ -137,8 +135,7 @@ const AddBook = ({ navigation }) => {
       favorite: false,
       rating: status === "letto" ? rating : null,
       notes: status === "letto" ? notes : null,
-      date_start:
-        status === "in lettura" || status === "letto" ? dateStart : null,
+      date_start: status === "in lettura" || status === "letto" ? dateStart : null,
       date_end: status === "letto" ? dateEnd : null,
     };
 
@@ -155,15 +152,17 @@ const AddBook = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      style={styles.flex}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 80}
+      style={styles.keyboardAvoiding}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? -40 : -40}
     >
-      <SafeAreaView style={styles.safeArea}>
+      <View style={styles.safeArea}>
+        {/* Barra superiore con logo */}
         <View style={styles.logoBar}>
           <Image source={logo} style={styles.logoImage} resizeMode="contain" />
         </View>
 
+        {/* Contenuto scrollabile */}
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
@@ -171,6 +170,7 @@ const AddBook = ({ navigation }) => {
         >
           <Text style={styles.headerTitle}>Aggiungi libro</Text>
 
+          {/* Titolo */}
           <TextInput
             placeholder="Titolo"
             value={title}
@@ -179,6 +179,8 @@ const AddBook = ({ navigation }) => {
             placeholderTextColor="#888"
             autoFocus
           />
+
+          {/* Autore */}
           <TextInput
             placeholder="Autore"
             value={author}
@@ -186,6 +188,8 @@ const AddBook = ({ navigation }) => {
             style={styles.input}
             placeholderTextColor="#888"
           />
+
+          {/* Sinossi */}
           <TextInput
             placeholder="Sinossi"
             value={synopsis}
@@ -195,6 +199,7 @@ const AddBook = ({ navigation }) => {
             placeholderTextColor="#888"
           />
 
+          {/* Picker Genere */}
           <LabeledPicker
             label="Genere"
             selectedValue={genre}
@@ -204,23 +209,17 @@ const AddBook = ({ navigation }) => {
             itemStyle={styles.pickerItemColored}
           />
 
+          {/* Selezione copertina */}
           <View style={styles.imagePickerContainer}>
-            <TouchableOpacity
-              style={styles.pickImageButton}
-              onPress={pickImage}
-            >
-              <Text style={styles.pickImageButtonText}>
-                Seleziona copertina
-              </Text>
+            <TouchableOpacity style={styles.pickImageButton} onPress={pickImage}>
+              <Text style={styles.pickImageButtonText}>Seleziona copertina</Text>
             </TouchableOpacity>
             {coverImageUri ? (
-              <Image
-                source={{ uri: coverImageUri }}
-                style={styles.coverImage}
-              />
+              <Image source={{ uri: coverImageUri }} style={styles.coverImage} />
             ) : null}
           </View>
 
+          {/* Picker Stato */}
           <LabeledPicker
             label="Stato"
             selectedValue={status}
@@ -234,6 +233,7 @@ const AddBook = ({ navigation }) => {
             itemStyle={styles.pickerItemColored}
           />
 
+          {/* Sezione Date */}
           {status === "in lettura" && (
             <View style={styles.statusDatesContainer}>
               <DatePickerEdit
@@ -243,7 +243,6 @@ const AddBook = ({ navigation }) => {
               />
             </View>
           )}
-
           {status === "letto" && (
             <View style={styles.statusDatesContainer}>
               <DatePickerEdit
@@ -251,17 +250,16 @@ const AddBook = ({ navigation }) => {
                 date={dateStart}
                 onDateChange={setDateStart}
               />
-              {status === "letto" && (
-                <DatePickerEdit
-                  label="Fine"
-                  date={dateEnd}
-                  minimumDate={dateStart ? new Date(dateStart) : undefined}
-                  onDateChange={setDateEnd}
-                />
-              )}
+              <DatePickerEdit
+                label="Fine"
+                date={dateEnd}
+                minimumDate={dateStart ? new Date(dateStart) : undefined}
+                onDateChange={setDateEnd}
+              />
             </View>
           )}
 
+          {/* Valutazione e Note solo se “Letto” */}
           {status === "letto" && (
             <>
               <Text style={styles.label}>Valutazione</Text>
@@ -279,17 +277,21 @@ const AddBook = ({ navigation }) => {
             </>
           )}
 
+          {/* Bottone Salva */}
           <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
             <Text style={styles.submitButtonText}>Salva libro</Text>
           </TouchableOpacity>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     </KeyboardAvoidingView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  flex: { flex: 1 },
+  keyboardAvoiding: {
+    flex: 1,
+    backgroundColor: "#000",
+  },
   safeArea: {
     flex: 1,
     backgroundColor: "#000",
@@ -319,11 +321,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   scrollContent: {
-    paddingTop: 140, // spazio sotto barra logo assoluta
+    paddingTop: 160, // spazio per bar al di sopra
     paddingBottom: 40,
     backgroundColor: "#000",
   },
-
   input: {
     backgroundColor: "#222",
     borderRadius: 12,
@@ -339,17 +340,11 @@ const styles = StyleSheet.create({
     height: 120,
     textAlignVertical: "top",
   },
-  label: {
-    fontSize: 15,
-    fontWeight: "600",
-    marginBottom: 8,
-    color: "#aaa",
-  },
   pickerColored: {
-    color: "#FFF600", // colore testo picker selezionato
+    color: "#FFF600", // testo selezionato giallo
   },
   pickerItemColored: {
-    color: "#FFF600", // colore testo elenco item
+    color: "#FFF600", // voci dropdown gialle
     fontSize: 16,
   },
   imagePickerContainer: {
@@ -376,14 +371,18 @@ const styles = StyleSheet.create({
     borderColor: "#444",
     resizeMode: "cover",
   },
-
   statusDatesContainer: {
     flexDirection: "column",
     justifyContent: "space-between",
     paddingHorizontal: 10,
     marginBottom: 24,
   },
-
+  label: {
+    fontSize: 15,
+    fontWeight: "600",
+    marginBottom: 8,
+    color: "#aaa",
+  },
   submitButton: {
     backgroundColor: "#FFF600",
     paddingVertical: 16,
@@ -398,5 +397,3 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 });
-
-export default AddBook;

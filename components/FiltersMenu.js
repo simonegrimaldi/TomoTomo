@@ -60,19 +60,26 @@ const styles = StyleSheet.create({
   filterCategory: {
     marginHorizontal: 16,
     marginBottom: 20,
+    alignItems: "flex-end", // Sposta il contenuto verso destra
   },
   filterTitle: {
     fontWeight: "900",
     marginBottom: 12,
     fontSize: 18,
     color: "#FFF600",
+    textAlign: "right", // Allinea il testo a destra
+    width: "100%",
   },
   filterLabel: {
     marginBottom: 12,
+    width: "100%",
+    alignItems: "flex-end", // Sposta ogni opzione verso destra
   },
   filterLabelText: {
     color: "#aaa",
     fontSize: 16,
+    textAlign: "right", // Allinea il testo delle etichette a destra
+    width: "100%",
   },
   filterLabelActive: {
     color: "#FFF600",
@@ -85,6 +92,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     marginBottom: 20,
+    alignSelf: "flex-end", // Posiziona il pulsante di reset sul lato destro
   },
   resetButtonText: {
     color: "#000",

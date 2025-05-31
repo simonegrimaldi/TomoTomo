@@ -133,7 +133,6 @@ useEffect(() => {
         >
           <LastAddedSection books={lastThreeBooks} navigation={navigation} />
           <PlaylistSection books={books} navigation={navigation} />
-          {/* Sostituito FavoriteSection con RandomBooksSection */}
           <RandomBooksSection books={books} navigation={navigation} />
         </ScrollView>
       )}
@@ -164,7 +163,7 @@ const styles = StyleSheet.create({
     width: 140,
   },
   topBarWrapper: {
-    marginTop:90,
+    marginTop:150,
     paddingHorizontal: 16,
     backgroundColor: "#000",
     borderBottomColor: '#FFF600',

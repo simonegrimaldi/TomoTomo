@@ -18,7 +18,7 @@ export default function GenrePieChart({ data }) {
   if (!data || data.length === 0) {
     return (
       <Text style={{ textAlign: 'center', marginVertical: 20, color: 'grey' }}>
-        Non ci sono libri letti
+        Grafico non disponibile
       </Text>
     );
   }
