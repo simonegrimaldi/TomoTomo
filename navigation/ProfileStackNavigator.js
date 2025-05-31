@@ -13,6 +13,8 @@ export default function ProfileStackNavigator() {
     headerShown: false, // nasconde header in tutte le schermate
   }}>
       <ProfileStack.Screen name="ProfileMain" component={ProfileScreen} options={{ title: 'Profilo' }} />
+            <ProfileStack.Screen name="Detail" component={DetailScreen} />
+
     </ProfileStack.Navigator>
   );
 }

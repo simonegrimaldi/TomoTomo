@@ -8,39 +8,29 @@ export default function DeleteButton({ bookId }) {
   const navigation = useNavigation();
   const { removeBook } = useContext(BooksContext);
 
-  const confirmDelete = () => {
-    Alert.alert(
-      "Conferma eliminazione",
-      "Sei sicuro di voler eliminare questo libro?",
-      [
-        { text: "Annulla", style: "cancel" },
-        {
-          text: "Elimina",
-          style: "destructive",
-          onPress: async () => {
-            // 1) Rimuovo il libro dai dati e aggiorno il file persistente
-            await removeBook(bookId);
+ const confirmDelete = () => {
+  Alert.alert(
+    "Conferma eliminazione",
+    "Sei sicuro di voler eliminare questo libro?",
+    [
+      { text: "Annulla", style: "cancel" },
+      {
+        text: "Elimina",
+        style: "destructive",
+        onPress: async () => {
+          await removeBook(bookId);
 
-            // 2) Cerco di tornare indietro nella pila corrente:
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-              return;
-            }
-
-            // 3) Se qui non c'era uno schermo precedente,
-            //    invio il reset al parent (cioè al TabNavigator)
-            const parentNav = navigation.getParent();
-            if (parentNav) {
-              parentNav.reset({
-                index: 0,
-                routes: [{ name: "MainHome" }],
-              });
-            }
-          },
+         if (navigation.canGoBack()) {
+  navigation.goBack();
+} else {
+  // Naviga forzatamente alla HomeMain nello stack Home
+  navigation.navigate('Home', { screen: 'HomeMain' });
+}
         },
-      ]
-    );
-  };
+      },
+    ]
+  );
+};
 
   return (
     <TouchableOpacity style={styles.deleteButton} onPress={confirmDelete}>
