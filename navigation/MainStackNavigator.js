@@ -11,7 +11,6 @@ export default function MainStackNavigator() {
   return (
     <MainStack.Navigator screenOptions={{ headerShown: false }}>
       <MainStack.Screen name="Tabs" component={TabNavigator} />
-      <MainStack.Screen name="Detail" component={DetailScreen} />
       <MainStack.Screen name="Genre" component={GenreScreen} />
     </MainStack.Navigator>
   );

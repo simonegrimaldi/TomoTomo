@@ -4,7 +4,7 @@ import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from "react
 export default function BookCarousel({ title, books, onBookPress }) {
   return (
     <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+      {title ? <Text style={styles.sectionTitle}>{title}</Text> : null}
       <FlatList
         data={books}
         keyExtractor={(item) => item.id.toString()}

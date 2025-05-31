@@ -206,6 +206,35 @@ export default function BookDetailScreen({ route, navigation }) {
             )}
           </View>
 
+          {isEditing ? (
+  <>
+    <Text style={[styles.sectionTitle, { marginTop: 20, marginLeft: 16 }]}>
+      Sinossi
+    </Text>
+    <TextInput
+      placeholder="Inserisci la sinossi..."
+      value={editedBook.synopsis || ""}
+      onChangeText={(text) =>
+        setEditedBook((prev) => ({ ...prev, synopsis: text }))
+      }
+      style={[styles.synopsisInput, { color: "white" }]}
+      multiline
+      numberOfLines={4}
+      placeholderTextColor="#888"
+    />
+  </>
+) : (
+  // In visualizzazione normale, mostra solo se esiste la sinossi
+  editedBook.synopsis ? (
+    <>
+      <Text style={[styles.sectionTitle, { marginTop: 20, marginLeft: 16 }]}>
+        Sinossi
+      </Text>
+      <Text style={styles.synopsisText}>{editedBook.synopsis}</Text>
+    </>
+  ) : null
+)}
+
           {isEditing && (
             <>
               {/* Picker “Stato” */}
@@ -324,16 +353,10 @@ export default function BookDetailScreen({ route, navigation }) {
             </>
           )}
 
+          {/* Sinossi - sempre visibile in modifica */}
+
           {!isEditing && (
             <>
-              {editedBook.synopsis ? (
-                <>
-                  <Text style={[styles.sectionTitle, { marginTop: 20, marginLeft:16, }]}>
-                    Sinossi
-                  </Text>
-                  <Text style={styles.synopsisText}>{editedBook.synopsis}</Text>
-                </>
-              ) : null}
               {/* Mostra Stato “statico” + bottone Modifica */}
               <View style={styles.stateEditRow}>
                 <View style={styles.statusContainer}>
@@ -498,7 +521,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     borderBottomWidth: 2,
-    borderBottomColor: "#1e90ff",
+    borderBottomColor: "#FFF600",
     paddingVertical: 4,
     marginBottom: 8,
   },
@@ -506,7 +529,7 @@ const styles = StyleSheet.create({
     color: "#ddd",
     fontSize: 18,
     borderBottomWidth: 1,
-    borderBottomColor: "#1e90ff",
+    borderBottomColor: "#FFF600",
     paddingVertical: 2,
   },
   statusContainerEdit: {
@@ -536,6 +559,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   synopsisInput: {
+    marginBottom:10,
     backgroundColor: "#222",
     color: "#eee",
     padding: 14,

@@ -99,7 +99,6 @@ export default function AddBook({ navigation }) {
       const destUri = dirUri + safeName;
       await FileSystem.copyAsync({ from: uri, to: destUri });
       setCoverImageUri(destUri);
-      Alert.alert("Successo", "Immagine salvata correttamente!");
     } catch (error) {
       Alert.alert("Errore", "Impossibile salvare immagine: " + error.message);
       console.error("Error saving image:", error);
@@ -139,9 +138,7 @@ export default function AddBook({ navigation }) {
 
     try {
       await addBook(bookData);
-      Alert.alert("Successo", "Libro salvato!", [
-        { text: "OK", onPress: () => navigation.goBack() },
-      ]);
+      navigation.goBack()
     } catch (error) {
       Alert.alert("Errore", "Si è verificato un errore durante il salvataggio");
       console.error(error);
