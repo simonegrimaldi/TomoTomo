@@ -25,7 +25,7 @@ import logo from "../assets/icon.png";
 const sanitizeFilename = (name) =>
   name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
 
-export default function AddBook({ navigation }) {
+export default function AddScreen({ navigation }) {
   const { addBook } = useContext(BooksContext);
 
   const genres = [

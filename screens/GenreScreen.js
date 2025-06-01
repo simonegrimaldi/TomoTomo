@@ -20,7 +20,7 @@ const numColumns = 3;
 const spacing = 12;
 const itemSize = (screenWidth - spacing * (numColumns + 1)) / numColumns;
 
-export default function GenreBooksScreen() {
+export default function GenreScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { genreName } = route.params;

@@ -27,14 +27,14 @@ import { BooksContext } from "../context/BooksContext";
 import logo from "../assets/icon.png";
 import { Ionicons } from "@expo/vector-icons";
 
-export default function BookDetailScreen({ route, navigation }) {
+export default function DetailScreen({ route, navigation }) {
   const { bookId } = route.params;
   const { books, updateBook } = useContext(BooksContext);
-  const insets = useSafeAreaInsets();
-
   const [book, setBook] = useState(null);
   const [editedBook, setEditedBook] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+
+  const insets = useSafeAreaInsets();
 
   const capitalize = (str) =>
     str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : "";
@@ -163,7 +163,6 @@ export default function BookDetailScreen({ route, navigation }) {
           </TouchableOpacity>
         </View>
 
-        {/* ScrollView “normale” senza flexGrow */}
         <ScrollView
           style={styles.scrollFlex}
           contentContainerStyle={[
