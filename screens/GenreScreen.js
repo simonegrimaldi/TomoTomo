@@ -1,5 +1,14 @@
 import React, { useContext } from "react";
-import { View, Text, FlatList, TouchableOpacity, Image, StyleSheet, Dimensions, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Dimensions,
+  SafeAreaView,
+} from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { BooksContext } from "../context/BooksContext";
@@ -81,6 +90,7 @@ export default function GenreBooksScreen() {
 
       <View style={styles.header}>
         <Text style={styles.headerTitle}>{genreName}</Text>
+        <Text style={styles.bookCount}>{genreBooks.length}</Text>
       </View>
 
       <FlatList
@@ -122,16 +132,34 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingVertical: 16,
-    backgroundColor: "#121212",
+    backgroundColor: "#FFF600",
     borderBottomWidth: 1,
     borderBottomColor: "#222",
-    justifyContent: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
+    paddingHorizontal: 20,
   },
+
   headerTitle: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "white",
+    color: "black",
+  },
+
+  bookCount: {
+    marginLeft: 10,
+    fontSize: 12,
+    color: "black",
+    backgroundColor: "#FFF600",
+    borderRadius: 12,
+    paddingHorizontal: 4,
+    paddingVertical: 4,
+    overflow: "hidden",
+    textAlign: "center",
+    minWidth: 24,
+    borderColor: "black",
+    borderWidth: 1,
   },
   listContent: {
     padding: spacing,
@@ -141,7 +169,7 @@ const styles = StyleSheet.create({
     margin: spacing / 2,
     alignItems: "center",
     borderRadius: 8,
-    padding: 6,
+    padding: 10,
     backgroundColor: "#121212",
   },
   bookImage: {
@@ -163,15 +191,15 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   emptyContainer: {
-  flex: 1,
-  justifyContent: "center",
-  alignItems: "center",
-  padding: 20,
-},
-emptyText: {
-  fontSize: 16,
-  color: "#aaa",
-  fontStyle: "italic",
-  textAlign: "center",
-},
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  emptyText: {
+    fontSize: 16,
+    color: "#aaa",
+    fontStyle: "italic",
+    textAlign: "center",
+  },
 });

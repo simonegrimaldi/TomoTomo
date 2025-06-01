@@ -6,7 +6,6 @@ import React, {
   useEffect,
 } from "react";
 import { View, ScrollView, StyleSheet, Image } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { loadBooks } from "../services/Storage";
 import { BooksContext } from "../context/BooksContext";
@@ -17,7 +16,7 @@ import LastAddedSection from "../components/LastAddedSection";
 import PlaylistSection from "../components/PlaylistSection";
 import SearchResultsSection from "../components/SearchResultsSection";
 import FilteredBooksSection from "../components/FilteredBooksSection";
-import RandomBooksSection from "../components/RandomBooksSection"; // importa qui
+import RandomBooksSection from "../components/RandomBooksSection";
 
 import logo from "../assets/icon.png";
 

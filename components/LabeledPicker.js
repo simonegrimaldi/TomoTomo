@@ -2,7 +2,14 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-const LabeledPicker = ({ label, selectedValue, onValueChange, items, pickerStyle, itemStyle }) => {
+const LabeledPicker = ({
+  label,
+  selectedValue,
+  onValueChange,
+  items,
+  pickerStyle,
+  itemStyle,
+}) => {
   return (
     <View style={styles.pickerWrapper}>
       <Text style={styles.label}>{label}</Text>
@@ -33,9 +40,8 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 15,
-    fontWeight: "600",
     marginBottom: 8,
-    color: "#aaa",
+    color: "#888",
   },
 });
 

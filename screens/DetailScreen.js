@@ -78,7 +78,30 @@ export default function BookDetailScreen({ route, navigation }) {
   };
 
   const handleConfirmEdit = async () => {
-    const { status, date_start, date_end } = editedBook;
+    const { status, date_start, date_end, author, title, synopsis, rating } =
+      editedBook;
+
+    if (!title || title.trim() === "") {
+      Alert.alert("Errore", "Il titolo non può essere vuoto.");
+      return;
+    }
+    if (!author || author.trim() === "") {
+      Alert.alert("Errore", "L'autore non può essere vuoto.");
+      return;
+    }
+    if (!synopsis || synopsis.trim() === "") {
+      Alert.alert("Errore", "La sinossi non può essere vuota.");
+      return;
+    }
+
+    if (status === "Letto" && (!rating || rating < 1)) {
+      Alert.alert(
+        "Errore",
+        "Devi assegnare almeno una stella come valutazione."
+      );
+      return;
+    }
+
     if ((status === "In lettura" || status === "Letto") && !date_start) {
       Alert.alert("Errore", "Devi inserire una data di inizio lettura.");
       return;
@@ -94,12 +117,13 @@ export default function BookDetailScreen({ route, navigation }) {
       );
       return;
     }
+
     try {
       const { id, ...updatedFields } = editedBook;
       await updateBook(id, updatedFields);
       setIsEditing(false);
     } catch (err) {
-      console.error("Errore durante la conferma modifica:", err);
+      Alert.alert("Errore", "Errore durante il salvataggio: " + err.message);
     }
   };
 

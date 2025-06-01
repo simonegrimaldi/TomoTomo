@@ -12,7 +12,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { BooksContext } from "../context/BooksContext";
 import * as ImagePicker from "expo-image-picker";
 import * as FileSystem from "expo-file-system";
@@ -116,6 +115,15 @@ export default function AddBook({ navigation }) {
       );
       return;
     }
+
+    if (status === "letto" && (!rating || rating < 1)) {
+      Alert.alert(
+        "Errore",
+        "Devi assegnare almeno una stella come valutazione"
+      );
+      return;
+    }
+
     if (dateStart && dateEnd && dateEnd < dateStart) {
       Alert.alert(
         "Errore",
@@ -321,13 +329,15 @@ const styles = StyleSheet.create({
     height: 80,
   },
   headerTitle: {
-    fontSize: 24,
-    color: "#FFF600",
-    textAlign: "center",
+    fontWeight: "600",
+    paddingHorizontal: 5,
+    fontSize: 25,
     marginBottom: 20,
+    color: "white",
+    textAlign: "left",
   },
   scrollContent: {
-    paddingTop: 160, 
+    paddingTop: 160,
     paddingBottom: 40,
     backgroundColor: "#000",
   },
@@ -347,7 +357,7 @@ const styles = StyleSheet.create({
     textAlignVertical: "top",
   },
   pickerColored: {
-    color: "#FFF600", 
+    color: "#FFF600",
   },
   pickerItemColored: {
     color: "#FFF600",

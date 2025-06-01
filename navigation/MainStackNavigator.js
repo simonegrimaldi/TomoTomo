@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import TabNavigator from "./TabNavigator";
 import DetailScreen from "../screens/DetailScreen";
-import GenreScreen from "../screens/GenreScreen";
 
 const MainStack = createNativeStackNavigator();
 
@@ -18,4 +17,3 @@ export default function MainStackNavigator() {
     </MainStack.Navigator>
   );
 }
-

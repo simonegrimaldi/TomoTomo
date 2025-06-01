@@ -28,7 +28,7 @@ const Stat = ({ label, value }) => (
 );
 
 const styles = StyleSheet.create({
-  container: { marginBottom: 20 },
+  container: { marginBottom: 20, backgroundColor: "black" },
   title: {
     fontSize: 18,
     fontWeight: "900",
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 12,
-    color: "#ccc", 
+    color: "#ccc",
     marginTop: 4,
   },
 });

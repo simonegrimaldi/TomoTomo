@@ -11,7 +11,12 @@ import {
 export default function BookCarousel({ title, books, onBookPress }) {
   return (
     <View style={styles.section}>
-      {title ? <Text style={styles.sectionTitle}>{title}</Text> : null}
+      {title ? (
+        <View style={styles.titleRow}>
+          <Text style={styles.sectionTitle}>{title}</Text>
+          <Text style={styles.bookCount}>{books.length}</Text>
+        </View>
+      ) : null}
       <FlatList
         data={books}
         keyExtractor={(item) => item.id.toString()}
@@ -34,19 +39,38 @@ const styles = StyleSheet.create({
   section: {
     width: "100%",
     paddingVertical: 20,
-    backgroundColor: "#121212", 
+    backgroundColor: "#121212",
     elevation: 4,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.7,
     shadowRadius: 5,
+    marginBottom: 13,
+  },
+  titleRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginLeft: 20,
+    marginRight: 20,
+    alignItems: "center",
   },
   sectionTitle: {
     fontWeight: "bold",
     fontSize: 16,
     color: "white",
-    marginLeft: 20,
-    marginRight: 20,
+  },
+  bookCount: {
+    fontSize: 12,
+    color: "white",
+    borderWidth: 2,
+    borderColor: "white",
+    opacity: "0.15",
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    textAlign: "center",
+    lineHeight: 20,
+    overflow: "hidden",
   },
   cover: {
     width: 100,

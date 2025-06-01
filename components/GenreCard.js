@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   genreCard: {
     width: 120,
     borderRadius: 12,
-    alignItems: "center",
+    alignItems: "left",
     paddingVertical: 10,
     zIndex: 1,
   },
@@ -58,5 +58,6 @@ const styles = StyleSheet.create({
     color: "white",
     paddingLeft: 8,
     textAlign: "left",
+    marginTop: 6,
   },
 });

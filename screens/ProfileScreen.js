@@ -132,7 +132,7 @@ export default function ProfileScreen({ navigation }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "#000",
+    backgroundColor: "black",
   },
   logoBar: {
     position: "absolute",
@@ -155,13 +155,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 140,
-    backgroundColor: "#0a0a0a",
+    backgroundColor: "black",
   },
   statsContainer: {
     marginTop: 10,
     marginBottom: 20,
     padding: 16,
-    backgroundColor: "#111111",
+    backgroundColor: "black",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#FFF600",

@@ -7,7 +7,7 @@ import {
   Image,
   StyleSheet,
 } from "react-native";
-import defaultGenreImage from "../assets/libri/default_genre_image.png"; 
+import defaultGenreImage from "../assets/libri/default_genre_image.png";
 
 export default function LastAddedSection({ books, navigation }) {
   if (!books || books.length === 0) {
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     fontSize: 18,
     marginBottom: 10,
-    color: "#FFF600",
+    color: "white",
     textAlign: "left",
   },
   listContent: {
